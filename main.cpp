@@ -13,6 +13,7 @@
 
 //#include "internal/CImageBuffer.h"
 #include "internal/CNoise.h"
+#include "internal/CSimplexNoise.h"
 
 int main(int argc, char **argv) {
 
@@ -23,13 +24,14 @@ int main(int argc, char **argv) {
 
   CImageBuffer buff (256, 256);
   CNoise chuj;
+  CSimplexNoise simplexNoise;
 
   int color [] = { 255, 0, 255 };
 
   //buff.putPixel(4, 4, color);
 
-  chuj.fillShitWithBullshit(&buff);
-
+  //chuj.fillShitWithBullshit(&buff);
+  simplexNoise.fillBuffer(&buff);
 
   buff.savePNG("chuj.png");
 
