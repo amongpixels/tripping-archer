@@ -11,10 +11,13 @@
 #define CSIMPLEXNOISE_H_
 
 #include <cmath>
+#include <string>
 
-#include "CImageBuffer.h"
+using namespace std;
 
-class CSimplexNoise
+#include "IBufferProcessor.h"
+
+class CSimplexNoise : IBufferProcessor
 {
   private:
 
@@ -49,12 +52,23 @@ class CSimplexNoise
       return g[0] * x + g[1] * y;
     }
 
+    int octaves; // Number of octaves used to build the noise
+    double x1, y1, x2, y2; // Bounds of the noise (on 2d graph)
+    double persistence; // high frequency = high persistence
+
     double getNoise(double xin, double yin);
 
   public:
+
     CSimplexNoise();
-    void fillBuffer(CImageBuffer * buffer);
-    virtual ~CSimplexNoise();
+
+    void setBounds(double x1, double y1, double x2, double y2);
+    void setOctaves(int octaves);
+    void setPersistence(double persistence);
+
+    void apply(CImg <unsigned char> * buffer);
+
+    ~CSimplexNoise();
 };
 
 #endif /* CSIMPLEXNOISE_H_ */

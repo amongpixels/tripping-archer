@@ -17,23 +17,28 @@
 
 int main(int argc, char **argv) {
 
-  //CImg<unsigned char> perlinImage(256, 256, 1, 3, 0);
+  CImg<unsigned char> perlinImage (256, 256, 1, 3, 0);
 
   //perlinImage.draw_point()
   //printf("huj");
 
-  CImageBuffer buff (256, 256);
-  CNoise chuj;
+  //CImageBuffer buff (256, 256);
+  //CNoise chuj;
   CSimplexNoise simplexNoise;
 
-  int color [] = { 255, 0, 255 };
+  //int color [] = { 255, 0, 255 };
 
   //buff.putPixel(4, 4, color);
 
   //chuj.fillShitWithBullshit(&buff);
-  simplexNoise.fillBuffer(&buff);
+  simplexNoise.setOctaves(6);
+  simplexNoise.setBounds(0.0, 0.0, 1.0, 1.0);
+  simplexNoise.setPersistence(0.5);
 
-  buff.savePNG("chuj.png");
+  simplexNoise.apply(&perlinImage);
+
+  perlinImage.save_png("test.png");
+  //buff.savePNG("chuj.png");
 
 
   return 0;

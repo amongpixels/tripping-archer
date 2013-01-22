@@ -6,17 +6,20 @@
 CPP_SRCS += \
 ../internal/CImageBuffer.cpp \
 ../internal/CNoise.cpp \
-../internal/CSimplexNoise.cpp 
+../internal/CSimplexNoise.cpp \
+../internal/IBufferProcessor.cpp 
 
 OBJS += \
 ./internal/CImageBuffer.o \
 ./internal/CNoise.o \
-./internal/CSimplexNoise.o 
+./internal/CSimplexNoise.o \
+./internal/IBufferProcessor.o 
 
 CPP_DEPS += \
 ./internal/CImageBuffer.d \
 ./internal/CNoise.d \
-./internal/CSimplexNoise.d 
+./internal/CSimplexNoise.d \
+./internal/IBufferProcessor.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes

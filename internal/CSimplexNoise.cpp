@@ -72,20 +72,94 @@ double CSimplexNoise::getNoise(double xin, double yin) {
   return 70.0 * (n0 + n1 + n2);
 }
 
-void CSimplexNoise::fillBuffer(CImageBuffer * buffer) {
+void CSimplexNoise::setBounds(double x1, double y1, double x2, double y2) {
+  this->x1 = x1;
+  this->x2 = x2;
+  this->y1 = y1;
+  this->y2 = y2;
+}
 
-  for (int i = 0 ; i < buffer->getWidth() ; i++) {
-    for (int j = 0 ; j < buffer->getHeight() ; j++) {
+void CSimplexNoise::setOctaves(int octaves) {
+  this->octaves = octaves;
+}
 
-      float noiseValue = this->getNoise((double)(i) * 0.01, (double)(j) * 0.01);
+void CSimplexNoise::setPersistence(double persistence) {
+  this->persistence = persistence;
+}
 
-      noiseValue = (noiseValue + 1.0f) * 0.5f;
+void CSimplexNoise::apply(CImg <unsigned char> * buffer) {
 
-      //printf("%f\n", noiseValue);
+  double xEnd = x2 - x1;
+  double yEnd = y2 - y1;
 
-      int color [] = { (int)(255 * noiseValue), (int)(255 * noiseValue), (int)(255 * noiseValue) };
-      //int color [] = { 255, 0, 0 };
-      buffer->putPixel(i, j, color);
+  double xStep = buffer->width() / xEnd;
+  double yStep = buffer->height() / yEnd;
+
+  float f, a; // frequency, amplitude
+
+  printf("%d %d ; %f %f\n", xEnd, yEnd, xStep, yStep);
+
+  //buffer->clear();
+
+  //CImg<unsigned char> tempBuffer(*buffer);
+
+  double noise [buffer->width()] [buffer->height()];
+  for (int i = 0 ; i < buffer->width() ; i++) {
+    for (int j = 0 ; j < buffer->height() ; j++) {
+      noise[i][j] = 0.0;
+    }
+  }
+
+  double maxNoiseValue = 0.0;
+
+  for (int o = 0 ; o < this->octaves ; o++) {
+
+    f = pow(2.0, o);
+    a = pow(this->persistence, o);
+
+    printf("f: %f, a: %f\n", f, a);
+
+    CImg<unsigned char> chujfer ((*buffer));
+
+
+
+    for (int i = 0 ; i < buffer->width() ; i++) {
+      for (int j = 0 ; j < buffer->height() ; j++) {
+
+        float noiseValue = this->getNoise((double)(i) * f * 0.01, (double)(j) * f * 0.01) * a;
+        //float noiseValue = this->getNoise(i, j);
+
+        noiseValue = ((noiseValue + 1.0f) * 0.5f);
+
+        noise[i][j] += noiseValue;
+
+        if (noise[i][j] > maxNoiseValue) {
+          maxNoiseValue = noise[i][j];
+        }
+
+        //printf("%f\n", noiseValue);
+
+        int color [] = { (int)(255 * noiseValue), (int)(255 * noiseValue), (int)(255 * noiseValue) };
+        chujfer.draw_point(i, j, color);
+      }
+    }
+
+    string s = "chujfer";
+    s += o;
+    s += ".png";
+
+    chujfer.save_png(s.c_str());
+
+    //(*buffer) += tempBuffer;
+    //tempBuffer.clear();
+
+  }
+
+  for (int i = 0 ; i < buffer->width() ; i++) {
+    for (int j = 0 ; j < buffer->height() ; j++) {
+      int n = (int)(255.0 * (noise[i][j] / maxNoiseValue));
+      int color [] = { n, n, n };
+      buffer->draw_point(i, j, color);
     }
   }
 
