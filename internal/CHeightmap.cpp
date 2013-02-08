@@ -9,14 +9,12 @@
 
 void CHeightmap::init (int w, int h) {
 
-  printf("ROBIE RESOZE");
   this->values.resize(w, vector <float> (h));
 
   this->width = w;
   this->height = h;
   this->maxValue = 0.0f;
 
-  printf("I PO PTOKACH");
 //  for (vector< vector<float> >::iterator i = this->values.begin() ; i < this->values.end() ; i++) {
 //    i->resize(h);
 //  }

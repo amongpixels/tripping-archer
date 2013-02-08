@@ -15,6 +15,7 @@
 #include "internal/CNoise.h"
 #include "internal/CSimplexNoise.h"
 #include "internal/CFault.h"
+#include "internal/CParticleDeposition.h"
 
 int main(int argc, char **argv) {
 
@@ -44,9 +45,12 @@ int main(int argc, char **argv) {
   printf("CHUJ CI W DUPE");
 
   CFault faultFilter;
+  CParticleDeposition depositionFilter;
   CHeightmap heightmap ( 200, 200 );
 
-  faultFilter.apply(&heightmap);
+  //faultFilter.apply(&heightmap);
+
+  depositionFilter.apply(&heightmap);
 
   heightmap.saveAsPNG("cipka.png");
 

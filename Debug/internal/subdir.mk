@@ -8,6 +8,7 @@ CPP_SRCS += \
 ../internal/CHeightmap.cpp \
 ../internal/CImageBuffer.cpp \
 ../internal/CNoise.cpp \
+../internal/CParticleDeposition.cpp \
 ../internal/CSimplexNoise.cpp \
 ../internal/IBufferProcessor.cpp 
 
@@ -16,6 +17,7 @@ OBJS += \
 ./internal/CHeightmap.o \
 ./internal/CImageBuffer.o \
 ./internal/CNoise.o \
+./internal/CParticleDeposition.o \
 ./internal/CSimplexNoise.o \
 ./internal/IBufferProcessor.o 
 
@@ -24,6 +26,7 @@ CPP_DEPS += \
 ./internal/CHeightmap.d \
 ./internal/CImageBuffer.d \
 ./internal/CNoise.d \
+./internal/CParticleDeposition.d \
 ./internal/CSimplexNoise.d \
 ./internal/IBufferProcessor.d 
 

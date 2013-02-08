@@ -102,7 +102,7 @@ main.d: ../main.cpp ../internal/CNoise.h ../internal/CImageBuffer.h \
  /home/dragomir/git/include/cml/mathlib/matrix_concat.h \
  /home/dragomir/git/include/cml/mathlib/projection.h \
  /home/dragomir/git/include/cml/mathlib/picking.h \
- ../internal/CHeightmap.h
+ ../internal/CHeightmap.h ../internal/CParticleDeposition.h
 
 ../internal/CNoise.h:
 
@@ -319,3 +319,5 @@ main.d: ../main.cpp ../internal/CNoise.h ../internal/CImageBuffer.h \
 /home/dragomir/git/include/cml/mathlib/picking.h:
 
 ../internal/CHeightmap.h:
+
+../internal/CParticleDeposition.h:
