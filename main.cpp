@@ -16,6 +16,8 @@
 #include "internal/CSimplexNoise.h"
 #include "internal/CFault.h"
 #include "internal/CParticleDeposition.h"
+#include "internal/CVoronoi.h"
+#include "internal/CInputProcessor.h"
 
 int main(int argc, char **argv) {
 
@@ -42,17 +44,26 @@ int main(int argc, char **argv) {
   //perlinImage.save_png("test.png");
   //buff.savePNG("chuj.png");
 
-  printf("CHUJ CI W DUPE");
+  printf("CHUJ CI W DUPE\n");
 
   CFault faultFilter;
   CParticleDeposition depositionFilter;
   CHeightmap heightmap ( 200, 200 );
+  CVoronoi voronoiFilter;
+
+  CInputProcessor inputProcessor;
+
+  inputProcessor.loadFromImage("input.png");
+
+
+
 
   //faultFilter.apply(&heightmap);
 
-  depositionFilter.apply(&heightmap);
+  //depositionFilter.apply(&heightmap);
+  //voronoiFilter.apply(&heightmap);
 
-  heightmap.saveAsPNG("cipka.png");
+  //heightmap.saveAsPNG("cipka.png");
 
 
 

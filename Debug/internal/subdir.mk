@@ -7,28 +7,31 @@ CPP_SRCS += \
 ../internal/CFault.cpp \
 ../internal/CHeightmap.cpp \
 ../internal/CImageBuffer.cpp \
+../internal/CInputProcessor.cpp \
 ../internal/CNoise.cpp \
 ../internal/CParticleDeposition.cpp \
 ../internal/CSimplexNoise.cpp \
-../internal/IBufferProcessor.cpp 
+../internal/CVoronoi.cpp 
 
 OBJS += \
 ./internal/CFault.o \
 ./internal/CHeightmap.o \
 ./internal/CImageBuffer.o \
+./internal/CInputProcessor.o \
 ./internal/CNoise.o \
 ./internal/CParticleDeposition.o \
 ./internal/CSimplexNoise.o \
-./internal/IBufferProcessor.o 
+./internal/CVoronoi.o 
 
 CPP_DEPS += \
 ./internal/CFault.d \
 ./internal/CHeightmap.d \
 ./internal/CImageBuffer.d \
+./internal/CInputProcessor.d \
 ./internal/CNoise.d \
 ./internal/CParticleDeposition.d \
 ./internal/CSimplexNoise.d \
-./internal/IBufferProcessor.d 
+./internal/CVoronoi.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes
