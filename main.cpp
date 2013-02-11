@@ -19,6 +19,8 @@
 #include "internal/CVoronoi.h"
 #include "internal/CInputProcessor.h"
 
+using namespace archer;
+
 int main(int argc, char **argv) {
 
   //CImg<unsigned char> perlinImage (256, 256, 1, 3, 0);
@@ -44,7 +46,7 @@ int main(int argc, char **argv) {
   //perlinImage.save_png("test.png");
   //buff.savePNG("chuj.png");
 
-  printf("CHUJ CI W DUPE\n");
+  //printf("CHUJ CI W DUPE\n");
 
   CFault faultFilter;
   CParticleDeposition depositionFilter;
@@ -52,8 +54,17 @@ int main(int argc, char **argv) {
   CVoronoi voronoiFilter;
 
   CInputProcessor inputProcessor;
-
   inputProcessor.loadFromImage("input.png");
+
+  for (std::vector<SPointCluster *>::iterator i = inputProcessor.getClusters()->begin() ; i < inputProcessor.getClusters()->end() ; i++) {
+    CParticleDeposition depositionFilter;
+
+    depositionFilter.setBoundingPoints(&(*i)->points);
+    depositionFilter.setVentCenter(inputProcessor.findClusterMedian(*(*i)));
+    depositionFilter.setParticlesCount((*i)->points.size() * 5);
+
+    depositionFilter.apply(&heightmap);
+  }
 
 
 
@@ -63,7 +74,10 @@ int main(int argc, char **argv) {
   //depositionFilter.apply(&heightmap);
   //voronoiFilter.apply(&heightmap);
 
-  //heightmap.saveAsPNG("cipka.png");
+  heightmap.saveAsPNG("cipka.png");
+  heightmap.saveColorMapAsPNG("pizdeczka.png");
+
+  printf("DONE\n");
 
 
 

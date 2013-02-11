@@ -11,7 +11,8 @@ CPP_SRCS += \
 ../internal/CNoise.cpp \
 ../internal/CParticleDeposition.cpp \
 ../internal/CSimplexNoise.cpp \
-../internal/CVoronoi.cpp 
+../internal/CVoronoi.cpp \
+../internal/helpers.cpp 
 
 OBJS += \
 ./internal/CFault.o \
@@ -21,7 +22,8 @@ OBJS += \
 ./internal/CNoise.o \
 ./internal/CParticleDeposition.o \
 ./internal/CSimplexNoise.o \
-./internal/CVoronoi.o 
+./internal/CVoronoi.o \
+./internal/helpers.o 
 
 CPP_DEPS += \
 ./internal/CFault.d \
@@ -31,7 +33,8 @@ CPP_DEPS += \
 ./internal/CNoise.d \
 ./internal/CParticleDeposition.d \
 ./internal/CSimplexNoise.d \
-./internal/CVoronoi.d 
+./internal/CVoronoi.d \
+./internal/helpers.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes

@@ -14,11 +14,15 @@
 
 using namespace cml;
 
-class IHeightmapProcessor
+namespace archer
 {
-  public:
-    virtual void apply(CHeightmap * h) = 0;
-};
+  class IHeightmapProcessor
+  {
+    public:
+      virtual void apply(CHeightmap * h) = 0;
+  };
+}
+
 
 
 #endif /* IHEIGHTMAPPROCESSOR_H_ */

@@ -10,6 +10,7 @@
 
 #include <vector>
 #include <cml/cml.h>
+#include <cmath>
 
 #include "../external/CImg.h"
 
@@ -17,24 +18,39 @@ using namespace std;
 using namespace cml;
 using namespace cimg_library;
 
-struct SPointCluster {
-    unsigned char color [3];
-    std::vector <vector2i> points;
-};
-
-class CInputProcessor
+namespace archer
 {
-  private:
+  bool compareVectors2i (vector2i v1, vector2i v2);
 
-    void floodFill(CImg<unsigned char> * img, vector2i * point, SPointCluster * cluster);
-    bool isPointInCluster(CImg<unsigned char> * img, vector2i point);
+  struct SPointCluster {
+      unsigned char color [3];
+      std::vector <vector2i> points;
+      vector2i topRight;
+      vector2i bottomLeft;
+  };
 
-  public:
-    CInputProcessor();
+  class CInputProcessor
+  {
+    private:
 
-    void loadFromImage(char * path);
+      std::vector <SPointCluster *> clusters;
 
-    virtual ~CInputProcessor();
-};
+      void floodFill(const CImg<unsigned char> & img, const vector2i & point, SPointCluster * cluster);
+
+      SPointCluster * findPointInCluster(const vector2i & point);
+
+
+    public:
+      CInputProcessor();
+
+      void loadFromImage(char * path);
+      std::vector <SPointCluster *> * getClusters();
+
+      vector2i findClusterMedian (const SPointCluster & cluster);
+
+
+      virtual ~CInputProcessor();
+  };
+}
 
 #endif /* CINPUTPROCESSOR_H_ */

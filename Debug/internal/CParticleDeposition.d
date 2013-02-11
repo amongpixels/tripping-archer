@@ -1,5 +1,6 @@
 internal/CParticleDeposition.d: ../internal/CParticleDeposition.cpp \
- ../internal/CParticleDeposition.h /home/dragomir/git/include/cml/cml.h \
+ ../internal/CParticleDeposition.h ../internal/IHeightmapProcessor.h \
+ /home/dragomir/git/include/cml/cml.h \
  /home/dragomir/git/include/cml/vector.h \
  /home/dragomir/git/include/cml/core/common.h \
  /home/dragomir/git/include/cml/defaults.h \
@@ -100,9 +101,12 @@ internal/CParticleDeposition.d: ../internal/CParticleDeposition.cpp \
  /home/dragomir/git/include/cml/mathlib/matrix_concat.h \
  /home/dragomir/git/include/cml/mathlib/projection.h \
  /home/dragomir/git/include/cml/mathlib/picking.h \
- ../internal/CHeightmap.h ../internal/../external/CImg.h
+ ../internal/CHeightmap.h ../internal/../external/CImg.h \
+ ../internal/helpers.h
 
 ../internal/CParticleDeposition.h:
+
+../internal/IHeightmapProcessor.h:
 
 /home/dragomir/git/include/cml/cml.h:
 
@@ -309,3 +313,5 @@ internal/CParticleDeposition.d: ../internal/CParticleDeposition.cpp \
 ../internal/CHeightmap.h:
 
 ../internal/../external/CImg.h:
+
+../internal/helpers.h:

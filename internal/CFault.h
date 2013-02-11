@@ -14,6 +14,7 @@
 #include "CHeightmap.h"
 
 using namespace cml;
+using namespace archer;
 
 class CFault
 {

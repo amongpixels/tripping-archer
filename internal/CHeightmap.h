@@ -8,40 +8,52 @@
 #ifndef CHEIGHTMAP_H_
 #define CHEIGHTMAP_H_
 
+#include <cml/cml.h>
 #include <vector>
+#include <cassert>
 
 #include "../external/CImg.h"
+#include "helpers.h"
 
 using namespace cimg_library;
 using namespace std;
+using namespace cml;
 
-class CHeightmap
+namespace archer
 {
-  private:
+  class CHeightmap
+  {
+    private:
 
-    vector < vector<float> > values;
+      std::vector < std::vector<float> > values;
+      std::vector < std::vector<vector3f> > normals;
 
-    int width;
-    int height;
+      int width;
+      int height;
 
-    float maxValue;
+      float maxValue;
+      float heightScale;
 
-  public:
+      void calculateNormals();
 
-    void init (int w, int h);
+    public:
 
-    int getWidth();
-    int getHeight();
+      void init (int w, int h);
 
-    float getValue(int x, int y);
-    void setValue(int x, int y, float v);
+      int getWidth();
+      int getHeight();
 
-    void saveAsPNG(char * path);
+      float getValue(int x, int y);
+      void setValue(int x, int y, float v);
 
-    CHeightmap();
-    CHeightmap(int w, int h);
+      void saveAsPNG(char * path);
+      void saveColorMapAsPNG(char * path);
+
+      CHeightmap();
+      CHeightmap(int w, int h);
 
 
-};
+  };
+}
 
 #endif /* CHEIGHTMAP_H_ */

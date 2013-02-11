@@ -10,29 +10,43 @@
 
 #include <cstdlib>
 #include <ctime>
-#include <cml/cml.h>
+#include <cmath>
 
-#include "CHeightmap.h"
+#include "IHeightmapProcessor.h"
+#include "helpers.h"
 
-using namespace cml;
+namespace archer {
 
-class CParticleDeposition
-{
-  private:
+  class CParticleDeposition : IHeightmapProcessor
+  {
+    private:
 
-    int searchRadius;
-    float elevationTreshold;
-    float particleHeight;
+      int searchRadius;
+      float elevationTreshold;
+      float particleHeight;
 
-    void deposit (CHeightmap * h, vector2i & particle);
+      vector2i ventCenter;
+      //int streamsCount;
+      int particlesCount;
+      std::vector <vector2f> streams;
 
-  public:
+      std::vector <vector2i> * boundingPoints;
 
-    CParticleDeposition();
+      void deposit (CHeightmap * h, vector2i & particle);
 
-    void apply(CHeightmap * h);
+    public:
 
-    virtual ~CParticleDeposition();
-};
+      CParticleDeposition();
+
+      void apply(CHeightmap * h);
+
+      void setBoundingPoints(std::vector <vector2i> * b);
+      void setVentCenter(const vector2i & c);
+      void setParticlesCount(int i);
+
+      virtual ~CParticleDeposition();
+  };
+
+}
 
 #endif /* CPARTICLEDEPOSITION_H_ */

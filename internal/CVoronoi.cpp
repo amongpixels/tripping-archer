@@ -58,7 +58,10 @@ void CVoronoi::apply(CHeightmap* h) {
       for (int i = 0 ; i < this->pointsCount ; i++) {
         voronoiDistance d;
         d.pointIndex = i;
-        d.distance = (this->points[i].position - point).length();
+
+        // oh god remember to convert vector to float coz otherwise distances are integers.....
+        vector2f v = this->points[i].position - point;
+        d.distance = v.length();
 
         distances.push_back(d);
       }

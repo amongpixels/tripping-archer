@@ -15,6 +15,7 @@
 #include "IHeightmapProcessor.h"
 
 using namespace std;
+using namespace archer;
 
 struct voronoiDistance {
     int pointIndex;
