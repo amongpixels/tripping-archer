@@ -134,7 +134,7 @@ void archer::CHeightmap::saveColorMapAsPNG(char* path) {
 
   this->calculateNormals();
 
-  vector3f lightDirection (1.0f, 1.0f, 1.0f);
+  vector3f lightDirection (1.0f, 0.5f, 0.7f);
 
   CImg <unsigned char> colorMap (this->width, this->height, 1, 3, 0);
 
@@ -155,6 +155,7 @@ void archer::CHeightmap::saveColorMapAsPNG(char* path) {
      }
   }
 
+  colorMap.blur(1.0f);
   colorMap.save_png(path);
 }
 

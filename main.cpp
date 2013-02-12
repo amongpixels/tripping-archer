@@ -6,12 +6,12 @@
  */
 
 #include <cstdio>
-
 #include <iostream>
 #include <cstring>
 #include <string>
+#include <vector>
+//#include <boost/program_options.hpp>
 
-//#include "internal/CImageBuffer.h"
 #include "internal/CNoise.h"
 #include "internal/CSimplexNoise.h"
 #include "internal/CFault.h"
@@ -19,14 +19,36 @@
 #include "internal/CVoronoi.h"
 #include "internal/CInputProcessor.h"
 
+using namespace std;
 using namespace archer;
 
+//namespace po = boost::program_options;
+
 int main(int argc, char **argv) {
+
+  char * inputPath;
+  char * outputPath;
+  int terrainType;
+
+  if (argc != 4) {
+    printf("Not enough args.\n", argc);
+    return 0;
+  }
+
+  inputPath = argv[1];
+  outputPath = argv[2];
+  terrainType = atoi(argv[3]);
+
+  printf("Terrain type %d\n", terrainType);
+
+//  po::options_description desc("Allowed options");
+//  desc.add_options()
+//      ("input", po::value<string>(&inputPath), "Input image")
+//  ;
 
   //CImg<unsigned char> perlinImage (256, 256, 1, 3, 0);
 
   //perlinImage.draw_point()
-  //printf("huj");
 
   //CImageBuffer buff (256, 256);
   //CNoise chuj;
@@ -46,15 +68,13 @@ int main(int argc, char **argv) {
   //perlinImage.save_png("test.png");
   //buff.savePNG("chuj.png");
 
-  //printf("CHUJ CI W DUPE\n");
-
   CFault faultFilter;
   CParticleDeposition depositionFilter;
-  CHeightmap heightmap ( 200, 200 );
+  CHeightmap heightmap ( 256, 256 );
   CVoronoi voronoiFilter;
 
   CInputProcessor inputProcessor;
-  inputProcessor.loadFromImage("input.png");
+  inputProcessor.loadFromImage(inputPath);
 
   for (std::vector<SPointCluster *>::iterator i = inputProcessor.getClusters()->begin() ; i < inputProcessor.getClusters()->end() ; i++) {
     CParticleDeposition depositionFilter;
@@ -74,13 +94,10 @@ int main(int argc, char **argv) {
   //depositionFilter.apply(&heightmap);
   //voronoiFilter.apply(&heightmap);
 
-  heightmap.saveAsPNG("cipka.png");
-  heightmap.saveColorMapAsPNG("pizdeczka.png");
+  heightmap.saveAsPNG(outputPath);
+  heightmap.saveColorMapAsPNG("color.png");
 
   printf("DONE\n");
-
-
-
 
   return 0;
 
