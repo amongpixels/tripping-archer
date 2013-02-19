@@ -45,9 +45,15 @@ namespace archer
 
       float getValue(int x, int y);
       void setValue(int x, int y, float v);
+      void setHeightScale(float h);
+      void zero();
+      void normalize();
 
       void saveAsPNG(char * path);
       void saveColorMapAsPNG(char * path);
+
+      CHeightmap & operator += (CHeightmap &);
+      CHeightmap & operator *= (const float &);
 
       CHeightmap();
       CHeightmap(int w, int h);

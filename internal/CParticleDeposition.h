@@ -17,6 +17,8 @@
 
 namespace archer {
 
+  enum DepositionType { MOVE, PICK };
+
   class CParticleDeposition : IHeightmapProcessor
   {
     private:
@@ -24,6 +26,7 @@ namespace archer {
       int searchRadius;
       float elevationTreshold;
       float particleHeight;
+      DepositionType depositionType;
 
       vector2i ventCenter;
       //int streamsCount;
@@ -31,6 +34,7 @@ namespace archer {
       std::vector <vector2f> streams;
 
       std::vector <vector2i> * boundingPoints;
+      std::vector <vector2i> brownianTree;
 
       void deposit (CHeightmap * h, vector2i & particle);
 
@@ -41,6 +45,7 @@ namespace archer {
       void apply(CHeightmap * h);
 
       void setBoundingPoints(std::vector <vector2i> * b);
+      void setMode(DepositionType t);
       void setVentCenter(const vector2i & c);
       void setParticlesCount(int i);
 

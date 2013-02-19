@@ -72,7 +72,7 @@ void CVoronoi::apply(CHeightmap* h) {
       // calculate the elevation
       float value = -1.0f * distances[0].distance + distances[1].distance;
 
-      h->setValue(x, y, h->getValue(x, y) * value);
+      h->setValue(x, y, h->getValue(x, y) + value);
 
     }
   }

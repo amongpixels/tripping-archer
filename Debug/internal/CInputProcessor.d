@@ -100,7 +100,8 @@ internal/CInputProcessor.d: ../internal/CInputProcessor.cpp \
  /home/dragomir/git/include/cml/mathlib/matrix_concat.h \
  /home/dragomir/git/include/cml/mathlib/projection.h \
  /home/dragomir/git/include/cml/mathlib/picking.h \
- ../internal/../external/CImg.h
+ ../internal/../external/CImg.h ../internal/CPointsSet2i.h \
+ ../internal/TPointsSet.h ../internal/helpers.h
 
 ../internal/CInputProcessor.h:
 
@@ -307,3 +308,9 @@ internal/CInputProcessor.d: ../internal/CInputProcessor.cpp \
 /home/dragomir/git/include/cml/mathlib/picking.h:
 
 ../internal/../external/CImg.h:
+
+../internal/CPointsSet2i.h:
+
+../internal/TPointsSet.h:
+
+../internal/helpers.h:

@@ -9,16 +9,15 @@
 
 archer::CParticleDeposition::CParticleDeposition() {
   
-  this->searchRadius = 1;
+  this->searchRadius = 2;
   this->elevationTreshold = 1.0f;
   this->particleHeight = 1.0f;
+  this->depositionType = MOVE;
 
   //this->streamsCount = 32;
   this->ventCenter.set(100, 100);
 
   this->boundingPoints = NULL;
-
-
 
 }
 
@@ -79,7 +78,7 @@ void archer::CParticleDeposition::apply(CHeightmap * h) {
   // choose a location of the volcano top
   vector2i currentPosition = this->ventCenter; //(rand() % h->getWidth(), rand() % h->getHeight());
 
-  for (int i = 0 ; i < this->particlesCount ; i++) {
+  for (int i = 0 ; i < this->particlesCount + 100 ; i++) {
 
     // drop the particle
     particle.set(currentPosition[0], currentPosition[1]);
@@ -159,28 +158,34 @@ void archer::CParticleDeposition::deposit(CHeightmap * h, vector2i & particle) {
 
   bool positionFound = false;
 
-  // search the radius around the particle to see if it's in stable position or not
-  for (int x = particle[0] - 1 ; x <= particle[0] + 1 ; x++) {
-    for (int y = particle[1] - 1 ; y <= particle[1] + 1 ; y++) {
+  for (int r = 1 ; r <= this->searchRadius ; r++) {
 
-      // we are searching in a rectangle first but test proper radius now, also test if we are not out of bounds
-      if (
-          ( (x >= 0) && (x < h->getWidth()) && (y >= 0) && (y < h->getHeight()) ) &&
-          ( (x != particle[0]) || (y != particle[1]) ) &&
-          ( (x - particle[0]) * (x - particle[0]) + (y - particle[1]) * (y - particle[1]) <= 1 )
-      ) {
+    // search the radius around the particle to see if it's in stable position or not
+    for (int x = particle[0] - r ; x <= particle[0] + r ; x++) {
+      for (int y = particle[1] - r ; y <= particle[1] + r ; y++) {
 
-        float diff = h->getValue(particle[0], particle[1]) + this->particleHeight - h->getValue(x, y);
+        // we are searching in a rectangle first but test proper radius now, also test if we are not out of bounds
+        if (
+            ( (x >= 0) && (x < h->getWidth()) && (y >= 0) && (y < h->getHeight()) ) &&
+            ( (x != particle[0]) || (y != particle[1]) ) &&
+            ( (x - particle[0]) * (x - particle[0]) + (y - particle[1]) * (y - particle[1]) <= r * r )
+        ) {
 
-        if (diff > this->elevationTreshold) {
-          particle.set(x, y);
-          positionFound = true;
-          break;
+          float diff = h->getValue(particle[0], particle[1]) + this->particleHeight - h->getValue(x, y);
+
+          if (diff > this->elevationTreshold) {
+            particle.set(x, y);
+            positionFound = true;
+            break;
+          }
+
         }
+      }
 
+      if (positionFound) {
+        break;
       }
     }
-
     if (positionFound) {
       break;
     }
@@ -197,7 +202,10 @@ void archer::CParticleDeposition::deposit(CHeightmap * h, vector2i & particle) {
 }
 
 void archer::CParticleDeposition::setBoundingPoints(std::vector<vector2i>* b) {
+
   this->boundingPoints = b;
+
+
 }
 
 void archer::CParticleDeposition::setVentCenter(const vector2i& c) {

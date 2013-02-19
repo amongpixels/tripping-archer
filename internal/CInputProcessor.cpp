@@ -16,20 +16,6 @@ void archer::CInputProcessor::loadFromImage(char* path) {
 
   CImg <unsigned char> image (path);
 
-//  vector2i startingPoint (0, 0);
-//
-//  SPointCluster cluster;
-//  cluster.color[0] = 0;
-//  cluster.color[1] = 200;
-//  cluster.color[2] = 0;
-//  cluster.points.clear();
-//
-//  this->floodFill(&image, &startingPoint, &cluster);
-//
-//  image.save_png("tescik.png");
-//
-//  printf("DONE\n");
-
   unsigned char colorToCluster [] = { 255, 0, 0 };
 
   // go through all the points and look for clusters
@@ -38,7 +24,7 @@ void archer::CInputProcessor::loadFromImage(char* path) {
 
       unsigned char currentColor [] = { image(x, y, 0, 0), image(x, y, 0, 1), image(x, y, 0, 2) };
 
-      // it's a color we are interesied in clustering
+      // it's a color we are interested in clustering
       if ((currentColor[0] == colorToCluster[0]) && (currentColor[1] == colorToCluster[1]) && (currentColor[2] == colorToCluster[2])) {
 
         vector2i currentPoint (x, y);
@@ -52,10 +38,6 @@ void archer::CInputProcessor::loadFromImage(char* path) {
           SPointCluster * newCluster = new SPointCluster();
 
           memcpy(newCluster->color, colorToCluster, sizeof(unsigned char) * 3);
-          newCluster->topRight.set(x, y);
-          newCluster->bottomLeft.set(x, y);
-
-          //printf("new cluster color %d %d %d\n", newCluster->color[0], newCluster->color[1], newCluster->color[2]);
 
           this->floodFill(image, currentPoint, newCluster);
 
@@ -96,12 +78,7 @@ void archer::CInputProcessor::floodFill(const CImg<unsigned char> & img, const v
         const unsigned char newColor [] = { 0, 0, 0 };
         imgCopy.draw_point(n[0], n[1], newColor);
 
-        cluster->topRight.set(max(cluster->topRight[0], n[0]), max(cluster->topRight[1], n[1]));
-        cluster->bottomLeft.set(min(cluster->bottomLeft[0], n[0]), min(cluster->bottomLeft[1], n[1]));
-
-        // add that point to the cluster list of points
-        cluster->points.push_back(n);
-
+        cluster->points.addPoint(n);
         //printf("maluje punkcior %d %d %d\n", newColor[0], newColor[1], newColor[2]);
 
         //unsigned char chuj [] = { (*img)(n[0], n[1], 0, 0), (*img)(n[0], n[1], 0, 1), (*img)(n[0], n[1], 0, 2) };
@@ -126,10 +103,8 @@ void archer::CInputProcessor::floodFill(const CImg<unsigned char> & img, const v
 archer::SPointCluster * archer::CInputProcessor::findPointInCluster(const vector2i & point) {
 
   for (std::vector<SPointCluster *>::iterator i = this->clusters.begin() ; i < this->clusters.end() ; i++) {
-    for (std::vector<vector2i>::iterator p = (*i)->points.begin() ; p < (*i)->points.end() ; p++) {
-      if (point == (*p)) {
-        return (*i);
-      }
+    if ((*i)->points.isPointInSet(point)) {
+      return (*i);
     }
   }
 
@@ -141,23 +116,12 @@ std::vector<archer::SPointCluster*>* archer::CInputProcessor::getClusters() {
   return &this->clusters;
 }
 
-vector2i archer::CInputProcessor::findClusterMedian(const SPointCluster& cluster) {
-
-  SPointCluster clusterCopy = cluster;
-
-  // sort points in cluster
-  std::sort(clusterCopy.points.begin(), clusterCopy.points.end(), compareVectors2i);
-
-  return clusterCopy.points[floor(clusterCopy.points.size() * 0.5)];
-
+vector2i archer::CInputProcessor::getClusterMedian(SPointCluster & cluster) {
+  return cluster.points.getMedianPoint();
 }
 
 archer::CInputProcessor::~CInputProcessor() {
   for (std::vector<archer::SPointCluster *>::iterator i = this->clusters.begin() ; i < this->clusters.end() ; i++) {
     delete (*i);
   }
-}
-
-bool archer::compareVectors2i(vector2i v1, vector2i v2) {
-  return v1.length_squared() < v2.length_squared();
 }

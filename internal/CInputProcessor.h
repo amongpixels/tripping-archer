@@ -13,6 +13,7 @@
 #include <cmath>
 
 #include "../external/CImg.h"
+#include "CPointsSet2i.h"
 
 using namespace std;
 using namespace cml;
@@ -20,13 +21,10 @@ using namespace cimg_library;
 
 namespace archer
 {
-  bool compareVectors2i (vector2i v1, vector2i v2);
 
   struct SPointCluster {
       unsigned char color [3];
-      std::vector <vector2i> points;
-      vector2i topRight;
-      vector2i bottomLeft;
+      CPointsSet2i points;
   };
 
   class CInputProcessor
@@ -46,7 +44,7 @@ namespace archer
       void loadFromImage(char * path);
       std::vector <SPointCluster *> * getClusters();
 
-      vector2i findClusterMedian (const SPointCluster & cluster);
+      vector2i getClusterMedian (SPointCluster & cluster);
 
 
       virtual ~CInputProcessor();
