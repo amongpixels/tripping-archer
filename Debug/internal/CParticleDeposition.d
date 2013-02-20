@@ -102,7 +102,8 @@ internal/CParticleDeposition.d: ../internal/CParticleDeposition.cpp \
  /home/dragomir/git/include/cml/mathlib/projection.h \
  /home/dragomir/git/include/cml/mathlib/picking.h \
  ../internal/CHeightmap.h ../internal/../external/CImg.h \
- ../internal/helpers.h
+ ../internal/helpers.h ../internal/CPointsSet2i.h \
+ ../internal/TPointsSet.h
 
 ../internal/CParticleDeposition.h:
 
@@ -315,3 +316,7 @@ internal/CParticleDeposition.d: ../internal/CParticleDeposition.cpp \
 ../internal/../external/CImg.h:
 
 ../internal/helpers.h:
+
+../internal/CPointsSet2i.h:
+
+../internal/TPointsSet.h:

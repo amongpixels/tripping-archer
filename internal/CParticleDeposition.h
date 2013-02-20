@@ -14,10 +14,11 @@
 
 #include "IHeightmapProcessor.h"
 #include "helpers.h"
+#include "CPointsSet2i.h"
 
 namespace archer {
 
-  enum DepositionType { MOVE, PICK };
+  enum DepositionDropType { MOVING, RANDOM };
 
   class CParticleDeposition : IHeightmapProcessor
   {
@@ -26,15 +27,14 @@ namespace archer {
       int searchRadius;
       float elevationTreshold;
       float particleHeight;
-      DepositionType depositionType;
+      DepositionDropType depositionType;
 
       vector2i ventCenter;
       //int streamsCount;
       int particlesCount;
       std::vector <vector2f> streams;
 
-      std::vector <vector2i> * boundingPoints;
-      std::vector <vector2i> brownianTree;
+      CPointsSet2i * boundingPoints;
 
       void deposit (CHeightmap * h, vector2i & particle);
 
@@ -44,8 +44,8 @@ namespace archer {
 
       void apply(CHeightmap * h);
 
-      void setBoundingPoints(std::vector <vector2i> * b);
-      void setMode(DepositionType t);
+      void setBoundingPoints(CPointsSet2i * b);
+      void setMode(DepositionDropType t);
       void setVentCenter(const vector2i & c);
       void setParticlesCount(int i);
 

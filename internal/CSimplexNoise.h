@@ -17,7 +17,8 @@ using namespace std;
 
 #include "IHeightmapProcessor.h"
 
-namespace archer {
+namespace archer
+{
   class CSimplexNoise : IHeightmapProcessor
   {
     private:
@@ -57,11 +58,12 @@ namespace archer {
       double x1, y1, x2, y2; // Bounds of the noise (on 2d graph)
       double persistence; // high frequency = high persistence
 
-      double getNoise(double xin, double yin);
-
     public:
 
       CSimplexNoise();
+
+      double getNoise(double xin, double yin);
+      double getNormalizedNoise(double xin, double yin);
 
       void setBounds(double x1, double y1, double x2, double y2);
       void setOctaves(int octaves);

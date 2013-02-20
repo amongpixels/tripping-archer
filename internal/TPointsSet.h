@@ -62,6 +62,10 @@ namespace archer
         return false;
       }
 
+      bool isEmpty() {
+        return this->points.empty();
+      }
+
       TPointsSet<T> & intersetc(TPointsSet<T> & ps) {
 
         TPointsSet<T> intersection;

@@ -12,10 +12,11 @@ archer::CParticleDeposition::CParticleDeposition() {
   this->searchRadius = 2;
   this->elevationTreshold = 1.0f;
   this->particleHeight = 1.0f;
-  this->depositionType = MOVE;
+  this->depositionType = MOVING;
+  this->particlesCount = 0;
 
   //this->streamsCount = 32;
-  this->ventCenter.set(100, 100);
+  this->ventCenter.zero();
 
   this->boundingPoints = NULL;
 
@@ -66,7 +67,7 @@ void archer::CParticleDeposition::apply(CHeightmap * h) {
 
   printf("let me get this straight, vent center: ");
   helpers::printVector2i(this->ventCenter);
-  printf("number of particles %d and number of boundingPoints %d\n\n", this->particlesCount, this->boundingPoints->size());
+  printf("number of particles %d and number of boundingPoints %d\n\n", this->particlesCount, this->boundingPoints->getCount());
 
   //return;
 
@@ -84,70 +85,64 @@ void archer::CParticleDeposition::apply(CHeightmap * h) {
     particle.set(currentPosition[0], currentPosition[1]);
     this->deposit(h, particle);
 
-    // select new drop position
-    vector2i newPosition;
-    bool positionCorrect = false;
-    int triesCount = 0;
+    if (this->depositionType == MOVING) {
 
-    while (!positionCorrect) {
+      // select new drop position
+      vector2i newPosition;
 
-      switch (rand() % 4) {
-        case 0 : newPosition.set(currentPosition[0] + 1, currentPosition[1]); break;
-        case 1 : newPosition.set(currentPosition[0] - 1, currentPosition[1]); break;
-        case 2 : newPosition.set(currentPosition[0], currentPosition[1] + 1); break;
-        case 3 : newPosition.set(currentPosition[0], currentPosition[1] - 1); break;
-      }
+      bool positionCorrect = false;
+      int triesCount = 0;
 
-      //helpers::printVector2i(newPosition);
+      while (!positionCorrect) {
 
-      // new drop position has been randomly chosen, now verify that it's correct
+        switch (rand() % 4) {
+          case 0 : newPosition.set(currentPosition[0] + 1, currentPosition[1]); break;
+          case 1 : newPosition.set(currentPosition[0] - 1, currentPosition[1]); break;
+          case 2 : newPosition.set(currentPosition[0], currentPosition[1] + 1); break;
+          case 3 : newPosition.set(currentPosition[0], currentPosition[1] - 1); break;
+        }
 
-      positionCorrect = true;
+        //helpers::printVector2i(newPosition);
 
-      if (this->boundingPoints && !this->boundingPoints->empty()) {
+        // new drop position has been randomly chosen, now verify that it's correct
 
-        //printf("searching in bounding points\n");
+        positionCorrect = true;
 
-        bool pointFound = false;
-
-        for (std::vector<vector2i>::iterator j = this->boundingPoints->begin() ; j < this->boundingPoints->end() ; j++) {
-          if ((*j) == newPosition) {
-            pointFound = true;
+        if (this->boundingPoints && !this->boundingPoints->isEmpty()) {
+          if (!this->boundingPoints->isPointInSet(newPosition)) {
+            positionCorrect = false;
           }
         }
 
-        if (!pointFound) {
+        // check the boundaries of heightmap
+        if ((newPosition[0] < 0) || (newPosition[1] < 0) || (newPosition[0] >= h->getWidth()) || (newPosition[1] >= h->getHeight())) {
           positionCorrect = false;
         }
 
+        triesCount++;
+
+        if (triesCount > 5) {
+          newPosition = currentPosition;
+          positionCorrect = true;
+        }
+
+        if (positionCorrect) {
+          currentPosition = newPosition;
+        }
+
       }
+    }
+    else if (this->depositionType == RANDOM) {
 
-      // check the boundaries of heightmap
-      if ((newPosition[0] < 0) || (newPosition[1] < 0) || (newPosition[0] >= h->getWidth()) || (newPosition[1] >= h->getHeight())) {
-        positionCorrect = false;
-        //printf("POSITION INCORRECT CHUJ W DUPE\n");
+      // If the mode is RANDOM then just choose one random point
+      if (this->boundingPoints && !this->boundingPoints->isEmpty()) {
+        currentPosition = (*this->boundingPoints->getPoints())[rand() % this->boundingPoints->getCount()];
       }
-
-      triesCount++;
-
-      if (triesCount > 5) {
-        newPosition = currentPosition;
-        positionCorrect = true;
-      }
-
-      if (positionCorrect) {
-        currentPosition = newPosition;
+      else {
+        currentPosition = vector2i (rand() % h->getWidth(), rand() % h->getHeight());
       }
 
     }
-//    // move the position a bit
-//
-//
-//    if (pos[0] < 0) { pos[0] = h->getWidth() - 1; }
-//    if (pos[0] >= h->getWidth()) { pos[0] = 0; }
-//
-//    if (pos[1] < 0) { pos[1] = h->getHeight() - 1; }
-//    if (pos[1] >= h->getHeight()) { pos[1] = 0; }
 
   }
 
@@ -201,11 +196,8 @@ void archer::CParticleDeposition::deposit(CHeightmap * h, vector2i & particle) {
 
 }
 
-void archer::CParticleDeposition::setBoundingPoints(std::vector<vector2i>* b) {
-
+void archer::CParticleDeposition::setBoundingPoints(CPointsSet2i * b) {
   this->boundingPoints = b;
-
-
 }
 
 void archer::CParticleDeposition::setVentCenter(const vector2i& c) {
@@ -214,6 +206,10 @@ void archer::CParticleDeposition::setVentCenter(const vector2i& c) {
 
 void archer::CParticleDeposition::setParticlesCount(int i) {
   this->particlesCount = i;
+}
+
+void archer::CParticleDeposition::setMode(DepositionDropType t) {
+  this->depositionType = t;
 }
 
 archer::CParticleDeposition::~CParticleDeposition() {

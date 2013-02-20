@@ -11,6 +11,7 @@ CPP_SRCS += \
 ../internal/CInputProcessor.cpp \
 ../internal/CNoise.cpp \
 ../internal/CParticleDeposition.cpp \
+../internal/CPerturbation.cpp \
 ../internal/CPointsSet2i.cpp \
 ../internal/CSimplexNoise.cpp \
 ../internal/CVoronoi.cpp \
@@ -24,6 +25,7 @@ OBJS += \
 ./internal/CInputProcessor.o \
 ./internal/CNoise.o \
 ./internal/CParticleDeposition.o \
+./internal/CPerturbation.o \
 ./internal/CPointsSet2i.o \
 ./internal/CSimplexNoise.o \
 ./internal/CVoronoi.o \
@@ -37,6 +39,7 @@ CPP_DEPS += \
 ./internal/CInputProcessor.d \
 ./internal/CNoise.d \
 ./internal/CParticleDeposition.d \
+./internal/CPerturbation.d \
 ./internal/CPointsSet2i.d \
 ./internal/CSimplexNoise.d \
 ./internal/CVoronoi.d \

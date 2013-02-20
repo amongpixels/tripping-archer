@@ -9,17 +9,13 @@
 
 void archer::CHeightmap::init (int w, int h) {
 
-  this->values.resize(w, std::vector <float> (h));
-
   this->width = w;
   this->height = h;
 
+  this->values.resize(this->width, std::vector <float> (this->height));
+
   this->maxValue = 0.0f;
   this->heightScale = 5.0f;
-
-//  for (vector< vector<float> >::iterator i = this->values.begin() ; i < this->values.end() ; i++) {
-//    i->resize(h);
-//  }
 
 }
 
@@ -32,6 +28,10 @@ int archer::CHeightmap::getHeight() {
 }
 
 float archer::CHeightmap::getValue(int x, int y) {
+
+  assert(x >= 0 && x < this->width);
+  assert(y >= 0 && y < this->height);
+
   return this->values[x][y];
 }
 

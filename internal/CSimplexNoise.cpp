@@ -93,6 +93,10 @@ namespace archer {
     return 70.0 * (n0 + n1 + n2);
   }
 
+  double CSimplexNoise::getNormalizedNoise(double xin, double yin) {
+    return (this->getNoise(xin, yin) + 1.0) * 0.5;
+  }
+
   void CSimplexNoise::setBounds(double x1, double y1, double x2, double y2) {
     this->x1 = x1;
     this->x2 = x2;

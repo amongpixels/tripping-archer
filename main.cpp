@@ -19,6 +19,7 @@
 #include "internal/CVoronoi.h"
 #include "internal/CInputProcessor.h"
 #include "internal/CBrownianTree.h"
+#include "internal/CPerturbation.h"
 
 using namespace std;
 using namespace archer;
@@ -70,13 +71,31 @@ int main(int argc, char **argv) {
   //perlinImage.save_png("test.png");
   //buff.savePNG("chuj.png");
 
-  CSimplexNoise simplexFilter;
-  CFault faultFilter;
-  CParticleDeposition depositionFilter;
+  //CSimplexNoise simplexFilter;
+  //CFault faultFilter;
+
+
+
   CHeightmap heightmap (256, 256);
   heightmap.zero();
-  CHeightmap baseHeightmap (256, 256);
-  CVoronoi voronoiFilter;
+
+  CBrownianTree brownianTree ( 256, 256, 10000 );
+  brownianTree.saveAsPNG("brownian.png");
+
+  CParticleDeposition depositionFilter;
+  depositionFilter.setBoundingPoints(&brownianTree);
+  depositionFilter.setMode(RANDOM);
+  depositionFilter.setVentCenter(brownianTree.getMedianPoint());
+  depositionFilter.setParticlesCount(brownianTree.getCount() * 30);
+
+  depositionFilter.apply(&heightmap);
+
+  CPerturbation perturbationFilter;
+  perturbationFilter.apply(&heightmap);
+
+
+  //CHeightmap baseHeightmap (256, 256);
+  //CVoronoi voronoiFilter;
 
 //  CInputProcessor inputProcessor;
 //  inputProcessor.loadFromImage(inputPath);
@@ -104,9 +123,7 @@ int main(int argc, char **argv) {
   //chuj.set( ((unsigned int)(0 - 1)) % 100, 0);
 
   //printf("zaraz robie browna %d\n", chuj[0]);
-  CBrownianTree brownianTree ( 256, 256, 10000 );
-  brownianTree.saveAsPNG("brownian.png");
-  //brownianTree.getHeightmap().saveAsPNG("brownian.png");
+
 
 //  heightmap.setHeightScale(5.0f);
 //  baseHeightmap.setHeightScale(2.0f);
@@ -123,8 +140,8 @@ int main(int argc, char **argv) {
 
 
 
-  //heightmap.saveAsPNG(outputPath);
-  //heightmap.saveColorMapAsPNG("color.png");
+  heightmap.saveAsPNG(outputPath);
+  heightmap.saveColorMapAsPNG("color.png");
 
   printf("DONE\n");
 

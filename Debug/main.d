@@ -102,9 +102,10 @@ main.d: ../main.cpp ../internal/CNoise.h ../internal/CImageBuffer.h \
  /home/dragomir/git/include/cml/mathlib/projection.h \
  /home/dragomir/git/include/cml/mathlib/picking.h \
  ../internal/CHeightmap.h ../internal/helpers.h ../internal/CFault.h \
- ../internal/CParticleDeposition.h ../internal/CVoronoi.h \
- ../internal/CInputProcessor.h ../internal/CPointsSet2i.h \
- ../internal/TPointsSet.h ../internal/CBrownianTree.h
+ ../internal/CParticleDeposition.h ../internal/CPointsSet2i.h \
+ ../internal/TPointsSet.h ../internal/CVoronoi.h \
+ ../internal/CInputProcessor.h ../internal/CBrownianTree.h \
+ ../internal/CPerturbation.h ../internal/CSimplexNoise.h
 
 ../internal/CNoise.h:
 
@@ -326,12 +327,16 @@ main.d: ../main.cpp ../internal/CNoise.h ../internal/CImageBuffer.h \
 
 ../internal/CParticleDeposition.h:
 
-../internal/CVoronoi.h:
-
-../internal/CInputProcessor.h:
-
 ../internal/CPointsSet2i.h:
 
 ../internal/TPointsSet.h:
 
+../internal/CVoronoi.h:
+
+../internal/CInputProcessor.h:
+
 ../internal/CBrownianTree.h:
+
+../internal/CPerturbation.h:
+
+../internal/CSimplexNoise.h:

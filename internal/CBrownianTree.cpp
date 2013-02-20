@@ -19,8 +19,8 @@ namespace archer
 
   void CBrownianTree::init(unsigned int w, unsigned int h, unsigned int ite) {
 
-    w++;
-    h++;
+    //w++;
+    //h++;
 
     bool grid [w][h];
 
