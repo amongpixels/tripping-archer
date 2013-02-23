@@ -117,12 +117,12 @@ namespace archer {
     double xEnd = x2 - x1;
     double yEnd = y2 - y1;
 
-    double xStep = h->getWidth() / xEnd;
-    double yStep = h->getHeight() / yEnd;
+    double xStep = xEnd / ((double)h->getWidth());
+    double yStep = yEnd / ((double)h->getHeight());
 
-    float f, a; // frequency, amplitude
+    double f, a; // frequency, amplitude
 
-    printf("%d %d ; %f %f\n", xEnd, yEnd, xStep, yStep);
+    printf("xEnd yEnd : %f %f, xStep yStep: %f %f\n", xEnd, yEnd, xStep, yStep);
 
     for (int o = 0 ; o < this->octaves ; o++) {
 
@@ -136,40 +136,19 @@ namespace archer {
       for (int x = 0 ; x < h->getWidth() ; x++) {
         for (int y = 0 ; y < h->getHeight() ; y++) {
 
-          float noiseValue = this->getNoise((double)(x) * f * 0.01, (double)(y) * f * 0.01) * a;
-          //float noiseValue = this->getNoise(i, j);
+          double noiseX = ((double)(x) * xStep) * f;
+          double noiseY = ((double)(y) * yStep) * f;
 
-          noiseValue = ((noiseValue + 1.0f) * 0.5f);
+          float noiseValue = this->getNormalizedNoise(noiseX, noiseY) * a;
 
           noiseHeightmap.setValue(x, y, noiseValue);
 
-          //printf("%f\n", noiseValue);
-
-          //int color [] = { (int)(255 * noiseValue), (int)(255 * noiseValue), (int)(255 * noiseValue) };
-          //chujfer.draw_point(i, j, color);
         }
       }
 
       (*h) += noiseHeightmap;
 
-//      string s = "chujfer";
-//      s += o;
-//      s += ".png";
-//
-//      chujfer.save_png(s.c_str());
-
-      //(*buffer) += tempBuffer;
-      //tempBuffer.clear();
-
     }
-
-//    for (int i = 0 ; i < buffer->width() ; i++) {
-//      for (int j = 0 ; j < buffer->height() ; j++) {
-//        int n = (int)(255.0 * (noise[i][j] / maxNoiseValue));
-//        int color [] = { n, n, n };
-//        buffer->draw_point(i, j, color);
-//      }
-//    }
 
   }
 

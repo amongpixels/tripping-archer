@@ -33,7 +33,8 @@ namespace archer
     srand(time(NULL));
 
     // choose a random seed
-    grid[rand() % w][rand() % h] = 1;
+    //grid[rand() % w][rand() % h] = 1;
+    grid[(int)(w * 0.5)][(int)(h * 0.5)] = 1;
 
     for (unsigned int i = 0 ; i < ite ; i++) {
 

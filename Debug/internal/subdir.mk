@@ -7,6 +7,7 @@ CPP_SRCS += \
 ../internal/CBrownianTree.cpp \
 ../internal/CFault.cpp \
 ../internal/CHeightmap.cpp \
+../internal/CHydraulicErosion.cpp \
 ../internal/CImageBuffer.cpp \
 ../internal/CInputProcessor.cpp \
 ../internal/CNoise.cpp \
@@ -14,6 +15,7 @@ CPP_SRCS += \
 ../internal/CPerturbation.cpp \
 ../internal/CPointsSet2i.cpp \
 ../internal/CSimplexNoise.cpp \
+../internal/CThermalErosion.cpp \
 ../internal/CVoronoi.cpp \
 ../internal/helpers.cpp 
 
@@ -21,6 +23,7 @@ OBJS += \
 ./internal/CBrownianTree.o \
 ./internal/CFault.o \
 ./internal/CHeightmap.o \
+./internal/CHydraulicErosion.o \
 ./internal/CImageBuffer.o \
 ./internal/CInputProcessor.o \
 ./internal/CNoise.o \
@@ -28,6 +31,7 @@ OBJS += \
 ./internal/CPerturbation.o \
 ./internal/CPointsSet2i.o \
 ./internal/CSimplexNoise.o \
+./internal/CThermalErosion.o \
 ./internal/CVoronoi.o \
 ./internal/helpers.o 
 
@@ -35,6 +39,7 @@ CPP_DEPS += \
 ./internal/CBrownianTree.d \
 ./internal/CFault.d \
 ./internal/CHeightmap.d \
+./internal/CHydraulicErosion.d \
 ./internal/CImageBuffer.d \
 ./internal/CInputProcessor.d \
 ./internal/CNoise.d \
@@ -42,6 +47,7 @@ CPP_DEPS += \
 ./internal/CPerturbation.d \
 ./internal/CPointsSet2i.d \
 ./internal/CSimplexNoise.d \
+./internal/CThermalErosion.d \
 ./internal/CVoronoi.d \
 ./internal/helpers.d 
 

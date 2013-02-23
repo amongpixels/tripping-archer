@@ -105,7 +105,8 @@ main.d: ../main.cpp ../internal/CNoise.h ../internal/CImageBuffer.h \
  ../internal/CParticleDeposition.h ../internal/CPointsSet2i.h \
  ../internal/TPointsSet.h ../internal/CVoronoi.h \
  ../internal/CInputProcessor.h ../internal/CBrownianTree.h \
- ../internal/CPerturbation.h ../internal/CSimplexNoise.h
+ ../internal/CPerturbation.h ../internal/CSimplexNoise.h \
+ ../internal/CThermalErosion.h ../internal/CHydraulicErosion.h
 
 ../internal/CNoise.h:
 
@@ -340,3 +341,7 @@ main.d: ../main.cpp ../internal/CNoise.h ../internal/CImageBuffer.h \
 ../internal/CPerturbation.h:
 
 ../internal/CSimplexNoise.h:
+
+../internal/CThermalErosion.h:
+
+../internal/CHydraulicErosion.h:

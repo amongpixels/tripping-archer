@@ -12,7 +12,7 @@ bool compareDistances (voronoiDistance d1, voronoiDistance d2) {
 }
 
 CVoronoi::CVoronoi() {
-  this->pointsCount = 100;
+  this->pointsCount = 20;
   
 }
 

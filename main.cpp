@@ -20,6 +20,8 @@
 #include "internal/CInputProcessor.h"
 #include "internal/CBrownianTree.h"
 #include "internal/CPerturbation.h"
+#include "internal/CThermalErosion.h"
+#include "internal/CHydraulicErosion.h"
 
 using namespace std;
 using namespace archer;
@@ -71,38 +73,47 @@ int main(int argc, char **argv) {
   //perlinImage.save_png("test.png");
   //buff.savePNG("chuj.png");
 
-  //CSimplexNoise simplexFilter;
+  CSimplexNoise simplexFilter;
+  simplexFilter.setOctaves(10);
+  simplexFilter.setBounds(0.0, 0.0, 1.0, 1.0);
+  simplexFilter.setPersistence(0.5);
   //CFault faultFilter;
 
+  CVoronoi voronoiFilter;
 
 
-  CHeightmap heightmap (256, 256);
+
+  CHeightmap heightmap (16, 16);
   heightmap.zero();
+  //heightmap.test();
 
-  CBrownianTree brownianTree ( 256, 256, 10000 );
-  brownianTree.saveAsPNG("brownian.png");
+  simplexFilter.apply(&heightmap);
+ // voronoiFilter.apply(&heightmap);
 
-  CParticleDeposition depositionFilter;
-  depositionFilter.setBoundingPoints(&brownianTree);
-  depositionFilter.setMode(RANDOM);
-  depositionFilter.setVentCenter(brownianTree.getMedianPoint());
-  depositionFilter.setParticlesCount(brownianTree.getCount() * 30);
-
-  depositionFilter.apply(&heightmap);
-
-  CPerturbation perturbationFilter;
-  perturbationFilter.apply(&heightmap);
+//  CBrownianTree brownianTree ( 256, 256, 1000 );
+//  brownianTree.saveAsPNG("brownian.png");
+//
+//  CParticleDeposition depositionFilter;
+//  depositionFilter.setBoundingPoints(&brownianTree);
+//  depositionFilter.setMode(RANDOM);
+//  depositionFilter.setVentCenter(brownianTree.getMedianPoint());
+//  depositionFilter.setParticlesCount(brownianTree.getCount() * 90);
+//
+//  depositionFilter.apply(&heightmap);
+//
+//
+//
+//  CPerturbation perturbationFilter;
+//  perturbationFilter.apply(&heightmap);
 
 
   //CHeightmap baseHeightmap (256, 256);
-  //CVoronoi voronoiFilter;
+  //
 
 //  CInputProcessor inputProcessor;
 //  inputProcessor.loadFromImage(inputPath);
 
-//  simplexFilter.setOctaves(6);
-//  simplexFilter.setBounds(0.0, 0.0, 1.0, 1.0);
-//  simplexFilter.setPersistence(0.5);
+
 
   //depositionFilter.apply(&heightmap);
   //voronoiFilter.apply(&heightmap);
@@ -140,8 +151,18 @@ int main(int argc, char **argv) {
 
 
 
-  heightmap.saveAsPNG(outputPath);
-  heightmap.saveColorMapAsPNG("color.png");
+  heightmap.saveAsPNG("before.png");
+
+
+  CHeightmap eroded = heightmap;
+
+  CThermalErosion thermalErosionFilter;
+  //thermalErosionFilter.apply(&eroded);
+  CHydraulicErosion hydraulicFilter;
+  hydraulicFilter.apply(&eroded);
+
+  eroded.saveAsPNG(outputPath);
+  eroded.saveColorMapAsPNG("color.png");
 
   printf("DONE\n");
 

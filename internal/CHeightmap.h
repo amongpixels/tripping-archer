@@ -34,23 +34,31 @@ namespace archer
       float maxValue;
       float heightScale;
 
+      bool hasBeenModified;
+
+      void init (int w, int h);
       void calculateNormals();
 
     public:
-
-      void init (int w, int h);
 
       int getWidth();
       int getHeight();
 
       float getValue(int x, int y);
+      vector3f getNormal(int x, int y);
       void setValue(int x, int y, float v);
       void setHeightScale(float h);
       void zero();
+
+      // This generates a simple test heightmap
+      void test();
+
       void normalize();
 
       void saveAsPNG(char * path);
       void saveColorMapAsPNG(char * path);
+
+      void loadFromPNG(char * path);
 
       CHeightmap & operator += (CHeightmap &);
       CHeightmap & operator *= (const float &);
