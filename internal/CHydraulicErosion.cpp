@@ -17,10 +17,10 @@ namespace archer
   
   void CHydraulicErosion::apply(CHeightmap* h) {
 
-    float Kr = 0.01; // amount of rain per cell
-    float Ks = 0.01; // solubility of the soil
+    float Kr = 0.05; // amount of rain per cell
+    float Ks = 0.05; // solubility of the soil
     float Ke = 0.5; // evaporation rate
-    float Kc = 0.01; // sediment capacity
+    float Kc = 0.05; // sediment capacity
 
     CHeightmap watermap (h->getWidth(), h->getHeight());
     CHeightmap sedimentmap (h->getWidth(), h->getHeight());
@@ -28,7 +28,7 @@ namespace archer
     watermap.zero();
     sedimentmap.zero();
 
-    for (int i = 0 ; i < 1 ; i++) {
+    for (int i = 0 ; i < 50 ; i++) {
 
       // Step 1 - create new water
       for (int x = 0 ; x < h->getWidth() ; x++) {
@@ -84,16 +84,20 @@ namespace archer
             float deltaHeight = currentHeight - (currentHeight / (float)(neighbours.size()));
             float waterToMove = min(currentWater, deltaHeight) * ( (currentHeight - (*n).get<1>()) / totalDifference);
 
+            float sedimentToMove = sedimentmap.getValue(x, y) * (waterToMove / watermap.getValue(x, y));
+
             watermap.setValue((*n).get<0>()[0], (*n).get<0>()[1], watermap.getValue((*n).get<0>()[0], (*n).get<0>()[1]) + waterToMove);
             watermap.setValue(x, y, watermap.getValue(x, y) - waterToMove);
-
-            float sedimentToMove = sedimentmap.getValue(x, y) * (waterToMove / watermap.getValue(x, y));
 
             sedimentmap.setValue((*n).get<0>()[0], (*n).get<0>()[1], sedimentmap.getValue((*n).get<0>()[0], (*n).get<0>()[1]) + sedimentToMove);
             sedimentmap.setValue(x, y, sedimentmap.getValue(x, y) - sedimentToMove);
 
-            printf("mocing sedimnet: %f, %f\n", sedimentToMove, currentHeight);
+            //printf("moving sedimnet: %f, %f %f %f\n", sedimentToMove, currentHeight, waterToMove, watermap.getValue(x, y));
 
+          }
+
+          if (y > 1) {
+            //return;
           }
 
         }

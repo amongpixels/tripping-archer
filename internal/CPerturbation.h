@@ -22,6 +22,7 @@ namespace archer
     public:
       CPerturbation();
       void apply(CHeightmap * h);
+      void setMagnitude(float f);
       virtual ~CPerturbation();
 
   };

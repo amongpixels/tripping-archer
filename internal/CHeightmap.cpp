@@ -318,7 +318,7 @@ namespace archer
 
     for (int x = 0 ; x < image.width() ; x++) {
       for (int y = 0 ; y < image.height() ; y++) {
-
+        this->setValue(x, y, (float)(*image.data(x, y, 0, 0)) / 255.0f);
       }
     }
 

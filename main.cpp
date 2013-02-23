@@ -83,28 +83,31 @@ int main(int argc, char **argv) {
 
 
 
-  CHeightmap heightmap (16, 16);
-  heightmap.zero();
+  CHeightmap heightmap (256, 256);
+  //heightmap.zero();
+  //heightmap.loadFromPNG("before.png");
   //heightmap.test();
 
-  simplexFilter.apply(&heightmap);
+  //simplexFilter.apply(&heightmap);
  // voronoiFilter.apply(&heightmap);
 
-//  CBrownianTree brownianTree ( 256, 256, 1000 );
-//  brownianTree.saveAsPNG("brownian.png");
+  CBrownianTree brownianTree ( 256, 256, 4096 * 2 );
+  brownianTree.saveAsPNG("brownian.png");
+
+  CParticleDeposition depositionFilter;
+  depositionFilter.setBoundingPoints(&brownianTree);
+  depositionFilter.setMode(RANDOM);
+  depositionFilter.setVentCenter(brownianTree.getMedianPoint());
+  depositionFilter.setParticlesCount(brownianTree.getCount() * 40);
+
+  depositionFilter.apply(&heightmap);
+  heightmap.normalize();
 //
-//  CParticleDeposition depositionFilter;
-//  depositionFilter.setBoundingPoints(&brownianTree);
-//  depositionFilter.setMode(RANDOM);
-//  depositionFilter.setVentCenter(brownianTree.getMedianPoint());
-//  depositionFilter.setParticlesCount(brownianTree.getCount() * 90);
-//
-//  depositionFilter.apply(&heightmap);
 //
 //
-//
-//  CPerturbation perturbationFilter;
-//  perturbationFilter.apply(&heightmap);
+  CPerturbation perturbationFilter;
+  perturbationFilter.setMagnitude(0.03f);
+  perturbationFilter.apply(&heightmap);
 
 
   //CHeightmap baseHeightmap (256, 256);

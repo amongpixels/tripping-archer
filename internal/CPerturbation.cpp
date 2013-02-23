@@ -15,7 +15,6 @@ namespace archer
   
   CPerturbation::CPerturbation() {
     this->magnitude = 0.05;
-    
   }
   
   void CPerturbation::apply(CHeightmap * h) {
@@ -30,8 +29,8 @@ namespace archer
         float nX = (float) x / (float) (h->getWidth() - 1);
         float nY = (float) y / (float) (h->getHeight() - 1);
 
-        int ss = (int) floor((nX + this->magnitude * noise.getNormalizedNoise(x * 0.03, y * 0.03)) * (h->getWidth())) % h->getWidth();
-        int tt = (int) floor((nY + this->magnitude * noise.getNormalizedNoise(x * 0.03 + 1.5, y * 0.03 + 6.7)) * (h->getHeight())) % h->getHeight();
+        int ss = min((int)(h->getWidth() - 1), (int)floor((nX + this->magnitude * noise.getNormalizedNoise(x * 0.03, y * 0.03)) * (h->getWidth())));
+        int tt = min((int)(h->getHeight() - 1), (int)floor((nY + this->magnitude * noise.getNormalizedNoise(x * 0.03 + 1.5, y * 0.03 + 6.7)) * (h->getHeight())));
 
         if (ss < 0) {
           ss += h->getWidth();
@@ -45,6 +44,10 @@ namespace archer
 
       }
     }
+  }
+  
+  void CPerturbation::setMagnitude(float f) {
+    this->magnitude = f;
   }
 
   CPerturbation::~CPerturbation() {
