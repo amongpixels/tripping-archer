@@ -73,17 +73,17 @@ int main(int argc, char **argv) {
   //perlinImage.save_png("test.png");
   //buff.savePNG("chuj.png");
 
-  CSimplexNoise simplexFilter;
-  simplexFilter.setOctaves(10);
-  simplexFilter.setBounds(0.0, 0.0, 1.0, 1.0);
-  simplexFilter.setPersistence(0.5);
-  //CFault faultFilter;
-
-  CVoronoi voronoiFilter;
-
-
-
-  CHeightmap heightmap (256, 256);
+//  CSimplexNoise simplexFilter;
+//  simplexFilter.setOctaves(10);
+//  simplexFilter.setBounds(0.0, 0.0, 1.0, 1.0);
+//  simplexFilter.setPersistence(0.5);
+//  //CFault faultFilter;
+//
+//  CVoronoi voronoiFilter;
+//
+//
+//
+//  CHeightmap heightmap (256, 256);
   //heightmap.zero();
   //heightmap.loadFromPNG("before.png");
   //heightmap.test();
@@ -91,30 +91,34 @@ int main(int argc, char **argv) {
   //simplexFilter.apply(&heightmap);
  // voronoiFilter.apply(&heightmap);
 
-  CBrownianTree brownianTree ( 256, 256, 4096 * 2 );
-  brownianTree.saveAsPNG("brownian.png");
-
-  CParticleDeposition depositionFilter;
-  depositionFilter.setBoundingPoints(&brownianTree);
-  depositionFilter.setMode(RANDOM);
-  depositionFilter.setVentCenter(brownianTree.getMedianPoint());
-  depositionFilter.setParticlesCount(brownianTree.getCount() * 40);
-
-  depositionFilter.apply(&heightmap);
-  heightmap.normalize();
+//  CBrownianTree brownianTree ( 256, 256, 4096 * 2 );
+//  brownianTree.saveAsPNG("brownian.png");
 //
+//  CParticleDeposition depositionFilter;
+//  depositionFilter.setBoundingPoints(&brownianTree);
+//  depositionFilter.setMode(RANDOM);
+//  depositionFilter.setVentCenter(brownianTree.getMedianPoint());
+//  depositionFilter.setParticlesCount(brownianTree.getCount() * 40);
 //
-//
-  CPerturbation perturbationFilter;
-  perturbationFilter.setMagnitude(0.03f);
-  perturbationFilter.apply(&heightmap);
+//  depositionFilter.apply(&heightmap);
+//  heightmap.normalize();
+////
+////
+////
+//  CPerturbation perturbationFilter;
+//  perturbationFilter.setMagnitude(0.03f);
+//  perturbationFilter.apply(&heightmap);
 
 
-  //CHeightmap baseHeightmap (256, 256);
-  //
+  CHeightmap baseHeightmap (256, 256);
 
-//  CInputProcessor inputProcessor;
-//  inputProcessor.loadFromImage(inputPath);
+  CInputProcessor inputProcessor;
+  inputProcessor.loadFromImage(inputPath);
+  (*inputProcessor.getClusters())[0]->points.createMask(&baseHeightmap);
+
+  baseHeightmap.saveAsPNG("chujciwdupe.png");
+
+  inputProcessor.getSkeleton("skeleton.png");
 
 
 
@@ -154,18 +158,18 @@ int main(int argc, char **argv) {
 
 
 
-  heightmap.saveAsPNG("before.png");
-
-
-  CHeightmap eroded = heightmap;
-
-  CThermalErosion thermalErosionFilter;
-  //thermalErosionFilter.apply(&eroded);
-  CHydraulicErosion hydraulicFilter;
-  hydraulicFilter.apply(&eroded);
-
-  eroded.saveAsPNG(outputPath);
-  eroded.saveColorMapAsPNG("color.png");
+//  heightmap.saveAsPNG("before.png");
+//
+//
+//  CHeightmap eroded = heightmap;
+//
+//  CThermalErosion thermalErosionFilter;
+//  //thermalErosionFilter.apply(&eroded);
+//  CHydraulicErosion hydraulicFilter;
+//  hydraulicFilter.apply(&eroded);
+//
+//  eroded.saveAsPNG(outputPath);
+//  eroded.saveColorMapAsPNG("color.png");
 
   printf("DONE\n");
 

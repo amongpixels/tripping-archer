@@ -12,7 +12,7 @@
 #include <cstdlib>
 
 #include "../external/CImg.h"
-//#include "CHeightmap.h"
+#include "CHeightmap.h"
 #include "TPointsSet.h"
 #include "helpers.h"
 
@@ -21,6 +21,9 @@ using namespace cimg_library;
 
 namespace archer
 {
+//  enum EMaskType {
+//    LINEAR,
+//  };
   
   class CPointsSet2i : public TPointsSet<vector2i>
   {
@@ -30,6 +33,8 @@ namespace archer
       int getHeight();
       //CHeightmap & getHeightmap();
       void saveAsPNG(char * path);
+
+      void createMask(CHeightmap * h);
 
       //virtual ~CPointsSet2i();
   };

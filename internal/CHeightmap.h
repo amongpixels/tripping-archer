@@ -17,7 +17,10 @@
 
 using namespace cimg_library;
 using namespace std;
-using namespace cml;
+//using namespace cml;
+
+typedef cml::vector2i vector2i;
+typedef cml::vector3f vector3f;
 
 namespace archer
 {

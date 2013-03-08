@@ -70,5 +70,31 @@ namespace archer
 
     image.save_png(path);
   }
+  
+  void CPointsSet2i::createMask(CHeightmap* h) {
+
+    // Make sure that the points will fit on the heightmap (sanity check)
+    assert(h->getWidth() >= this->topRight[0] && h->getWidth() >= this->topRight[1]);
+
+    vector2i median = this->getMedianPoint();
+
+    std::vector<float> distances;
+
+    for (std::vector<vector2i>::iterator i = this->points.begin() ; i != this->points.end() ; i++) {
+      distances.push_back(((*i) - median).length());
+    }
+
+    // Select the biggest length
+    std::vector<float> copyOfDistances = distances;
+    std::sort(copyOfDistances.begin(), copyOfDistances.end());
+    float maxDistance = (*copyOfDistances.end());
+
+    h->zero();
+
+    for (int i = 0 ; i < this->points.size() ; i++) {
+      h->setValue(this->points[i][0], this->points[i][1], 1.0f - (distances[i] / maxDistance));
+    }
+
+  }
 
 } /* namespace archer */

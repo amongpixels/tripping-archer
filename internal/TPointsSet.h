@@ -52,7 +52,7 @@ namespace archer
 
       bool isPointInSet(const T & v) {
 
-        // this is a complete bruteforce now, something like kdtree would be apprioproate
+        // this is a complete bruteforce now, something like kdtree would be appropriate
         for (typename std::vector<T>::iterator p = this->points.begin() ; p < this->points.end() ; p++) {
           if (v == (*p)) {
             return true;
