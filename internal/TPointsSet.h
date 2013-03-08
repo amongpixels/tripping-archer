@@ -46,7 +46,7 @@ namespace archer
           this->bottomLeft.set(std::min(this->bottomLeft[0], v[0]), std::min(this->bottomLeft[1], v[1]));
         }
 
-        this->points.push_back(v);
+        this->points.push_back(T(v));
 
       }
 
@@ -108,6 +108,10 @@ namespace archer
 
       int getCount() {
         return this->points.size();
+      }
+
+      void clear() {
+        this->points.clear();
       }
 
 //      ~TPointsSet() {

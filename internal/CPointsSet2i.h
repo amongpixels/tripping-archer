@@ -25,18 +25,59 @@ namespace archer
 //    LINEAR,
 //  };
   
+  typedef std::vector< std::vector<unsigned char> > Array2b;
+
   class CPointsSet2i : public TPointsSet<vector2i>
   {
+    private:
+
+      /*
+       * This keeps the track of where points are, it's useful for quickly
+       * telling if the point is there or building skeleton out of points
+       * using thinning. Binary map is always up to date.
+       */
+      Array2b binaryMap;
+
+      int getConnectivity(Array2b const & array, int x, int y);
+
+      /*
+       * Checks if any of the neighbours is present (neighbours passed as
+       * indices of indices ie P1, P2, P3 etc.)
+       */
+      bool passesBackgroundTest(Array2b const & array, int x, int y, int neighbours [3]);
+
+      /*
+       * Generates a linear list of 9 indices P1, P2, P3 ... P9 defining x and y
+       * coordinates of every cell in 3X3 cell starting at the origin, then
+       * going up and counter clockwise.
+       */
+      void createNeghbourIndices(std::vector< std::pair<int, int> > * pairs, int x, int y);
+
     public:
+
+      CPointsSet2i();
 
       int getWidth();
       int getHeight();
       //CHeightmap & getHeightmap();
-      void saveAsPNG(char * path);
+      void saveAsPNG(char * path, int width = -1, int height = -1);
+
+      //using TPointsSet<vector2i>::addPoint;
+      void addPoint(const vector2i & v);
+
+      /**
+       * Sped up the point look-up from base class by using the binary map
+       * (which is specific to integer points)
+       */
+      bool isPointInSet(const vector2i & v);
+
+      //using TPointsSet<vector2i>::clear;
+      void clear();
+
+      void generateSkeleton(CPointsSet2i * skeleton);
 
       void createMask(CHeightmap * h);
 
-      //virtual ~CPointsSet2i();
   };
 
 } /* namespace archer */

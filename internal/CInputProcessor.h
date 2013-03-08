@@ -24,15 +24,23 @@ namespace archer
 
   struct SPointCluster {
       unsigned char color [3];
+      unsigned char channel;
       CPointsSet2i points;
   };
 
+  /**
+   * Input processor generally reads the input (rgb bitmap) and clusters
+   * the data into points set.
+   */
   class CInputProcessor
   {
     private:
 
       std::vector <SPointCluster *> clusters;
 
+      /*
+       * Performs a flood fill and finds a full continuous cluster
+       */
       void floodFill (CImg<unsigned char> const & img, vector2i const & point, SPointCluster * cluster);
 
       SPointCluster * findPointInCluster(vector2i const & point);
@@ -57,7 +65,7 @@ namespace archer
       CInputProcessor();
 
       void loadFromImage(char * path);
-      std::vector <SPointCluster *> * getClusters();
+      std::vector <SPointCluster *> & getClusters();
 
       void getSkeleton(char * path);
 

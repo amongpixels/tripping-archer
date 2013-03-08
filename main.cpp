@@ -114,11 +114,20 @@ int main(int argc, char **argv) {
 
   CInputProcessor inputProcessor;
   inputProcessor.loadFromImage(inputPath);
-  (*inputProcessor.getClusters())[0]->points.createMask(&baseHeightmap);
 
-  baseHeightmap.saveAsPNG("chujciwdupe.png");
+  CPointsSet2i skeleton;
 
-  inputProcessor.getSkeleton("skeleton.png");
+  inputProcessor.getClusters()[0]->points.saveAsPNG("japierdole.png", 256, 256);
+  //inputProcessor.getClusters()[0]->points.generateSkeleton(&skeleton);
+  skeleton.addPoint(vector2i(10,10));
+  skeleton.addPoint(vector2i(10,11));
+  skeleton.addPoint(vector2i(10,12));
+  skeleton.saveAsPNG("skeletonchuj.png");
+  //(*inputProcessor.getClusters())[0]->points.createMask(&baseHeightmap);
+
+  //baseHeightmap.saveAsPNG("chujciwdupe.png");
+
+  //inputProcessor.getSkeleton("skeleton.png");
 
 
 
