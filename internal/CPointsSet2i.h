@@ -59,7 +59,12 @@ namespace archer
 
       int getWidth();
       int getHeight();
-      //CHeightmap & getHeightmap();
+
+      /**
+       * Without with and height specified this will save the image
+       * with the size just enough to fit all the points. Specifying the
+       * dimensions keeps all the points in original positions.
+       */
       void saveAsPNG(char * path, int width = -1, int height = -1);
 
       //using TPointsSet<vector2i>::addPoint;

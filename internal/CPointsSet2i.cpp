@@ -15,11 +15,11 @@ namespace archer
   }
   
   int CPointsSet2i::getWidth() {
-    return abs(this->topRight[0]) - abs(this->bottomLeft[0]);
+    return abs(this->topRight[0]) - abs(this->bottomLeft[0]) + 1;
   }
   
   int CPointsSet2i::getHeight() {
-    return abs(this->topRight[1]) - abs(this->bottomLeft[1]);
+    return abs(this->topRight[1]) - abs(this->bottomLeft[1]) + 1;
   }
   
 //  CHeightmap& CPointsSet2i::getHeightmap() {
@@ -66,8 +66,17 @@ namespace archer
     unsigned char color [] = { 255, 255, 255 };
 
     for (std::vector<vector2i>::iterator i = this->points.begin() ; i < this->points.end() ; i++) {
-      vector2i p = (*i) - this->bottomLeft;
-      if (p[0] < width && p[1] < height) {
+      vector2i p = (*i);
+
+      if (width < 0) {
+        p[0] -= this->bottomLeft[0];
+      }
+
+      if (height < 0) {
+        p[1] -= this->bottomLeft[1];
+      }
+
+      if (p[0] < (int)(w) && p[1] < (int)(h)) {
         image.draw_point(p[0], p[1], color);
       }
     }
