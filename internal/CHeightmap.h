@@ -44,10 +44,10 @@ namespace archer
 
     public:
 
-      int getWidth();
-      int getHeight();
+      int getWidth() const;
+      int getHeight() const;
 
-      float getValue(int x, int y);
+      float getValue(int x, int y) const;
       vector3f getNormal(int x, int y);
       void setValue(int x, int y, float v);
       void setHeightScale(float h);
@@ -65,6 +65,8 @@ namespace archer
 
       CHeightmap & operator += (CHeightmap &);
       CHeightmap & operator *= (const float &);
+      CHeightmap & operator *= (const CHeightmap &);
+      const CHeightmap operator * (const CHeightmap &);
 
       CHeightmap();
       CHeightmap(int w, int h);

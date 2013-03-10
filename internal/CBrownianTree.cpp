@@ -110,7 +110,7 @@ namespace archer
             for (int y = std::max(0, point[1] - 1) ; y <= std::min(point[1] + 1, (int)(h - 1)) ; y++) {
 
               if (x != point[0] || y != point[1]) {
-                if ((x == point[0] && y != point[1]) || (y == point[1] && x != point[0])) {
+                //if ((x == point[0] && y != point[1]) || (y == point[1] && x != point[0])) {
                   if (grid[x][y]) {
 
                     if (this->boundingPoints) {
@@ -123,7 +123,7 @@ namespace archer
                     }
 
                   }
-                }
+                //}
               }
 
             }

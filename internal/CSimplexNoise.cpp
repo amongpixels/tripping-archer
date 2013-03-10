@@ -131,7 +131,7 @@ namespace archer {
       f = pow(2.0, o);
       a = pow(this->persistence, o);
 
-      //printf("f: %f, a: %f\n", f, a);
+      printf("f: %f, a: %f\n", f, a);
 
       for (int x = 0 ; x < h->getWidth() ; x++) {
         for (int y = 0 ; y < h->getHeight() ; y++) {
@@ -141,7 +141,7 @@ namespace archer {
 
           float noiseValue = this->getNormalizedNoise(noiseX, noiseY) * a;
 
-          noiseHeightmap.setValue(x, y, noiseValue);
+          noiseHeightmap.setValue(x, y, noiseValue * this->persistence);
 
         }
       }

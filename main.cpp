@@ -73,10 +73,7 @@ int main(int argc, char **argv) {
   //perlinImage.save_png("test.png");
   //buff.savePNG("chuj.png");
 
-//  CSimplexNoise simplexFilter;
-//  simplexFilter.setOctaves(10);
-//  simplexFilter.setBounds(0.0, 0.0, 1.0, 1.0);
-//  simplexFilter.setPersistence(0.5);
+
 //  //CFault faultFilter;
 //
 //  CVoronoi voronoiFilter;
@@ -117,7 +114,7 @@ int main(int argc, char **argv) {
 
   skeleton.setBoundingPoints(&inputProcessor.getClusters()[0]->points);
 
-  skeleton.createBrownian(2000,
+  skeleton.createBrownian((int)(inputProcessor.getClusters()[0]->points.getCount() * 0.15f),
       inputProcessor.getClusters()[0]->points.getTopRight()[0] + 1,
       inputProcessor.getClusters()[0]->points.getTopRight()[1] + 1
   );
@@ -128,13 +125,33 @@ int main(int argc, char **argv) {
   skeleton.saveAsPNG("skeletonchuj.png", 256, 256);
   //(*inputProcessor.getClusters())[0]->points.createMask(&baseHeightmap);
 
+
+  // Create a mask
+  CHeightmap mask (256, 256);
+  inputProcessor.getClusters()[0]->points.createMask(&mask);
+  mask.saveAsPNG("mask.png");
+
+  // Create some noise for the backgorund of our mountains
+  CSimplexNoise simplexFilter;
+  simplexFilter.setOctaves(10);
+  simplexFilter.setBounds(0.0, 0.0, 1.0, 1.0);
+  simplexFilter.setPersistence(0.5);
+  //CHeightmap maskedNoise (256, 256);
+
+  simplexFilter.apply(&heightmap);
+
+  //heightmap *= mask;
+  //maskedNoise.saveAsPNG("masked_noise.png");
+  heightmap *= 0.5f;
+
   CParticleDeposition depositionFilter;
   depositionFilter.setBoundingPoints(&skeleton);
   depositionFilter.setMode(RANDOM);
   depositionFilter.setVentCenter(skeleton.getMedianPoint());
-  depositionFilter.setParticlesCount(skeleton.getCount() * 20);
+  depositionFilter.setParticlesCount(skeleton.getCount() * 100);
   depositionFilter.apply(&heightmap);
-
+//
+//
   CPerturbation perturbationFilter;
   perturbationFilter.setMagnitude(0.03f);
   perturbationFilter.apply(&heightmap);
@@ -181,7 +198,7 @@ int main(int argc, char **argv) {
 
 
 
-  heightmap.saveAsPNG("before.png");
+  heightmap.saveAsPNG(outputPath);
 //
 //
 //  CHeightmap eroded = heightmap;
@@ -192,7 +209,7 @@ int main(int argc, char **argv) {
 //  hydraulicFilter.apply(&eroded);
 //
 //  eroded.saveAsPNG(outputPath);
-//  eroded.saveColorMapAsPNG("color.png");
+  heightmap.saveColorMapAsPNG("color.png");
 
   printf("Done.\n");
 

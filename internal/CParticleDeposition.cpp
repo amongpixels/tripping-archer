@@ -9,9 +9,9 @@
 
 archer::CParticleDeposition::CParticleDeposition() {
   
-  this->searchRadius = 2;
-  this->elevationTreshold = 1.0f;
-  this->particleHeight = 1.0f;
+  this->searchRadius = 1;
+  this->particleHeight = 0.02f;
+  this->elevationTreshold = this->particleHeight * 2;//0.06f * 2.0f;
   this->depositionType = MOVING;
   this->particlesCount = 0;
 
@@ -25,6 +25,10 @@ archer::CParticleDeposition::CParticleDeposition() {
 void archer::CParticleDeposition::apply(CHeightmap * h) {
 
   srand ( time(NULL) );
+
+  // If we stuck all the available particles one on another we will not get over the limit
+  //this->particleHeight = 100.0f / this->particlesCount;
+  //this->elevationTreshold = this->particleHeight;
 
   // initialize the streams
   /*for (int i = 0 ; i < this->streamsCount ; i++) {
@@ -68,6 +72,7 @@ void archer::CParticleDeposition::apply(CHeightmap * h) {
   printf("let me get this straight, vent center: ");
   helpers::printVector2i(this->ventCenter);
   printf("number of particles %d and number of boundingPoints %d\n\n", this->particlesCount, this->boundingPoints->getCount());
+  printf("particle size %f, treshold %f\n", this->particleHeight, this->elevationTreshold);
 
   //return;
 
@@ -168,7 +173,7 @@ void archer::CParticleDeposition::deposit(CHeightmap * h, vector2i & particle) {
 
           float diff = h->getValue(particle[0], particle[1]) + this->particleHeight - h->getValue(x, y);
 
-          if (diff > this->elevationTreshold) {
+          if (diff >= this->elevationTreshold) {
             particle.set(x, y);
             positionFound = true;
             break;

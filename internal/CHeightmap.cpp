@@ -17,21 +17,21 @@ namespace archer
     this->values.resize(this->width, std::vector <float> (this->height, 0.0f));
 
     this->maxValue = 0.0f;
-    this->heightScale = 2.0f;
+    this->heightScale = 10.0f;
 
     this->hasBeenModified = false;
 
   }
 
-  int CHeightmap::getWidth() {
+  int CHeightmap::getWidth() const {
     return this->width;
   }
 
-  int CHeightmap::getHeight() {
+  int CHeightmap::getHeight() const {
     return this->height;
   }
 
-  float CHeightmap::getValue(int x, int y) {
+  float CHeightmap::getValue(int x, int y) const {
 
     assert(x >= 0 && x < this->width);
     assert(y >= 0 && y < this->height);
@@ -40,6 +40,8 @@ namespace archer
   }
 
   void CHeightmap::setValue(int x, int y, float v) {
+
+    v = std::max(0.0f, std::min(1.0f, v)); // Cap the value between 0.0f and 1.0f
     this->values[x][y] = v;
 
     if (v > this->maxValue) {
@@ -62,7 +64,11 @@ namespace archer
     for (unsigned int i = 0 ; i < this->values.size() ; i++) {
       for (unsigned int j = 0 ; j < this->values[i].size() ; j++) {
 
-        float normalized = (this->values[i][j]) / this->maxValue;
+        if (this->values[i][j] > 1.0f) {
+          printf("bigger than one :o");
+        }
+
+        float normalized = (this->values[i][j]);// / this->maxValue;
 
         int color [] = { normalized * 255, normalized * 255, normalized * 255 };
         img.draw_point(i, j, color);
@@ -183,7 +189,7 @@ namespace archer
 
     this->calculateNormals();
 
-    vector3f lightDirection (1.0f, 0.5f, 1.0f);
+    vector3f lightDirection (0.5f, 0.8f, 0.3f);
 
     CImg <unsigned char> colorMap (this->width, this->height, 1, 3, 0);
 
@@ -202,7 +208,7 @@ namespace archer
           //printf("intensity %f\n", lightIntensity);
         }
 
-        float heightValue = this->values[x][y] / this->maxValue;
+        float heightValue = this->values[x][y];// / this->maxValue;
 
         //       float pC1 = max(0.0f, -3.0f * heightValue + 1.0f);
         //       float pC2 = max(0.0f, -3.0f * (heightValue - 0.3f) + 1.0f);
@@ -242,11 +248,13 @@ namespace archer
 
         float newValue = this->values[x][y] + h.getValue(x, y);
 
-        if (newValue > this->maxValue) {
-          this->maxValue = newValue;
-        }
-
-        this->values[x][y] = newValue;
+        this->setValue(x, y, newValue);
+//
+//        if (newValue > this->maxValue) {
+//          this->maxValue = newValue;
+//        }
+//
+//        this->values[x][y] = newValue;
       }
     }
 
@@ -322,6 +330,25 @@ namespace archer
       }
     }
 
+  }
+  
+  CHeightmap & CHeightmap::operator *= (const CHeightmap & h) {
+    for (unsigned int x = 0 ; x < this->values.size() ; x++) {
+      for (unsigned int y = 0 ; y < this->values[x].size() ; y++) {
+
+        float newValue = this->getValue(x, y) * h.getValue(x, y);
+        this->setValue(x, y, newValue);
+
+      }
+    }
+
+    return *this;
+  }
+  
+  const CHeightmap CHeightmap::operator * (const CHeightmap & h) {
+    CHeightmap heightmap = *this;
+    heightmap *= h;
+    return heightmap;
   }
 
   CHeightmap::CHeightmap(int w, int h) {

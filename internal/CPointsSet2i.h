@@ -83,7 +83,7 @@ namespace archer
 
       void generateSkeleton(CPointsSet2i * skeleton);
 
-      void createMask(CHeightmap * h);
+      void createMask(CHeightmap * h, float blur = 0.0f);
 
       CPointsSet2i & operator += (const CPointsSet2i & p);
       const CPointsSet2i operator + (const CPointsSet2i & );
