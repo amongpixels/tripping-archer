@@ -23,7 +23,7 @@ namespace archer
   typedef std::vector< std::vector<int> > Array2i;
 
   struct SPointCluster {
-      unsigned char color [3];
+      //unsigned char color [3];
       unsigned char channel;
       CPointsSet2i points;
   };
@@ -41,7 +41,12 @@ namespace archer
       /*
        * Performs a flood fill and finds a full continuous cluster
        */
-      void floodFill (CImg<unsigned char> const & img, vector2i const & point, SPointCluster * cluster);
+      //void floodFill (CImg<unsigned char> const & img, vector2i const & point, SPointCluster * cluster);
+
+      /*
+       * Same as above but considers the channel rather than specific colour
+       */
+      void floodFillOnChannel (CImg<unsigned char> const & img, vector2i const & point, SPointCluster * cluster, unsigned char channel);
 
       SPointCluster * findPointInCluster(vector2i const & point);
 

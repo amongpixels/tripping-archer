@@ -18,7 +18,7 @@ namespace archer
 
     CImg <unsigned char> image (path);
 
-    unsigned char colorToCluster [] = { 255, 0, 0 };
+    //unsigned char colorToCluster [] = { 255, 0, 0 };
 
     printf("Clustering input data... ");
 
@@ -32,8 +32,8 @@ namespace archer
           unsigned char currentColor [] = { image(x, y, 0, 0), image(x, y, 0, 1), image(x, y, 0, 2) };
 
           // it's a channel we are interested in clustering
-          if ((currentColor[0] == colorToCluster[0]) && (currentColor[1] == colorToCluster[1]) && (currentColor[2] == colorToCluster[2])) {
-          //if (image(x, y, 0, c) != 0) {
+          //if ((currentColor[0] == colorToCluster[0]) && (currentColor[1] == colorToCluster[1]) && (currentColor[2] == colorToCluster[2])) {
+          if (image(x, y, 0, c) != 0) {
             vector2i currentPoint (x, y);
 
             // check if that point already belongs to a cluster
@@ -44,9 +44,10 @@ namespace archer
 
               SPointCluster * newCluster = new SPointCluster();
 
-              memcpy(newCluster->color, colorToCluster, sizeof(unsigned char) * 3);
+              //memcpy(newCluster->color, colorToCluster, sizeof(unsigned char) * 3);
+              newCluster->channel = c;
 
-              this->floodFill(image, currentPoint, newCluster);
+              this->floodFillOnChannel(image, currentPoint, newCluster, c);
 
               this->clusters.push_back(newCluster);
 
@@ -61,12 +62,60 @@ namespace archer
 
   }
 
-  void CInputProcessor::floodFill(const CImg<unsigned char> & img, const vector2i & point, SPointCluster * cluster) {
+//  void CInputProcessor::floodFill(const CImg<unsigned char> & img, const vector2i & point, SPointCluster * cluster) {
+//
+//    std::vector<vector2i> pointsQueue;
+//    CImg<unsigned char> imgCopy(img);
+//
+//    pointsQueue.push_back(point);
+//
+//    while (!pointsQueue.empty()) {
+//
+//      vector2i n = pointsQueue[pointsQueue.size() - 1];
+//
+//      pointsQueue.pop_back();
+//
+//      if ((n[0] > -1) && (n[0] < img.width()) && (n[1] > -1) && (n[1] < img.height())) {
+//
+//        unsigned char nColor [] = { imgCopy(n[0], n[1], 0, 0), imgCopy(n[0], n[1], 0, 1), imgCopy(n[0], n[1], 0, 2) };
+//
+//        //printf("%d %d tutaj dochode %d %d %d\n", n[0], n[1], nColor[0], nColor[1], nColor[2]);
+//
+//        if ((nColor[0] == cluster->color[0]) && (nColor[1] == cluster->color[1]) && (nColor[2] == cluster->color[2])) {
+//
+//          const unsigned char newColor [] = { 0, 0, 0 };
+//          imgCopy.draw_point(n[0], n[1], newColor);
+//
+//          cluster->points.addPoint(n);
+//          //printf("maluje punkcior %d %d %d\n", newColor[0], newColor[1], newColor[2]);
+//
+//          //unsigned char chuj [] = { (*img)(n[0], n[1], 0, 0), (*img)(n[0], n[1], 0, 1), (*img)(n[0], n[1], 0, 2) };
+//
+//          //printf("the color is now %d %d %d\n", chuj[0], chuj[1], chuj[2]);
+//
+//          pointsQueue.push_back(vector2i(n[0] - 1, n[1]));
+//          pointsQueue.push_back(vector2i(n[0] + 1, n[1]));
+//          pointsQueue.push_back(vector2i(n[0], n[1] + 1));
+//          pointsQueue.push_back(vector2i(n[0], n[1] - 1));
+//        }
+//      }
+//    }
+//
+//    //  unsigned char lineColor [] = { 0, 255, 0 };
+//    //  imgCopy.draw_line(cluster->bottomLeft[0], cluster->bottomLeft[1], cluster->topRight[0], cluster->topRight[1], lineColor);
+//    //
+//    //  imgCopy.save_png("output.png");
+//
+//  }
+
+  void CInputProcessor::floodFillOnChannel (const CImg<unsigned char> & img, const vector2i & point, SPointCluster * cluster, unsigned char channel) {
 
     std::vector<vector2i> pointsQueue;
     CImg<unsigned char> imgCopy(img);
 
     pointsQueue.push_back(point);
+
+    unsigned char newColor [] = { 0, 0, 0 };
 
     while (!pointsQueue.empty()) {
 
@@ -75,22 +124,11 @@ namespace archer
       pointsQueue.pop_back();
 
       if ((n[0] > -1) && (n[0] < img.width()) && (n[1] > -1) && (n[1] < img.height())) {
+        if (imgCopy(n[0], n[1], 0, channel)) {
 
-        unsigned char nColor [] = { imgCopy(n[0], n[1], 0, 0), imgCopy(n[0], n[1], 0, 1), imgCopy(n[0], n[1], 0, 2) };
-
-        //printf("%d %d tutaj dochode %d %d %d\n", n[0], n[1], nColor[0], nColor[1], nColor[2]);
-
-        if ((nColor[0] == cluster->color[0]) && (nColor[1] == cluster->color[1]) && (nColor[2] == cluster->color[2])) {
-
-          const unsigned char newColor [] = { 0, 0, 0 };
           imgCopy.draw_point(n[0], n[1], newColor);
 
           cluster->points.addPoint(n);
-          //printf("maluje punkcior %d %d %d\n", newColor[0], newColor[1], newColor[2]);
-
-          //unsigned char chuj [] = { (*img)(n[0], n[1], 0, 0), (*img)(n[0], n[1], 0, 1), (*img)(n[0], n[1], 0, 2) };
-
-          //printf("the color is now %d %d %d\n", chuj[0], chuj[1], chuj[2]);
 
           pointsQueue.push_back(vector2i(n[0] - 1, n[1]));
           pointsQueue.push_back(vector2i(n[0] + 1, n[1]));
@@ -99,11 +137,6 @@ namespace archer
         }
       }
     }
-
-    //  unsigned char lineColor [] = { 0, 255, 0 };
-    //  imgCopy.draw_line(cluster->bottomLeft[0], cluster->bottomLeft[1], cluster->topRight[0], cluster->topRight[1], lineColor);
-    //
-    //  imgCopy.save_png("output.png");
 
   }
 

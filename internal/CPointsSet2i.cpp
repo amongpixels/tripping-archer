@@ -60,7 +60,7 @@ namespace archer
     unsigned int w = (width < 0) ? this->getWidth() : width;
     unsigned int h = (height < 0) ? this->getHeight() : height;
 
-    printf("saving image w h %d %d\n", w, h);
+    //printf("saving image w h %d %d\n", w, h);
 
     CImg <unsigned char> image (w, h, 1, 3, 0);
     unsigned char color [] = { 255, 255, 255 };
@@ -110,7 +110,7 @@ namespace archer
 
     this->binaryMap[v[0]][v[1]] = 1;
 
-    printf("size of binary map %d %d\n", this->binaryMap.size(), this->binaryMap[0].size());
+    //printf("size of binary map %d %d\n", this->binaryMap.size(), this->binaryMap[0].size());
 
   }
   
@@ -120,9 +120,9 @@ namespace archer
       return;
     }
 
-    printf("binary map dimensions %d %d", this->binaryMap.size(), this->binaryMap[0].size());
+    //printf("binary map dimensions %d %d", this->binaryMap.size(), this->binaryMap[0].size());
 
-    Array2b * map = new Array2b(this->binaryMap.size() + 2, std::vector<unsigned char>(this->binaryMap[0].size() + 2, 1));
+    Array2b * map = new Array2b(this->binaryMap.size() + 2, std::vector<unsigned char>(this->binaryMap[0].size() + 2, 0));
 
     for (unsigned int x = 0 ; x < this->binaryMap.size() ; x++) {
       for (unsigned int y = 0 ; y < this->binaryMap[0].size() ; y++) {
@@ -146,15 +146,15 @@ namespace archer
         { 1, 5, 7}
     };
 
-    bool converged = true;
+    bool converged = false;
 
     while (!converged) {
       for (int i = 0 ; i < 2 ; i++) {
 
         marked.clear();
 
-        for (int x = 1 ; x < (*map).size() - 1 ; x++) {
-          for (int y = 1 ; y < (*map)[0].size() - 1 ; y++) {
+        for (unsigned int x = 1 ; x < (*map).size() - 1 ; x++) {
+          for (unsigned int y = 1 ; y < (*map)[0].size() - 1 ; y++) {
 
             if ((*map)[x][y] == 1) {
 
@@ -206,10 +206,10 @@ namespace archer
 
     for (unsigned int x = 1 ; x < (*map).size() - 1 ; x++) {
       for (unsigned int y = 1 ; y < (*map)[0].size() - 1 ; y++) {
-        //if ((*map)[x][y]) {
+        if ((*map)[x][y]) {
           vector2i p (x-1, y-1);
           skeleton->addPoint(p);
-        //}
+        }
       }
     }
 
@@ -300,6 +300,20 @@ namespace archer
     pairs->push_back(std::pair<int, int>(x-1, y+1));
     pairs->push_back(std::pair<int, int>(x-1, y));
     pairs->push_back(std::pair<int, int>(x-1, y-1));
+  }
+
+  CPointsSet2i & CPointsSet2i::operator += (const CPointsSet2i & p) {
+    for (std::vector<vector2i>::const_iterator i = p.getPoints().begin() ; i != p.getPoints().end() ; i++) {
+      this->addPoint((*i));
+    }
+
+    return *this;
+  }
+  
+  const CPointsSet2i CPointsSet2i::operator +(const CPointsSet2i & p) {
+    CPointsSet2i points = *this;
+    points += p;
+    return points;
   }
 
 } /* namespace archer */

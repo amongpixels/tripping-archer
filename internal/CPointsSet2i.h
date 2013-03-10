@@ -16,7 +16,7 @@
 #include "TPointsSet.h"
 #include "helpers.h"
 
-using namespace cml;
+//using namespace cml;
 using namespace cimg_library;
 
 namespace archer
@@ -29,7 +29,7 @@ namespace archer
 
   class CPointsSet2i : public TPointsSet<vector2i>
   {
-    private:
+    protected:
 
       /*
        * This keeps the track of where points are, it's useful for quickly
@@ -37,6 +37,8 @@ namespace archer
        * using thinning. Binary map is always up to date.
        */
       Array2b binaryMap;
+
+    private:
 
       int getConnectivity(Array2b const & array, int x, int y);
 
@@ -82,6 +84,9 @@ namespace archer
       void generateSkeleton(CPointsSet2i * skeleton);
 
       void createMask(CHeightmap * h);
+
+      CPointsSet2i & operator += (const CPointsSet2i & p);
+      const CPointsSet2i operator + (const CPointsSet2i & );
 
   };
 

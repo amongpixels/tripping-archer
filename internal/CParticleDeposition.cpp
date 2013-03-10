@@ -136,7 +136,7 @@ void archer::CParticleDeposition::apply(CHeightmap * h) {
 
       // If the mode is RANDOM then just choose one random point
       if (this->boundingPoints && !this->boundingPoints->isEmpty()) {
-        currentPosition = (*this->boundingPoints->getPoints())[rand() % this->boundingPoints->getCount()];
+        currentPosition = (this->boundingPoints->getPoints())[rand() % this->boundingPoints->getCount()];
       }
       else {
         currentPosition = vector2i (rand() % h->getWidth(), rand() % h->getHeight());

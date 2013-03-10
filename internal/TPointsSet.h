@@ -80,18 +80,18 @@ namespace archer
 
       }
 
-      TPointsSet<T> & translate(T & v) {
+//      TPointsSet<T> & translate(T & v) {
+//
+//        TPointsSet<T> translated;
+//
+//        for (typename std::vector<T>::iterator p = this->points.begin() ; p < this->points.end() ; p++) {
+//          translated.addPoint(p + v);
+//        }
+//
+//        return translated;
+//      }
 
-        TPointsSet<T> translated;
-
-        for (typename std::vector<T>::iterator p = this->points.begin() ; p < this->points.end() ; p++) {
-          translated.addPoint(p + v);
-        }
-
-        return translated;
-      }
-
-      T & getMedianPoint() {
+      T & getMedianPoint() const {
 
         std::vector<T> pointsCopy = this->points;
 
@@ -102,12 +102,20 @@ namespace archer
 
       }
 
-      std::vector <T> * getPoints() {
-        return &this->points;
+      const std::vector <T> & getPoints() const {
+        return this->points;
       }
 
-      int getCount() {
+      int getCount() const {
         return this->points.size();
+      }
+
+      const T & getTopRight() const {
+        return this->topRight;
+      }
+
+      const T & getBottomLeft() const {
+        return this->bottomLeft;
       }
 
       void clear() {

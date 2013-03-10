@@ -43,7 +43,7 @@ int main(int argc, char **argv) {
   outputPath = argv[2];
   terrainType = atoi(argv[3]);
 
-  printf("Terrain type %d\n", terrainType);
+  //printf("Terrain type %d\n", terrainType);
 
 
 //  po::options_description desc("Allowed options");
@@ -94,36 +94,50 @@ int main(int argc, char **argv) {
 //  CBrownianTree brownianTree ( 256, 256, 4096 * 2 );
 //  brownianTree.saveAsPNG("brownian.png");
 //
-//  CParticleDeposition depositionFilter;
-//  depositionFilter.setBoundingPoints(&brownianTree);
-//  depositionFilter.setMode(RANDOM);
-//  depositionFilter.setVentCenter(brownianTree.getMedianPoint());
-//  depositionFilter.setParticlesCount(brownianTree.getCount() * 40);
+
 //
 //  depositionFilter.apply(&heightmap);
 //  heightmap.normalize();
 ////
 ////
 ////
-//  CPerturbation perturbationFilter;
-//  perturbationFilter.setMagnitude(0.03f);
-//  perturbationFilter.apply(&heightmap);
+
 
 
   CHeightmap baseHeightmap (256, 256);
+  CHeightmap heightmap (256, 256);
 
   CInputProcessor inputProcessor;
   inputProcessor.loadFromImage(inputPath);
 
-  CPointsSet2i skeleton;
+  CBrownianTree skeleton;
 
   inputProcessor.getClusters()[0]->points.saveAsPNG("japierdole.png", 256, 256);
-  //inputProcessor.getClusters()[0]->points.generateSkeleton(&skeleton);
-  skeleton.addPoint(vector2i(10,10));
-  skeleton.addPoint(vector2i(10,11));
-  skeleton.addPoint(vector2i(10,12));
-  skeleton.saveAsPNG("skeletonchuj.png");
+  inputProcessor.getClusters()[0]->points.generateSkeleton(&skeleton);
+
+  skeleton.setBoundingPoints(&inputProcessor.getClusters()[0]->points);
+
+  skeleton.createBrownian(2000,
+      inputProcessor.getClusters()[0]->points.getTopRight()[0] + 1,
+      inputProcessor.getClusters()[0]->points.getTopRight()[1] + 1
+  );
+//  skeleton.addPoint(vector2i(10,10));
+//  skeleton.addPoint(vector2i(10,11));
+//  skeleton.addPoint(vector2i(10,12));
+
+  skeleton.saveAsPNG("skeletonchuj.png", 256, 256);
   //(*inputProcessor.getClusters())[0]->points.createMask(&baseHeightmap);
+
+  CParticleDeposition depositionFilter;
+  depositionFilter.setBoundingPoints(&skeleton);
+  depositionFilter.setMode(RANDOM);
+  depositionFilter.setVentCenter(skeleton.getMedianPoint());
+  depositionFilter.setParticlesCount(skeleton.getCount() * 20);
+  depositionFilter.apply(&heightmap);
+
+  CPerturbation perturbationFilter;
+  perturbationFilter.setMagnitude(0.03f);
+  perturbationFilter.apply(&heightmap);
 
   //baseHeightmap.saveAsPNG("chujciwdupe.png");
 
@@ -167,7 +181,7 @@ int main(int argc, char **argv) {
 
 
 
-//  heightmap.saveAsPNG("before.png");
+  heightmap.saveAsPNG("before.png");
 //
 //
 //  CHeightmap eroded = heightmap;
@@ -180,7 +194,7 @@ int main(int argc, char **argv) {
 //  eroded.saveAsPNG(outputPath);
 //  eroded.saveColorMapAsPNG("color.png");
 
-  printf("DONE\n");
+  printf("Done.\n");
 
   return 0;
 

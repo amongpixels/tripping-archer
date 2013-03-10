@@ -23,10 +23,13 @@ namespace archer
   
   class CBrownianTree : public CPointsSet2i
   {
+    private:
+      CPointsSet2i * boundingPoints;
     public:
       CBrownianTree();
-      CBrownianTree(unsigned int w, unsigned int h, unsigned int ite);
-      void init(unsigned int w, unsigned int h, unsigned int ite);
+      CBrownianTree(unsigned int ite, unsigned int w, unsigned int h);
+      void createBrownian(unsigned int ite, unsigned int w, unsigned int h);
+      void setBoundingPoints(CPointsSet2i *);
       virtual ~CBrownianTree();
   };
 
