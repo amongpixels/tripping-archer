@@ -11,7 +11,7 @@ namespace archer
 {
   
   CPointsSet2i::CPointsSet2i() {
-
+    this->skeleton = NULL;
   }
   
   int CPointsSet2i::getWidth() {
@@ -22,45 +22,12 @@ namespace archer
     return abs(this->topRight[1]) - abs(this->bottomLeft[1]) + 1;
   }
   
-//  CHeightmap& CPointsSet2i::getHeightmap() {
-//
-//    // if not default sizes were specified then just use heightmap of size enough to fit all the points
-//    if (w == -1) {
-//      w = this->getWidth();
-//    }
-//
-//    if (h == -1) {
-//      h = this->bottomLeft[1];
-//    }
-//
-//    helpers::printVector2i(this->bottomLeft);
-//
-//    printf("TAJM TO DO SOME HEJTMAPING %d %d\n", w, h);
-//
-//    CHeightmap heightmap (w, h);
-//    heightmap.zero();
-//
-//    for (std::vector<vector2i>::iterator i = this->points.begin() ; i < this->points.end() ; i++) {
-//      helpers::printVector2i((*i));
-//      //heightmap.setValue((*i)[0], (*i)[1], 1.0f);
-//    }
-//
-//    return heightmap;
-//
-//  }
-
-//  CPointsSet2i::~CPointsSet2i() {
-//    // TODO Auto-generated destructor stub
-//  }
-  
   void CPointsSet2i::saveAsPNG(char* path, int width, int height) {
 
     assert(this->binaryMap.size() > 0);
 
     unsigned int w = (width < 0) ? this->getWidth() : width;
     unsigned int h = (height < 0) ? this->getHeight() : height;
-
-    //printf("saving image w h %d %d\n", w, h);
 
     CImg <unsigned char> image (w, h, 1, 3, 0);
     unsigned char color [] = { 255, 255, 255 };
@@ -110,108 +77,119 @@ namespace archer
 
     this->binaryMap[v[0]][v[1]] = 1;
 
-    //printf("size of binary map %d %d\n", this->binaryMap.size(), this->binaryMap[0].size());
+    // Invalidate the skeleton
+    //this->skeletonIsCorrect = false;
 
   }
   
-  void CPointsSet2i::generateSkeleton(CPointsSet2i * skeleton) {
+  void CPointsSet2i::generateSkeleton(CPointsSet2i * s) {
 
-    if (this->binaryMap.size() == 0) {
-      return;
-    }
+    if (!this->skeleton) {
 
-    //printf("binary map dimensions %d %d", this->binaryMap.size(), this->binaryMap[0].size());
+      printf("Generating a skeleton...");
 
-    Array2b * map = new Array2b(this->binaryMap.size() + 2, std::vector<unsigned char>(this->binaryMap[0].size() + 2, 0));
+      this->skeleton = new CPointsSet2i();
 
-    for (unsigned int x = 0 ; x < this->binaryMap.size() ; x++) {
-      for (unsigned int y = 0 ; y < this->binaryMap[0].size() ; y++) {
-        if (this->binaryMap[x][y]) {
-          (*map)[x+1][y+1] = 1;
+      if (this->binaryMap.size() == 0) {
+        return;
+      }
+
+      Array2b * map = new Array2b(this->binaryMap.size() + 2, std::vector<unsigned char>(this->binaryMap[0].size() + 2, 0));
+
+      for (unsigned int x = 0 ; x < this->binaryMap.size() ; x++) {
+        for (unsigned int y = 0 ; y < this->binaryMap[0].size() ; y++) {
+          if (this->binaryMap[x][y]) {
+            (*map)[x+1][y+1] = 1;
+          }
         }
       }
-    }
 
-    std::vector< std::pair<int, int> > marked;
+      std::vector< std::pair<int, int> > marked;
 
-    /*
-     * In first iteration at least one in each of the first two sets of
-     * neighbours (specified as indices) bust be a part of the object. In
-     * second iteration second half of the array is tested.
-     */
-    int bgTests [4][3] = {
-        { 1, 3, 5},
-        { 3, 5, 7},
-        { 1, 3, 7},
-        { 1, 5, 7}
-    };
+      /*
+       * In first iteration at least one in each of the first two sets of
+       * neighbours (specified as indices) bust be a part of the object. In
+       * second iteration second half of the array is tested.
+       */
+      int bgTests [4][3] = {
+          { 1, 3, 5},
+          { 3, 5, 7},
+          { 1, 3, 7},
+          { 1, 5, 7}
+      };
 
-    bool converged = false;
+      bool converged = false;
 
-    while (!converged) {
-      for (int i = 0 ; i < 2 ; i++) {
+      while (!converged) {
+        for (int i = 0 ; i < 2 ; i++) {
 
-        marked.clear();
+          marked.clear();
 
-        for (unsigned int x = 1 ; x < (*map).size() - 1 ; x++) {
-          for (unsigned int y = 1 ; y < (*map)[0].size() - 1 ; y++) {
+          for (unsigned int x = 1 ; x < (*map).size() - 1 ; x++) {
+            for (unsigned int y = 1 ; y < (*map)[0].size() - 1 ; y++) {
 
-            if ((*map)[x][y] == 1) {
+              if ((*map)[x][y] == 1) {
 
-              if (this->getConnectivity((*map), x, y) == 1) {
-                std::vector< std::pair<int, int> > indices;
-                this->createNeghbourIndices(&indices, x, y);
+                if (this->getConnectivity((*map), x, y) == 1) {
+                  std::vector< std::pair<int, int> > indices;
+                  this->createNeghbourIndices(&indices, x, y);
 
-                // Count the neighbours
-                int neighbourCount = 0;
+                  // Count the neighbours
+                  int neighbourCount = 0;
 
-                for (int j = 1 ; j < 9 ; j++) {
-                  if ((*map)[indices[j].first][indices[j].second] == 1) {
-                    neighbourCount++;
-                  }
-                }
-
-                if ((neighbourCount >= 2) && (neighbourCount <= 6)) {
-
-                  if (this->passesBackgroundTest((*map), x, y, bgTests[i * 2])) {
-                    if (this->passesBackgroundTest((*map), x, y, bgTests[i * 2 + 1])) {
-                      marked.push_back(std::pair<int, int>(x, y));
+                  for (int j = 1 ; j < 9 ; j++) {
+                    if ((*map)[indices[j].first][indices[j].second] == 1) {
+                      neighbourCount++;
                     }
                   }
 
+                  if ((neighbourCount >= 2) && (neighbourCount <= 6)) {
+
+                    if (this->passesBackgroundTest((*map), x, y, bgTests[i * 2])) {
+                      if (this->passesBackgroundTest((*map), x, y, bgTests[i * 2 + 1])) {
+                        marked.push_back(std::pair<int, int>(x, y));
+                      }
+                    }
+
+                  }
                 }
               }
+
             }
-
           }
-        }
 
-        // Delete all marked
-        if (marked.size() > 0) {
-          for (std::vector< std::pair<int, int> >::iterator j = marked.begin() ; j != marked.end() ; j++) {
-            (*map)[(*j).first][(*j).second] = 0;
+          // Delete all marked
+          if (marked.size() > 0) {
+            for (std::vector< std::pair<int, int> >::iterator j = marked.begin() ; j != marked.end() ; j++) {
+              (*map)[(*j).first][(*j).second] = 0;
+            }
           }
-        }
-        else {
-          converged = true;
-          break;
+          else {
+            converged = true;
+            break;
+          }
+
         }
 
       }
 
-    }
+      // Output the skeleton
+      //this->skeleton.clear();
 
-    // Output the skeleton
-    //skeleton.clear();
-
-    for (unsigned int x = 1 ; x < (*map).size() - 1 ; x++) {
-      for (unsigned int y = 1 ; y < (*map)[0].size() - 1 ; y++) {
-        if ((*map)[x][y]) {
-          vector2i p (x-1, y-1);
-          skeleton->addPoint(p);
+      for (unsigned int x = 1 ; x < (*map).size() - 1 ; x++) {
+        for (unsigned int y = 1 ; y < (*map)[0].size() - 1 ; y++) {
+          if ((*map)[x][y]) {
+            vector2i p (x-1, y-1);
+            this->skeleton->addPoint(p);
+          }
         }
       }
+
     }
+
+    (*s) = (*this->skeleton);
+
+    //memcpy(s, this->skeleton, sizeof(CPointsSet2i));
 
   }
 
@@ -333,6 +311,12 @@ namespace archer
     CPointsSet2i points = *this;
     points += p;
     return points;
+  }
+  
+  CPointsSet2i::~CPointsSet2i() {
+    if (this->skeleton) {
+      delete this->skeleton;
+    }
   }
 
 } /* namespace archer */

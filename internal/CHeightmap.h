@@ -24,6 +24,9 @@ typedef cml::vector3f vector3f;
 
 namespace archer
 {
+  /*
+   * Heightfield representation where height differs from -1 to 1 inclusive
+   */
   class CHeightmap
   {
     private:
@@ -43,6 +46,9 @@ namespace archer
       void calculateNormals();
 
     public:
+
+      static float maxHeight;
+      static float minHeight;
 
       int getWidth() const;
       int getHeight() const;

@@ -9,6 +9,9 @@
 
 namespace archer
 {
+  float CHeightmap::minHeight = -1.0f;
+  float CHeightmap::maxHeight = 1.0f;
+
   void CHeightmap::init (int w, int h) {
 
     this->width = w;
@@ -41,7 +44,7 @@ namespace archer
 
   void CHeightmap::setValue(int x, int y, float v) {
 
-    v = std::max(0.0f, std::min(1.0f, v)); // Cap the value between 0.0f and 1.0f
+    v = std::max(CHeightmap::minHeight, std::min(CHeightmap::maxHeight, v)); // Cap the value between -1.0f and 1.0f
     this->values[x][y] = v;
 
     if (v > this->maxValue) {
@@ -64,11 +67,7 @@ namespace archer
     for (unsigned int i = 0 ; i < this->values.size() ; i++) {
       for (unsigned int j = 0 ; j < this->values[i].size() ; j++) {
 
-        if (this->values[i][j] > 1.0f) {
-          printf("bigger than one :o");
-        }
-
-        float normalized = (this->values[i][j]);// / this->maxValue;
+        float normalized = (this->values[i][j] - CHeightmap::minHeight) * (0.5f * CHeightmap::maxHeight);// / this->maxValue;
 
         int color [] = { normalized * 255, normalized * 255, normalized * 255 };
         img.draw_point(i, j, color);

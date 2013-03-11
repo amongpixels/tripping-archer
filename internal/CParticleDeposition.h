@@ -25,7 +25,7 @@ namespace archer {
     private:
 
       int searchRadius;
-      float elevationTreshold;
+      float elevationThreshold;
       float particleHeight;
       DepositionDropType depositionType;
 
@@ -48,6 +48,7 @@ namespace archer {
       void setMode(DepositionDropType t);
       void setVentCenter(const vector2i & c);
       void setParticlesCount(int i);
+      void setParameters(float h, int t);
 
       virtual ~CParticleDeposition();
   };

@@ -23,7 +23,6 @@ namespace archer
   typedef std::vector< std::vector<int> > Array2i;
 
   struct SPointCluster {
-      //unsigned char color [3];
       unsigned char channel;
       CPointsSet2i points;
   };
@@ -39,43 +38,20 @@ namespace archer
       std::vector <SPointCluster *> clusters;
 
       /*
-       * Performs a flood fill and finds a full continuous cluster
-       */
-      //void floodFill (CImg<unsigned char> const & img, vector2i const & point, SPointCluster * cluster);
-
-      /*
-       * Same as above but considers the channel rather than specific colour
+       * Performs a flood fill on a given channel to find a full continuous cluster
        */
       void floodFillOnChannel (CImg<unsigned char> const & img, vector2i const & point, SPointCluster * cluster, unsigned char channel);
 
       SPointCluster * findPointInCluster(vector2i const & point);
 
-      int getConnectivity(Array2i const & array, int x, int y);
-
-      /*
-       * Checks if any of the neighbours is present (neighbours passed as
-       * indices of indices ie P1, P2, P3 etc.)
-       */
-      bool passesBackgroundTest(Array2i const & array, int x, int y, int neighbours [3]);
-
-      /*
-       * Generates a linear list of 9 indices P1, P2, P3 ... P9 defining x and y
-       * coordinates of every cell in 3X3 cell starting at the origin, then
-       * going up and counter clockwise.
-       */
-      void createNeghbourIndices(std::vector< std::pair<int, int> > * pairs, int x, int y);
-
+      void processClusters();
 
     public:
       CInputProcessor();
-
       void loadFromImage(char * path);
+
       std::vector <SPointCluster *> & getClusters();
-
-      void getSkeleton(char * path);
-
       vector2i getClusterMedian (SPointCluster & cluster);
-
 
       virtual ~CInputProcessor();
   };

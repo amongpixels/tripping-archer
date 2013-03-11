@@ -41,174 +41,53 @@ int main(int argc, char **argv) {
 
   inputPath = argv[1];
   outputPath = argv[2];
-  terrainType = atoi(argv[3]);
 
-  //printf("Terrain type %d\n", terrainType);
-
-
-//  po::options_description desc("Allowed options");
-//  desc.add_options()
-//      ("input", po::value<string>(&inputPath), "Input image")
-//  ;
-
-  //CImg<unsigned char> perlinImage (256, 256, 1, 3, 0);
-
-  //perlinImage.draw_point()
-
-  //CImageBuffer buff (256, 256);
-  //CNoise chuj;
-  //CSimplexNoise simplexNoise;
-
-  //int color [] = { 255, 0, 255 };
-
-  //buff.putPixel(4, 4, color);
-
-  //chuj.fillShitWithBullshit(&buff);
-  //simplexNoise.setOctaves(6);
-  //simplexNoise.setBounds(0.0, 0.0, 1.0, 1.0);
-  //simplexNoise.setPersistence(0.5);
-
-  //simplexNoise.apply(&perlinImage);
-
-  //perlinImage.save_png("test.png");
-  //buff.savePNG("chuj.png");
-
-
-//  //CFault faultFilter;
-//
-//  CVoronoi voronoiFilter;
-//
-//
-//
-//  CHeightmap heightmap (256, 256);
-  //heightmap.zero();
-  //heightmap.loadFromPNG("before.png");
-  //heightmap.test();
-
-  //simplexFilter.apply(&heightmap);
- // voronoiFilter.apply(&heightmap);
-
-//  CBrownianTree brownianTree ( 256, 256, 4096 * 2 );
-//  brownianTree.saveAsPNG("brownian.png");
-//
-
-//
-//  depositionFilter.apply(&heightmap);
-//  heightmap.normalize();
-////
-////
-////
-
-
-
-  CHeightmap baseHeightmap (256, 256);
   CHeightmap heightmap (256, 256);
 
-  CInputProcessor inputProcessor;
-  inputProcessor.loadFromImage(inputPath);
-
-  CBrownianTree skeleton;
-
-  inputProcessor.getClusters()[0]->points.saveAsPNG("japierdole.png", 256, 256);
-  inputProcessor.getClusters()[0]->points.generateSkeleton(&skeleton);
-
-  skeleton.setBoundingPoints(&inputProcessor.getClusters()[0]->points);
-
-  skeleton.createBrownian((int)(inputProcessor.getClusters()[0]->points.getCount() * 0.15f),
-      inputProcessor.getClusters()[0]->points.getTopRight()[0] + 1,
-      inputProcessor.getClusters()[0]->points.getTopRight()[1] + 1
-  );
-//  skeleton.addPoint(vector2i(10,10));
-//  skeleton.addPoint(vector2i(10,11));
-//  skeleton.addPoint(vector2i(10,12));
-
-  skeleton.saveAsPNG("skeletonchuj.png", 256, 256);
-  //(*inputProcessor.getClusters())[0]->points.createMask(&baseHeightmap);
-
-
-  // Create a mask
-  CHeightmap mask (256, 256);
-  inputProcessor.getClusters()[0]->points.createMask(&mask);
-  mask.saveAsPNG("mask.png");
-
-  // Create some noise for the backgorund of our mountains
+  // Create base terrain
   CSimplexNoise simplexFilter;
   simplexFilter.setOctaves(10);
   simplexFilter.setBounds(0.0, 0.0, 1.0, 1.0);
   simplexFilter.setPersistence(0.5);
-  //CHeightmap maskedNoise (256, 256);
-
   simplexFilter.apply(&heightmap);
-
-  //heightmap *= mask;
-  //maskedNoise.saveAsPNG("masked_noise.png");
   heightmap *= 0.5f;
 
-  CParticleDeposition depositionFilter;
-  depositionFilter.setBoundingPoints(&skeleton);
-  depositionFilter.setMode(RANDOM);
-  depositionFilter.setVentCenter(skeleton.getMedianPoint());
-  depositionFilter.setParticlesCount(skeleton.getCount() * 100);
-  depositionFilter.apply(&heightmap);
-//
-//
+  // Load clusters
+  CInputProcessor inputProcessor;
+  inputProcessor.loadFromImage(inputPath);
+
+  for (int i = 0 ; i < inputProcessor.getClusters().size() ; i++) {
+    // MOUNTAINS
+    if (inputProcessor.getClusters()[i]->channel == 0) {
+
+      // Generate mountain skeleton
+      CBrownianTree skeleton;
+      inputProcessor.getClusters()[i]->points.generateSkeleton(&skeleton);
+      skeleton.setBoundingPoints(&inputProcessor.getClusters()[i]->points);
+      skeleton.createBrownian((int)(inputProcessor.getClusters()[i]->points.getCount() * 0.15f),
+          inputProcessor.getClusters()[i]->points.getTopRight()[0] + 1,
+          inputProcessor.getClusters()[i]->points.getTopRight()[1] + 1
+      );
+
+      // Deposit mountains
+      CParticleDeposition depositionFilter;
+      depositionFilter.setParameters(0.02f, 2);
+      depositionFilter.setBoundingPoints(&skeleton);
+      depositionFilter.setMode(RANDOM);
+      depositionFilter.setVentCenter(skeleton.getMedianPoint());
+      depositionFilter.setParticlesCount(skeleton.getCount() * 100);
+      depositionFilter.apply(&heightmap);
+
+    }
+  }
+
+  // Some peturbation postprocessing
   CPerturbation perturbationFilter;
   perturbationFilter.setMagnitude(0.03f);
   perturbationFilter.apply(&heightmap);
 
-  //baseHeightmap.saveAsPNG("chujciwdupe.png");
-
-  //inputProcessor.getSkeleton("skeleton.png");
-
-
-
-  //depositionFilter.apply(&heightmap);
-  //voronoiFilter.apply(&heightmap);
-  //simplexFilter.apply(&baseHeightmap);
-
-//  for (std::vector<SPointCluster *>::iterator i = inputProcessor.getClusters()->begin() ; i < inputProcessor.getClusters()->end() ; i++) {
-//    CParticleDeposition depositionFilter;
-//
-//    depositionFilter.setBoundingPoints((*i)->points.getPoints());
-//    depositionFilter.setVentCenter(inputProcessor.getClusterMedian(*(*i)));
-//    depositionFilter.setParticlesCount((*i)->points.getCount() * 8);
-//
-//    depositionFilter.apply(&heightmap);
-//  }
-
-  //vector2i chuj (0,0);
-
-  //chuj.set( ((unsigned int)(0 - 1)) % 100, 0);
-
-  //printf("zaraz robie browna %d\n", chuj[0]);
-
-
-//  heightmap.setHeightScale(5.0f);
-//  baseHeightmap.setHeightScale(2.0f);
-//
-//  baseHeightmap.normalize();
-//  heightmap.normalize();
-//
-//  //baseHeightmap *= 0.5;
-//
-//  heightmap += baseHeightmap;
-//
-//
-//  faultFilter.apply(&heightmap);
-
-
-
+  // Save everything
   heightmap.saveAsPNG(outputPath);
-//
-//
-//  CHeightmap eroded = heightmap;
-//
-//  CThermalErosion thermalErosionFilter;
-//  //thermalErosionFilter.apply(&eroded);
-//  CHydraulicErosion hydraulicFilter;
-//  hydraulicFilter.apply(&eroded);
-//
-//  eroded.saveAsPNG(outputPath);
   heightmap.saveColorMapAsPNG("color.png");
 
   printf("Done.\n");

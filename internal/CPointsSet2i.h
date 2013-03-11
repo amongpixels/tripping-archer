@@ -38,6 +38,8 @@ namespace archer
        */
       Array2b binaryMap;
 
+      CPointsSet2i * skeleton;
+
     private:
 
       int getConnectivity(Array2b const & array, int x, int y);
@@ -81,12 +83,14 @@ namespace archer
       //using TPointsSet<vector2i>::clear;
       void clear();
 
-      void generateSkeleton(CPointsSet2i * skeleton);
+      void generateSkeleton(CPointsSet2i * skeleton = NULL);
 
       void createMask(CHeightmap * h, float blur = 0.0f);
 
       CPointsSet2i & operator += (const CPointsSet2i & p);
       const CPointsSet2i operator + (const CPointsSet2i & );
+
+      ~CPointsSet2i();
 
   };
 

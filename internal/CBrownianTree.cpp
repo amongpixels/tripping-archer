@@ -54,7 +54,6 @@ namespace archer
 
       vector2i point;
       collision = false;
-      int collisionTries = 0;
 
       if (this->boundingPoints && this->boundingPoints->getCount() > 0) {
         int index = rand() % this->boundingPoints->getCount();
@@ -113,7 +112,7 @@ namespace archer
                 //if ((x == point[0] && y != point[1]) || (y == point[1] && x != point[0])) {
                   if (grid[x][y]) {
 
-                    if (this->boundingPoints) {
+                    if (this->boundingPoints && this->boundingPoints->getCount() > 0) {
                       if (this->boundingPoints->isPointInSet(vector2i(x, y))) {
                         collision = true;
                       }
@@ -153,6 +152,8 @@ namespace archer
   
   void CBrownianTree::setBoundingPoints(CPointsSet2i * p) {
     this->boundingPoints = p;
+    printf("setting bounding points of size %d\n", this->boundingPoints->getCount());
+    assert(this->boundingPoints->getCount() > 0);
   }
 
   CBrownianTree::~CBrownianTree() {
