@@ -390,37 +390,55 @@ namespace archer
 
     Array2b map = this->binaryMap;
     std::vector<vector2i> points = this->points;
+    std::vector<vector2i> boundaryPoints;
 
     for (int i = amount ; i > 0 ; i--) {
 
-      std::vector<int> boundaryPoints;
+      boundaryPoints.clear();
 
-      for (int j = 0 ; j < points.size() ; j++) {
+      for (int x = 0 ; x < map.size() ; x++) {
+        for (int y = 0 ; y < map[0].size() ; y++) {
 
-        vector2i * p = &points[j];
+          if (map[x][y]) {
 
-        for (int x = std::min(0, (*p)[0] - 1) ; x < std::max((int)(this->binaryMap.size()), (*p)[0] + 2) ; x++) {
-          for (int y = std::min(0, (*p)[1] - 1) ; y < std::max((int)(this->binaryMap[0].size()), (*p)[1] + 2) ; y++) {
+            for (int s = x - 1 ; s < x + 2 ; s++) {
+              for (int t = y - 1 ; t < y + 2 ; t++) {
 
-            if (x != (*p)[0] || y != (*p)[1]) {
-              if (map[x][y] == 0) {
-                boundaryPoints.push_back(j);
+                bool marked = false;
+
+                if (s < 0 || s >= map.size() || t < 0 || t >= map[0].size()) {
+                  marked = true;
+                }
+                else if (x != s || y != t) {
+                  if (map[s][t] == 0) {
+                    marked = true;
+                  }
+                }
+
+                if (marked) {
+                  boundaryPoints.push_back(vector2i(x, y));
+                }
+
               }
             }
-          }
-        }
 
+          }
+
+        }
       }
 
+      // Remove the points found as boundary
       for (std::vector<vector2i>::iterator j = boundaryPoints.begin() ; j != boundaryPoints.end() ; j++) {
         map[(*j)[0]][(*j)[1]] = 0;
       }
 
     }
 
-    for (int x = 0 ; x < map.size() ; x++) {
-      for (int y = 0 ; y < map[0].size() ; y++) {
-        shrinked->addPoint(vector2i(x, y));
+    for (unsigned int x = 0 ; x < map.size() ; x++) {
+      for (unsigned int y = 0 ; y < map[0].size() ; y++) {
+        if (map[x][y]) {
+          shrinked->addPoint(vector2i(x, y));
+        }
       }
     }
 

@@ -79,8 +79,16 @@ int main(int argc, char **argv) {
       depositionFilter.apply(&heightmap);
 
     }
+  }
+
+  // Some peturbation postprocessing
+  CPerturbation perturbationFilter;
+  perturbationFilter.setMagnitude(0.02f);
+  perturbationFilter.apply(&heightmap);
+
+  for (int i = 0 ; i < inputProcessor.getClusters().size() ; i++) {
     // RIVERS
-    else if (inputProcessor.getClusters()[i]->channel == 1) {
+    if (inputProcessor.getClusters()[i]->channel == 1) {
 
       //CHeightmap riverMask (256, 256);
       //CHeightmap river (256, 256);
@@ -161,8 +169,11 @@ int main(int argc, char **argv) {
 
 
     }
+  }
+
+  for (int i = 0 ; i < inputProcessor.getClusters().size() ; i++) {
     // VOLCANOS
-    else if (inputProcessor.getClusters()[i]->channel == 2) {
+    if (inputProcessor.getClusters()[i]->channel == 2) {
 
       CPointsSet2i * clusterPoints = &inputProcessor.getClusters()[i]->points;
 
@@ -170,48 +181,64 @@ int main(int argc, char **argv) {
 
       CPointsSet2i boundingPoints;
 
-      // Let's make sure that there's one vent centre
+//      // Let's make sure that there's one vent centre
+//
+//      for (int x = std::max(0, ventCenter[0] - 3) ; x < std::min(heightmap.getWidth(), ventCenter[0] + 4) ; x++) {
+//        for (int y = std::max(0, ventCenter[1] - 3) ; y < std::min(heightmap.getHeight(), ventCenter[1] + 4) ; y++) {
+//          //heightmap.setValue(x, y, 0.5f);
+//          boundingPoints.addPoint(vector2i(x, y));
+//        }
+//      }
 
-      for (int x = std::max(0, ventCenter[0] - 3) ; x < std::min(heightmap.getWidth(), ventCenter[0] + 4) ; x++) {
-        for (int y = std::max(0, ventCenter[1] - 3) ; y < std::min(heightmap.getHeight(), ventCenter[1] + 4) ; y++) {
-          //heightmap.setValue(x, y, 0.5f);
-          boundingPoints.addPoint(vector2i(x, y));
+      float clusterSize = sqrt(clusterPoints->getWidth() * clusterPoints->getHeight());
+      int particlesPerSquare = 20;
+      int totalParticles = (clusterPoints->getCount() * particlesPerSquare);
+      float particlesHeight = 0.02f;
+      printf("Cluster size is %f\n", clusterSize);
+      //boundingPoints.createBrownian(20, 256, 256);
+      clusterPoints->shrink(&boundingPoints, (int)(clusterSize * 0.15f));
+
+      //boundingPoints.saveAsPNG("shrinked.png", 256, 256);
+
+      heightmap.setMaxHeight(2.0f);
+
+      CParticleDeposition depositionFilter;
+      depositionFilter.setParameters(particlesHeight, 2, 1);
+      depositionFilter.setBoundingPoints(&boundingPoints);
+      depositionFilter.setMode(MOVING);
+      depositionFilter.setVentCenter(ventCenter);
+      depositionFilter.setParticlesCount(totalParticles);
+      depositionFilter.apply(&heightmap);
+
+      // to calculate where the caldera should be
+      float avgHeight = particlesHeight * clusterPoints->getCount() * 0.01f;
+
+      // create caldera
+      float highestPoint = 0.0f;
+      for (std::vector<vector2i>::const_iterator i = clusterPoints->getPoints().begin() ; i != clusterPoints->getPoints().end() ; i++) {
+        if (heightmap.getValue((*i)[0], (*i)[1]) > highestPoint) {
+          highestPoint = heightmap.getValue((*i)[0], (*i)[1]);
         }
       }
 
-      //boundingPoints.createBrownian(20, 256, 256);
-      clusterPoints->shrink(&boundingPoints, 2);
+      float threshold = highestPoint * 0.7f;
 
-      boundingPoints.saveAsPNG("shrinked.png", 256, 256);
+      for (std::vector<vector2i>::const_iterator i = clusterPoints->getPoints().begin() ; i != clusterPoints->getPoints().end() ; i++) {
+        float v = heightmap.getValue((*i)[0], (*i)[1]);
+        if (v > threshold) {
+          heightmap.setValue((*i)[0], (*i)[1], threshold - (v - threshold));
+        }
+      }
 
-//      heightmap.setMaxHeight(2.0f);
-//
-//      CParticleDeposition depositionFilter;
-//      depositionFilter.setParameters(0.02f, 2, 1);
-//      depositionFilter.setBoundingPoints(&boundingPoints);
-//      depositionFilter.setMode(MOVING);
-//      depositionFilter.setVentCenter(ventCenter);
-//      depositionFilter.setParticlesCount(clusterPoints->getCount() * 50);
-//      depositionFilter.apply(&heightmap);
-//
-//      // create caldera
-//      float threshold = 1.0f;
-//      for (std::vector<vector2i>::const_iterator i = clusterPoints->getPoints().begin() ; i != clusterPoints->getPoints().end() ; i++) {
-//        float v = heightmap.getValue((*i)[0], (*i)[1]);
-//        if (v > threshold) {
-//          heightmap.setValue((*i)[0], (*i)[1], threshold - (v - threshold));
-//        }
-//      }
-//
-//      heightmap.setMaxHeight(1.0f);
+      heightmap.setMaxHeight(1.0f);
 
     }
   }
 
   // Some peturbation postprocessing
-  CPerturbation perturbationFilter;
-  //perturbationFilter.setMagnitude(0.03f);
-  //perturbationFilter.apply(&heightmap);
+  CPerturbation finalPerturbationFilter;
+  finalPerturbationFilter.setMagnitude(0.03f);
+  finalPerturbationFilter.apply(&heightmap);
 
   // Save everything
   heightmap.saveAsPNG(outputPath);
