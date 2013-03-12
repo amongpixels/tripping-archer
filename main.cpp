@@ -71,7 +71,7 @@ int main(int argc, char **argv) {
 
       // Deposit mountains
       CParticleDeposition depositionFilter;
-      depositionFilter.setParameters(0.02f, 2);
+      depositionFilter.setParameters(0.02f, 2, 1);
       depositionFilter.setBoundingPoints(&skeleton);
       depositionFilter.setMode(RANDOM);
       depositionFilter.setVentCenter(skeleton.getMedianPoint());
@@ -79,12 +79,139 @@ int main(int argc, char **argv) {
       depositionFilter.apply(&heightmap);
 
     }
+    // RIVERS
+    else if (inputProcessor.getClusters()[i]->channel == 1) {
+
+      //CHeightmap riverMask (256, 256);
+      //CHeightmap river (256, 256);
+
+      CPointsSet2i * clusterPoints = &inputProcessor.getClusters()[i]->points;
+
+      CPointsSet2i skeleton;
+      clusterPoints->generateSkeleton(&skeleton);
+
+      std::vector <float> distances;
+      float maxDistance = 0.0f;
+      float heightmapSize = sqrt(heightmap.getWidth() * heightmap.getHeight());
+
+      CHeightmap riverSide (heightmap.getWidth(), heightmap.getHeight());
+      CHeightmap river (heightmap.getWidth(), heightmap.getHeight());
+
+      // For every point calculate the distance to the skeleton
+      for (std::vector<vector2i>::const_iterator p = clusterPoints->getPoints().begin() ; p != clusterPoints->getPoints().end() ; p++) {
+
+        std::vector <float> skeletonDistances;
+
+        // Calculate distances to every point in the skeleton
+        for (int i = 0 ; i < skeleton.getCount() ; i++) {
+          skeletonDistances.push_back( (skeleton.getPoints()[i] - (*p)).length() );
+        }
+
+        std::sort(skeletonDistances.begin(), skeletonDistances.end());
+
+        distances.push_back(*skeletonDistances.begin());
+
+        if (*skeletonDistances.begin() > maxDistance) {
+          maxDistance = *skeletonDistances.begin();
+        }
+
+      }
+
+      for (unsigned int i = 0 ; i < clusterPoints->getPoints().size() ; i++) {
+        float value = (1.0f - (distances[i] / maxDistance));
+        //heightmap->setValue(this->points[i][0], this->points[i][1], value * value);
+      }
+
+      // Generate river skeleton
+      CBrownianTree riverSkeleton;
+      clusterPoints->generateSkeleton(&riverSkeleton);
+      riverSkeleton.setBoundingPoints(clusterPoints);
+      riverSkeleton.createBrownian((int)(
+          clusterPoints->getCount() * 0.05f),
+          clusterPoints->getTopRight()[0] + 1,
+          clusterPoints->getTopRight()[1] + 1
+      );
+
+      // Deposit some river lololol
+      CParticleDeposition depositionFilter;
+      depositionFilter.setParameters(0.01f, 3, (int)(maxDistance * 0.15f));
+      depositionFilter.setBoundingPoints(&riverSkeleton);
+      depositionFilter.setMode(RANDOM);
+      depositionFilter.setVentCenter(riverSkeleton.getMedianPoint());
+      depositionFilter.setParticlesCount(riverSkeleton.getCount() * 200);
+      depositionFilter.apply(&riverSide);
+
+      CPerturbation riverPerturbation;
+      riverPerturbation.setMagnitude(0.03f);
+      riverPerturbation.apply(&riverSide);
+
+      CHeightmap cpy = riverSide;
+
+      for (int x = 0 ; x < riverSide.getWidth() ; x++) {
+        for (int y = 0 ; y < riverSide.getHeight() ; y++) {
+
+        }
+      }
+
+      heightmap -= riverSide;
+      //float k
+      //heightmap -= river;
+
+      riverSide.saveAsPNG("rivermask.png");
+
+
+    }
+    // VOLCANOS
+    else if (inputProcessor.getClusters()[i]->channel == 2) {
+
+      CPointsSet2i * clusterPoints = &inputProcessor.getClusters()[i]->points;
+
+      vector2i ventCenter = clusterPoints->getCentroid();
+
+      CPointsSet2i boundingPoints;
+
+      // Let's make sure that there's one vent centre
+
+      for (int x = std::max(0, ventCenter[0] - 3) ; x < std::min(heightmap.getWidth(), ventCenter[0] + 4) ; x++) {
+        for (int y = std::max(0, ventCenter[1] - 3) ; y < std::min(heightmap.getHeight(), ventCenter[1] + 4) ; y++) {
+          //heightmap.setValue(x, y, 0.5f);
+          boundingPoints.addPoint(vector2i(x, y));
+        }
+      }
+
+      //boundingPoints.createBrownian(20, 256, 256);
+      clusterPoints->shrink(&boundingPoints, 2);
+
+      boundingPoints.saveAsPNG("shrinked.png", 256, 256);
+
+//      heightmap.setMaxHeight(2.0f);
+//
+//      CParticleDeposition depositionFilter;
+//      depositionFilter.setParameters(0.02f, 2, 1);
+//      depositionFilter.setBoundingPoints(&boundingPoints);
+//      depositionFilter.setMode(MOVING);
+//      depositionFilter.setVentCenter(ventCenter);
+//      depositionFilter.setParticlesCount(clusterPoints->getCount() * 50);
+//      depositionFilter.apply(&heightmap);
+//
+//      // create caldera
+//      float threshold = 1.0f;
+//      for (std::vector<vector2i>::const_iterator i = clusterPoints->getPoints().begin() ; i != clusterPoints->getPoints().end() ; i++) {
+//        float v = heightmap.getValue((*i)[0], (*i)[1]);
+//        if (v > threshold) {
+//          heightmap.setValue((*i)[0], (*i)[1], threshold - (v - threshold));
+//        }
+//      }
+//
+//      heightmap.setMaxHeight(1.0f);
+
+    }
   }
 
   // Some peturbation postprocessing
   CPerturbation perturbationFilter;
-  perturbationFilter.setMagnitude(0.03f);
-  perturbationFilter.apply(&heightmap);
+  //perturbationFilter.setMagnitude(0.03f);
+  //perturbationFilter.apply(&heightmap);
 
   // Save everything
   heightmap.saveAsPNG(outputPath);

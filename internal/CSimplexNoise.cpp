@@ -114,6 +114,8 @@ namespace archer {
 
   void CSimplexNoise::apply(CHeightmap * h) {
 
+    printf("Generating simplex noise... ");
+
     double xEnd = x2 - x1;
     double yEnd = y2 - y1;
 
@@ -122,7 +124,7 @@ namespace archer {
 
     double f, a; // frequency, amplitude
 
-    printf("xEnd yEnd : %f %f, xStep yStep: %f %f\n", xEnd, yEnd, xStep, yStep);
+    //printf("xEnd yEnd : %f %f, xStep yStep: %f %f\n", xEnd, yEnd, xStep, yStep);
 
     for (int o = 0 ; o < this->octaves ; o++) {
 
@@ -131,7 +133,7 @@ namespace archer {
       f = pow(2.0, o);
       a = pow(this->persistence, o);
 
-      printf("f: %f, a: %f\n", f, a);
+      //printf("f: %f, a: %f\n", f, a);
 
       for (int x = 0 ; x < h->getWidth() ; x++) {
         for (int y = 0 ; y < h->getHeight() ; y++) {
@@ -149,6 +151,8 @@ namespace archer {
       (*h) += noiseHeightmap;
 
     }
+
+    printf("done.\n");
 
   }
 

@@ -15,6 +15,8 @@
 #include "CHeightmap.h"
 #include "TPointsSet.h"
 #include "helpers.h"
+//#include "CBrownianTree.h"
+//#include "CParticleDeposition.h"
 
 //using namespace cml;
 using namespace cimg_library;
@@ -84,8 +86,11 @@ namespace archer
       void clear();
 
       void generateSkeleton(CPointsSet2i * skeleton = NULL);
+      void shrink(CPointsSet2i * shrinked, int amount);
 
       void createMask(CHeightmap * h, float blur = 0.0f);
+
+      vector2i & getCentroid();
 
       CPointsSet2i & operator += (const CPointsSet2i & p);
       const CPointsSet2i operator + (const CPointsSet2i & );

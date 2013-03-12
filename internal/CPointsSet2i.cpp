@@ -84,9 +84,9 @@ namespace archer
   
   void CPointsSet2i::generateSkeleton(CPointsSet2i * s) {
 
-    if (!this->skeleton) {
+    printf("Generating a skeleton...");
 
-      printf("Generating a skeleton...");
+    if (!this->skeleton) {
 
       this->skeleton = new CPointsSet2i();
 
@@ -189,6 +189,8 @@ namespace archer
 
     (*s) = (*this->skeleton);
 
+    printf(" done, created %d points.\n", this->skeleton->getCount());
+
     //memcpy(s, this->skeleton, sizeof(CPointsSet2i));
 
   }
@@ -200,27 +202,67 @@ namespace archer
 
   void CPointsSet2i::createMask(CHeightmap* h, float blur) {
 
+    printf("Creating a mask...\n");
+
     // Make sure that the points will fit on the heightmap (sanity check)
     assert(h->getWidth() >= this->topRight[0] && h->getWidth() >= this->topRight[1]);
 
     CImg <unsigned char> mask (h->getWidth(), h->getHeight(), 1, 3, 0);
-    unsigned char c [] = { 255, 255, 255 };
 
-    // Just blur current points
-    for (std::vector<vector2i>::iterator i = this->points.begin() ; i != this->points.end() ; i++) {
-      mask.draw_point((*i)[0], (*i)[1], c);
-    }
+//    CPointsSet2i skeleton;
+//    this->generateSkeleton(&skeleton);
+//
+//    std::vector <float> distances;
+//    float maxDistance = 0.0f;
+//    float heightmapSize = sqrt(h->getWidth() * h->getHeight());
+//
+//    CHeightmap riverSide (h->getWidth(), h->getHeight());
+//    CHeightmap river (h->getWidth(), h->getHeight());
+//
+//    // For every point calculate the distance to the skeleton
+//    for (std::vector<vector2i>::iterator p = this->points.begin() ; p != this->points.end() ; p++) {
+//
+//      std::vector <float> skeletonDistances;
+//
+//      // Calculate distances to every point in the skeleton
+//      for (int i = 0 ; i < skeleton.getCount() ; i++) {
+//        skeletonDistances.push_back( (skeleton.getPoints()[i] - (*p)).length() );
+//      }
+//
+//      std::sort(skeletonDistances.begin(), skeletonDistances.end());
+//
+//      distances.push_back(*skeletonDistances.begin());
+//
+//      if (*skeletonDistances.begin() > maxDistance) {
+//        maxDistance = *skeletonDistances.begin();
+//      }
+//
+//    }
+//
+//    for (unsigned int i = 0 ; i < this->points.size() ; i++) {
+//      float value = (1.0f - (distances[i] / maxDistance));
+//      h->setValue(this->points[i][0], this->points[i][1], value * value);
+//    }
+//
+//    // Generate river skeleton
+//    CBrownianTree riverSkeleton;
+//    riverSkeleton.setBoundingPoints(this);
+//    riverSkeleton.createBrownian((int)(this->getCount() * 0.05f), this->getTopRight()[0] + 1, this->getTopRight()[1] + 1);
+//
+//    // Deposit some river lololol
+//    CParticleDeposition depositionFilter;
+//    depositionFilter.setParameters(0.02f, 6, (int)(maxDistance));
+//    depositionFilter.setBoundingPoints(&skeleton);
+//    depositionFilter.setMode(RANDOM);
+//    depositionFilter.setVentCenter(skeleton.getMedianPoint());
+//    depositionFilter.setParticlesCount(skeleton.getCount() * 100);
+//    depositionFilter.apply(&riverSide);
+//
+//    (*h) = riverSide;
 
-    if (blur) {
-      mask.blur(blur);
-    }
-    h->zero();
+    // We have a very steep downfall river, let's create a mask that will create a nice smooth middle of the river
 
-    for (int x = 0 ; x < h->getWidth() ; x++) {
-      for (int y = 0 ; y < h->getHeight() ; y++) {
-        h->setValue(x, y, (float)(mask(x, y, 0, 0)) / 255.0f);
-      }
-    }
+
 
 //    vector2i median = this->getMedianPoint();
 //
@@ -313,6 +355,79 @@ namespace archer
     return points;
   }
   
+  bool compareCentroidPairs(const std::pair<int, float> & p1, const std::pair<int, float> & p2) {
+    return p1.second < p2.second;
+  }
+
+  vector2i& CPointsSet2i::getCentroid() {
+    vector2i centroid (0, 0);
+
+    for (std::vector<vector2i>::iterator i = this->points.begin() ; i < this->points.end() ; i++) {
+      centroid += (*i);
+    }
+
+    centroid[0] = centroid[0] / this->points.size();
+    centroid[1] = centroid[1] / this->points.size();
+
+    // If the centroid is not in the set of points, find the closest to it
+    if (!this->isPointInSet(centroid)) {
+      std::vector< pair<int, float> > distances;
+      for (int i = 0 ; i < this->points.size() ; i++) {
+        distances.push_back(std::pair<int, float>(i, (this->points[i] - centroid).length()));
+      }
+
+      std::sort(distances.begin(), distances.end(), compareCentroidPairs);
+
+      centroid = this->points[(*distances.begin()).first];
+    }
+
+    return centroid;
+  }
+  
+  void CPointsSet2i::shrink(CPointsSet2i * shrinked, int amount) {
+
+    printf("Shrinking points... ");
+
+    Array2b map = this->binaryMap;
+    std::vector<vector2i> points = this->points;
+
+    for (int i = amount ; i > 0 ; i--) {
+
+      std::vector<int> boundaryPoints;
+
+      for (int j = 0 ; j < points.size() ; j++) {
+
+        vector2i * p = &points[j];
+
+        for (int x = std::min(0, (*p)[0] - 1) ; x < std::max((int)(this->binaryMap.size()), (*p)[0] + 2) ; x++) {
+          for (int y = std::min(0, (*p)[1] - 1) ; y < std::max((int)(this->binaryMap[0].size()), (*p)[1] + 2) ; y++) {
+
+            if (x != (*p)[0] || y != (*p)[1]) {
+              if (map[x][y] == 0) {
+                boundaryPoints.push_back(j);
+              }
+            }
+          }
+        }
+
+      }
+
+      for (std::vector<vector2i>::iterator j = boundaryPoints.begin() ; j != boundaryPoints.end() ; j++) {
+        map[(*j)[0]][(*j)[1]] = 0;
+      }
+
+    }
+
+    for (int x = 0 ; x < map.size() ; x++) {
+      for (int y = 0 ; y < map[0].size() ; y++) {
+        shrinked->addPoint(vector2i(x, y));
+      }
+    }
+
+    printf(" done.\n");
+
+  }
+
   CPointsSet2i::~CPointsSet2i() {
     if (this->skeleton) {
       delete this->skeleton;

@@ -152,7 +152,7 @@ namespace archer
   
   void CBrownianTree::setBoundingPoints(CPointsSet2i * p) {
     this->boundingPoints = p;
-    printf("setting bounding points of size %d\n", this->boundingPoints->getCount());
+    //printf("setting bounding points of size %d\n", this->boundingPoints->getCount());
     assert(this->boundingPoints->getCount() > 0);
   }
 

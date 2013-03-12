@@ -15,12 +15,11 @@
 
 #include "CPointsSet2i.h"
 
-
 using namespace cml;
 
 namespace archer
 {
-  
+
   class CBrownianTree : public CPointsSet2i
   {
     private:

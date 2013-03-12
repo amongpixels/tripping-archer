@@ -48,7 +48,7 @@ namespace archer {
       void setMode(DepositionDropType t);
       void setVentCenter(const vector2i & c);
       void setParticlesCount(int i);
-      void setParameters(float h, int t);
+      void setParameters(float h, int t, int r);
 
       virtual ~CParticleDeposition();
   };

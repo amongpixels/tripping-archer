@@ -47,8 +47,10 @@ namespace archer
 
     public:
 
-      static float maxHeight;
-      static float minHeight;
+      //static float maxHeight;
+      //static float minHeight;
+
+      float maxHeight;
 
       int getWidth() const;
       int getHeight() const;
@@ -57,6 +59,7 @@ namespace archer
       vector3f getNormal(int x, int y);
       void setValue(int x, int y, float v);
       void setHeightScale(float h);
+      void setMaxHeight(float h);
       void zero();
 
       // This generates a simple test heightmap
@@ -70,6 +73,7 @@ namespace archer
       void loadFromPNG(char * path);
 
       CHeightmap & operator += (CHeightmap &);
+      CHeightmap & operator -= (CHeightmap &);
       CHeightmap & operator *= (const float &);
       CHeightmap & operator *= (const CHeightmap &);
       const CHeightmap operator * (const CHeightmap &);

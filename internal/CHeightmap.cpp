@@ -9,8 +9,8 @@
 
 namespace archer
 {
-  float CHeightmap::minHeight = -1.0f;
-  float CHeightmap::maxHeight = 1.0f;
+  //float CHeightmap::minHeight = -1.0f;
+  //float CHeightmap::maxHeight = 1.0f;
 
   void CHeightmap::init (int w, int h) {
 
@@ -21,6 +21,7 @@ namespace archer
 
     this->maxValue = 0.0f;
     this->heightScale = 10.0f;
+    this->maxHeight = 1.0f;
 
     this->hasBeenModified = false;
 
@@ -44,7 +45,7 @@ namespace archer
 
   void CHeightmap::setValue(int x, int y, float v) {
 
-    v = std::max(CHeightmap::minHeight, std::min(CHeightmap::maxHeight, v)); // Cap the value between -1.0f and 1.0f
+    v = std::max(-this->maxHeight, std::min(this->maxHeight, v)); // Cap the value between -1.0f and 1.0f
     this->values[x][y] = v;
 
     if (v > this->maxValue) {
@@ -58,6 +59,10 @@ namespace archer
     this->heightScale = f;
   }
 
+  void CHeightmap::setMaxHeight(float f) {
+    this->maxHeight = f;
+  }
+
   void CHeightmap::saveAsPNG(char * path) {
 
     CImg <unsigned char> img (this->width, this->height, 1, 3, 0);
@@ -67,7 +72,7 @@ namespace archer
     for (unsigned int i = 0 ; i < this->values.size() ; i++) {
       for (unsigned int j = 0 ; j < this->values[i].size() ; j++) {
 
-        float normalized = (this->values[i][j] - CHeightmap::minHeight) * (0.5f * CHeightmap::maxHeight);// / this->maxValue;
+        float normalized = (this->values[i][j] + this->maxHeight) * (0.5f * this->maxHeight);// / this->maxValue;
 
         int color [] = { normalized * 255, normalized * 255, normalized * 255 };
         img.draw_point(i, j, color);
@@ -248,12 +253,25 @@ namespace archer
         float newValue = this->values[x][y] + h.getValue(x, y);
 
         this->setValue(x, y, newValue);
-//
-//        if (newValue > this->maxValue) {
-//          this->maxValue = newValue;
-//        }
-//
-//        this->values[x][y] = newValue;
+        //
+        //        if (newValue > this->maxValue) {
+        //          this->maxValue = newValue;
+        //        }
+        //
+        //        this->values[x][y] = newValue;
+      }
+    }
+
+    return *this;
+  }
+
+  CHeightmap & CHeightmap::operator -= (CHeightmap & h) {
+    assert(h.getWidth() == this->width);
+    assert(h.getHeight() == this->height);
+
+    for (unsigned int x = 0 ; x < this->values.size() ; x++) {
+      for (unsigned int y = 0 ; y < this->values[x].size() ; y++) {
+        this->setValue(x, y, this->values[x][y] - h.getValue(x, y));
       }
     }
 

@@ -69,11 +69,12 @@ void archer::CParticleDeposition::apply(CHeightmap * h) {
     }
   }*/
 
-  printf("let me get this straight, vent center: ");
-  helpers::printVector2i(this->ventCenter);
-  printf("number of particles %d and number of boundingPoints %d\n\n", this->particlesCount, this->boundingPoints->getCount());
-  printf("particle size %f, treshold %f\n", this->particleHeight, this->elevationThreshold);
+  //printf("let me get this straight, vent center: ");
+  //helpers::printVector2i(this->ventCenter);
+  //printf("number of particles %d and number of boundingPoints %d\n\n", this->particlesCount, this->boundingPoints->getCount());
+  //printf("particle size %f, treshold %f\n", this->particleHeight, this->elevationThreshold);
 
+  printf("Performing particle deposition with %d particles... ", this->particlesCount);
   //return;
 
   //int particlesCount = 100000;
@@ -151,6 +152,8 @@ void archer::CParticleDeposition::apply(CHeightmap * h) {
 
   }
 
+  printf("done.\n");
+
 
 }
 
@@ -218,9 +221,10 @@ void archer::CParticleDeposition::setMode(DepositionDropType t) {
   this->depositionType = t;
 }
 
-void archer::CParticleDeposition::setParameters(float h, int t) {
+void archer::CParticleDeposition::setParameters(float h, int t, int r) {
   this->elevationThreshold = h * t;
   this->particleHeight = h;
+  this->searchRadius = r;
 }
 
 archer::CParticleDeposition::~CParticleDeposition() {
