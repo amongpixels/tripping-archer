@@ -101,7 +101,7 @@ internal/CVoronoi.d: ../internal/CVoronoi.cpp ../internal/CVoronoi.h \
  /home/dragomir/git/include/cml/mathlib/projection.h \
  /home/dragomir/git/include/cml/mathlib/picking.h \
  ../internal/CHeightmap.h ../internal/../external/CImg.h \
- ../internal/helpers.h
+ ../internal/helpers.h ../internal/CGradient.h
 
 ../internal/CVoronoi.h:
 
@@ -314,3 +314,5 @@ internal/CVoronoi.d: ../internal/CVoronoi.cpp ../internal/CVoronoi.h \
 ../internal/../external/CImg.h:
 
 ../internal/helpers.h:
+
+../internal/CGradient.h:

@@ -100,7 +100,8 @@ internal/CHeightmap.d: ../internal/CHeightmap.cpp \
  /home/dragomir/git/include/cml/mathlib/matrix_concat.h \
  /home/dragomir/git/include/cml/mathlib/projection.h \
  /home/dragomir/git/include/cml/mathlib/picking.h \
- ../internal/../external/CImg.h ../internal/helpers.h
+ ../internal/../external/CImg.h ../internal/helpers.h \
+ ../internal/CGradient.h
 
 ../internal/CHeightmap.h:
 
@@ -309,3 +310,5 @@ internal/CHeightmap.d: ../internal/CHeightmap.cpp \
 ../internal/../external/CImg.h:
 
 ../internal/helpers.h:
+
+../internal/CGradient.h:

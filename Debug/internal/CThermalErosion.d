@@ -102,7 +102,7 @@ internal/CThermalErosion.d: ../internal/CThermalErosion.cpp \
  /home/dragomir/git/include/cml/mathlib/projection.h \
  /home/dragomir/git/include/cml/mathlib/picking.h \
  ../internal/CHeightmap.h ../internal/../external/CImg.h \
- ../internal/helpers.h
+ ../internal/helpers.h ../internal/CGradient.h
 
 ../internal/CThermalErosion.h:
 
@@ -315,3 +315,5 @@ internal/CThermalErosion.d: ../internal/CThermalErosion.cpp \
 ../internal/../external/CImg.h:
 
 ../internal/helpers.h:
+
+../internal/CGradient.h:

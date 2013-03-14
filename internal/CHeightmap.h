@@ -14,6 +14,7 @@
 
 #include "../external/CImg.h"
 #include "helpers.h"
+#include "CGradient.h"
 
 using namespace cimg_library;
 using namespace std;

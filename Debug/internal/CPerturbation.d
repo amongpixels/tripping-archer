@@ -102,7 +102,8 @@ internal/CPerturbation.d: ../internal/CPerturbation.cpp \
  /home/dragomir/git/include/cml/mathlib/projection.h \
  /home/dragomir/git/include/cml/mathlib/picking.h \
  ../internal/../external/CImg.h ../internal/helpers.h \
- ../internal/CSimplexNoise.h ../internal/IHeightmapProcessor.h
+ ../internal/CGradient.h ../internal/CSimplexNoise.h \
+ ../internal/IHeightmapProcessor.h
 
 ../internal/CPerturbation.h:
 
@@ -313,6 +314,8 @@ internal/CPerturbation.d: ../internal/CPerturbation.cpp \
 ../internal/../external/CImg.h:
 
 ../internal/helpers.h:
+
+../internal/CGradient.h:
 
 ../internal/CSimplexNoise.h:
 

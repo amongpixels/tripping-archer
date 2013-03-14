@@ -83,7 +83,7 @@ int main(int argc, char **argv) {
 
   // Some peturbation postprocessing
   CPerturbation perturbationFilter;
-  perturbationFilter.setMagnitude(0.02f);
+  perturbationFilter.setMagnitude(0.01f);
   perturbationFilter.apply(&heightmap);
 
   for (int i = 0 ; i < inputProcessor.getClusters().size() ; i++) {
@@ -221,7 +221,7 @@ int main(int argc, char **argv) {
         }
       }
 
-      float threshold = highestPoint * 0.7f;
+      float threshold = std::min(1.0f, highestPoint * 0.8f);
 
       for (std::vector<vector2i>::const_iterator i = clusterPoints->getPoints().begin() ; i != clusterPoints->getPoints().end() ; i++) {
         float v = heightmap.getValue((*i)[0], (*i)[1]);

@@ -197,9 +197,16 @@ namespace archer
 
     CImg <unsigned char> colorMap (this->width, this->height, 1, 3, 0);
 
-    int color1 [] = { 188, 169, 91 };
-    int color2 [] = { 31, 195, 35 };
-    int color3 [] = { 197, 197, 197 };
+    //int color1 [] = { 188, 169, 91 };
+    //int color2 [] = { 31, 195, 35 };
+    //int color3 [] = { 197, 197, 197 };
+
+    CGradient colors;
+    colors.addStop(0.0f, color3f(1.0, 0.0f, 0.0f));
+    colors.addStop(0.5f, color3f(0.0, 1.0f, 0.0f));
+    colors.addStop(1.0f, color3f(0.0, 0.0f, 1.0f));
+
+    colors.saveAsPNG("gradient.png", 200, 20);
 
     for (unsigned int x = 0 ; x < this->values.size() ; x++) {
       for (unsigned int y = 0 ; y < this->values[x].size() ; y++) {
@@ -208,30 +215,15 @@ namespace archer
 
         float lightIntensity = max(0.0f, min(1.0f, cml::dot(this->normals[x][y], lightDirection)));
 
-        if (lightIntensity < 1.0f) {
-          //printf("intensity %f\n", lightIntensity);
-        }
 
-        float heightValue = this->values[x][y];// / this->maxValue;
 
-        //       float pC1 = max(0.0f, -3.0f * heightValue + 1.0f);
-        //       float pC2 = max(0.0f, -3.0f * (heightValue - 0.3f) + 1.0f);
-        //       float pC3 = max(0.0f, -3.0f * (heightValue - 0.6f) + 1.0f);
-        //
-        //       if (pC1 > 1.0f) { pC1 = 0.0f; }
-        //       if (pC2 > 1.0f) { pC2 = 0.0f; }
-        //       if (pC3 > 1.0f) { pC3 = 0.0f; }
-        //
-        //       int color [] = {
-        //           lightIntensity * (color1[0] * pC1 + color2[0] * pC2 + color3[0] * pC3),
-        //           lightIntensity * (color1[1] * pC1 + color2[1] * pC2 + color3[1] * pC3),
-        //           lightIntensity * (color1[2] * pC1 + color2[2] * pC2 + color3[2] * pC3)
-        //       };
+        float heightValue = (this->values[x][y] + this->maxHeight) * 0.5f;
+        color3f c = colors.getColor(heightValue);
 
         int color [] = {
-            lightIntensity * 255,
-            lightIntensity * 255,
-            lightIntensity * 255
+            lightIntensity * c[0] * 255,
+            lightIntensity * c[1] * 255,
+            lightIntensity * c[2] * 255
         };
 
         colorMap.draw_point(x, y, color);

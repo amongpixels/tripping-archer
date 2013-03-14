@@ -102,7 +102,7 @@ internal/CSimplexNoise.d: ../internal/CSimplexNoise.cpp \
  /home/dragomir/git/include/cml/mathlib/projection.h \
  /home/dragomir/git/include/cml/mathlib/picking.h \
  ../internal/CHeightmap.h ../internal/../external/CImg.h \
- ../internal/helpers.h
+ ../internal/helpers.h ../internal/CGradient.h
 
 ../internal/CSimplexNoise.h:
 
@@ -315,3 +315,5 @@ internal/CSimplexNoise.d: ../internal/CSimplexNoise.cpp \
 ../internal/../external/CImg.h:
 
 ../internal/helpers.h:
+
+../internal/CGradient.h:

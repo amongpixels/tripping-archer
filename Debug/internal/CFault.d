@@ -101,7 +101,7 @@ internal/CFault.d: ../internal/CFault.cpp ../internal/CFault.h \
  /home/dragomir/git/include/cml/mathlib/projection.h \
  /home/dragomir/git/include/cml/mathlib/picking.h \
  ../internal/CHeightmap.h ../internal/../external/CImg.h \
- ../internal/helpers.h
+ ../internal/helpers.h ../internal/CGradient.h
 
 ../internal/CFault.h:
 
@@ -312,3 +312,5 @@ internal/CFault.d: ../internal/CFault.cpp ../internal/CFault.h \
 ../internal/../external/CImg.h:
 
 ../internal/helpers.h:
+
+../internal/CGradient.h:

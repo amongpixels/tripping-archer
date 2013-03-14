@@ -101,12 +101,13 @@ main.d: ../main.cpp ../internal/CNoise.h ../internal/CImageBuffer.h \
  /home/dragomir/git/include/cml/mathlib/matrix_concat.h \
  /home/dragomir/git/include/cml/mathlib/projection.h \
  /home/dragomir/git/include/cml/mathlib/picking.h \
- ../internal/CHeightmap.h ../internal/helpers.h ../internal/CFault.h \
- ../internal/CParticleDeposition.h ../internal/CPointsSet2i.h \
- ../internal/TPointsSet.h ../internal/CVoronoi.h \
- ../internal/CInputProcessor.h ../internal/CBrownianTree.h \
- ../internal/CPerturbation.h ../internal/CSimplexNoise.h \
- ../internal/CThermalErosion.h ../internal/CHydraulicErosion.h
+ ../internal/CHeightmap.h ../internal/helpers.h ../internal/CGradient.h \
+ ../internal/CFault.h ../internal/CParticleDeposition.h \
+ ../internal/CPointsSet2i.h ../internal/TPointsSet.h \
+ ../internal/CVoronoi.h ../internal/CInputProcessor.h \
+ ../internal/CBrownianTree.h ../internal/CPerturbation.h \
+ ../internal/CSimplexNoise.h ../internal/CThermalErosion.h \
+ ../internal/CHydraulicErosion.h
 
 ../internal/CNoise.h:
 
@@ -323,6 +324,8 @@ main.d: ../main.cpp ../internal/CNoise.h ../internal/CImageBuffer.h \
 ../internal/CHeightmap.h:
 
 ../internal/helpers.h:
+
+../internal/CGradient.h:
 
 ../internal/CFault.h:
 

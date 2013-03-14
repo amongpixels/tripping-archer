@@ -101,7 +101,8 @@ internal/CBrownianTree.d: ../internal/CBrownianTree.cpp \
  /home/dragomir/git/include/cml/mathlib/projection.h \
  /home/dragomir/git/include/cml/mathlib/picking.h \
  ../internal/CPointsSet2i.h ../internal/../external/CImg.h \
- ../internal/CHeightmap.h ../internal/helpers.h ../internal/TPointsSet.h
+ ../internal/CHeightmap.h ../internal/helpers.h ../internal/CGradient.h \
+ ../internal/TPointsSet.h
 
 ../internal/CBrownianTree.h:
 
@@ -314,5 +315,7 @@ internal/CBrownianTree.d: ../internal/CBrownianTree.cpp \
 ../internal/CHeightmap.h:
 
 ../internal/helpers.h:
+
+../internal/CGradient.h:
 
 ../internal/TPointsSet.h:

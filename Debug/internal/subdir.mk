@@ -6,6 +6,7 @@
 CPP_SRCS += \
 ../internal/CBrownianTree.cpp \
 ../internal/CFault.cpp \
+../internal/CGradient.cpp \
 ../internal/CHeightmap.cpp \
 ../internal/CHydraulicErosion.cpp \
 ../internal/CImageBuffer.cpp \
@@ -22,6 +23,7 @@ CPP_SRCS += \
 OBJS += \
 ./internal/CBrownianTree.o \
 ./internal/CFault.o \
+./internal/CGradient.o \
 ./internal/CHeightmap.o \
 ./internal/CHydraulicErosion.o \
 ./internal/CImageBuffer.o \
@@ -38,6 +40,7 @@ OBJS += \
 CPP_DEPS += \
 ./internal/CBrownianTree.d \
 ./internal/CFault.d \
+./internal/CGradient.d \
 ./internal/CHeightmap.d \
 ./internal/CHydraulicErosion.d \
 ./internal/CImageBuffer.d \
