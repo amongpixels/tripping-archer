@@ -202,11 +202,14 @@ namespace archer
     //int color3 [] = { 197, 197, 197 };
 
     CGradient colors;
-    colors.addStop(0.0f, color3f(1.0, 0.0f, 0.0f));
-    colors.addStop(0.5f, color3f(0.0, 1.0f, 0.0f));
-    colors.addStop(1.0f, color3f(0.0, 0.0f, 1.0f));
+    colors.addStop(0.0f, 40, 32, 26); // Deep rock
+    colors.addStop(0.2f, 89, 67, 46); // Shallow rock
+    colors.addStop(0.5f, 114, 119, 61); //Early grass
+    colors.addStop(0.6f, 57, 76, 72); // Mountain grass
+    colors.addStop(0.8f, 57, 71, 83); // Mountains
+    colors.addStop(1.0f, 79, 92, 100); // Top of mountains
 
-    colors.saveAsPNG("gradient.png", 200, 20);
+    //colors.saveAsPNG("gradient.png", 200, 20);
 
     for (unsigned int x = 0 ; x < this->values.size() ; x++) {
       for (unsigned int y = 0 ; y < this->values[x].size() ; y++) {
@@ -215,10 +218,9 @@ namespace archer
 
         float lightIntensity = max(0.0f, min(1.0f, cml::dot(this->normals[x][y], lightDirection)));
 
-
-
         float heightValue = (this->values[x][y] + this->maxHeight) * 0.5f;
         color3f c = colors.getColor(heightValue);
+        //c.set(1.0f, 1.0f, 1.0f);
 
         int color [] = {
             lightIntensity * c[0] * 255,

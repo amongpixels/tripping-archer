@@ -18,11 +18,11 @@ namespace archer
   class CPerturbation : public IHeightmapProcessor
   {
     private:
-      float magnitude;
+      int magnitude;
     public:
       CPerturbation();
       void apply(CHeightmap * h);
-      void setMagnitude(float f);
+      void setMagnitude(int);
       virtual ~CPerturbation();
 
   };

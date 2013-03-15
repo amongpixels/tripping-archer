@@ -37,6 +37,9 @@ namespace archer
 
       std::vector <SPointCluster *> clusters;
 
+      int inputWidth;
+      int inputHeight;
+
       /*
        * Performs a flood fill on a given channel to find a full continuous cluster
        */
@@ -44,11 +47,14 @@ namespace archer
 
       SPointCluster * findPointInCluster(vector2i const & point);
 
-      void processClusters();
+      //void processClusters();
 
     public:
       CInputProcessor();
       void loadFromImage(char * path);
+
+      int getInputWidth();
+      int getInputHeight();
 
       std::vector <SPointCluster *> & getClusters();
       vector2i getClusterMedian (SPointCluster & cluster);

@@ -11,12 +11,16 @@ namespace archer
 {
   CInputProcessor::CInputProcessor() {
     // TODO Auto-generated constructor stub
-
+    this->inputHeight = 0;
+    this->inputWidth = 0;
   }
   
   void CInputProcessor::loadFromImage(char* path) {
 
     CImg <unsigned char> image (path);
+
+    this->inputWidth = image.width();
+    this->inputHeight = image.height();
 
     //unsigned char colorToCluster [] = { 255, 0, 0 };
 
@@ -112,6 +116,14 @@ namespace archer
 
   vector2i CInputProcessor::getClusterMedian(SPointCluster & cluster) {
     return cluster.points.getMedianPoint();
+  }
+  
+  int CInputProcessor::getInputWidth() {
+    return this->inputWidth;
+  }
+  
+  int CInputProcessor::getInputHeight() {
+    return this->inputHeight;
   }
 
   CInputProcessor::~CInputProcessor() {

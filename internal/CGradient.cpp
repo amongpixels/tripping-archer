@@ -29,6 +29,10 @@ namespace archer
     std::sort(this->stops.begin(), this->stops.end(), sortStops);
   }
   
+  void CGradient::addStop(float p, int r, int g, int b) {
+    this->addStop(p, color3f((float)(r) / 255.0f, (float)(g) / 255.0f, (float)(b) / 255.0f));
+  }
+
   color3f CGradient::getColor(float p) {
 
     assert(p >= 0.0f && p <= 1.0f);
@@ -51,7 +55,7 @@ namespace archer
         start = &(*i);
       }
 
-      if ((*i).first > p) {
+      if ((*i).first >= p) {
         end = &(*i);
         break;
       }
