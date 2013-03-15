@@ -16,5 +16,5 @@ void archer::helpers::printVector2f(const vector2f & v) {
 }
 
 void archer::helpers::printVector3f(const vector3f & v) {
-  printf("vector3f %f %f %f\n", v[0], v[1], v[3]);
+  printf("vector3f %f %f %f\n", v[0], v[1], v[2]);
 }

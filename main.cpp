@@ -49,44 +49,44 @@ int main(int argc, char **argv) {
   CHeightmap heightmap (inputProcessor.getInputWidth(), inputProcessor.getInputHeight());
 
   // Create base terrain
-  CSimplexNoise simplexFilter;
-  simplexFilter.setOctaves(10);
-  simplexFilter.setBounds(0.0, 0.0, 1.0, 1.0);
-  simplexFilter.setPersistence(0.5);
-  simplexFilter.apply(&heightmap);
-  heightmap *= 0.5f;
+//  CSimplexNoise simplexFilter;
+//  simplexFilter.setOctaves(10);
+//  simplexFilter.setBounds(0.0, 0.0, 1.0, 1.0);
+//  simplexFilter.setPersistence(0.5);
+//  simplexFilter.apply(&heightmap);
+//  heightmap *= 0.5f;
 
-  for (int i = 0 ; i < inputProcessor.getClusters().size() ; i++) {
-    // MOUNTAINS
-    if (inputProcessor.getClusters()[i]->channel == 0) {
-
-      // Generate mountain skeleton
-      CBrownianTree skeleton;
-      inputProcessor.getClusters()[i]->points.generateSkeleton(&skeleton);
-      skeleton.setBoundingPoints(&inputProcessor.getClusters()[i]->points);
-      skeleton.createBrownian((int)(inputProcessor.getClusters()[i]->points.getCount() * 0.15f),
-          inputProcessor.getClusters()[i]->points.getTopRight()[0] + 1,
-          inputProcessor.getClusters()[i]->points.getTopRight()[1] + 1
-      );
-
-      // Deposit mountains
-      CParticleDeposition depositionFilter;
-      depositionFilter.setParameters(0.02f, 2, 1);
-      depositionFilter.setBoundingPoints(&skeleton);
-      depositionFilter.setMode(RANDOM);
-      depositionFilter.setVentCenter(skeleton.getMedianPoint());
-      depositionFilter.setParticlesCount(skeleton.getCount() * 120);
-      depositionFilter.apply(&heightmap);
-
-    }
-  }
-
-  // Some peturbation postprocessing
-  CPerturbation perturbationFilter;
-  perturbationFilter.setMagnitude(4);
-  perturbationFilter.apply(&heightmap);
-
-  printf("what am i doing?\n");
+//  for (int i = 0 ; i < inputProcessor.getClusters().size() ; i++) {
+//    // MOUNTAINS
+//    if (inputProcessor.getClusters()[i]->channel == 0) {
+//
+//      // Generate mountain skeleton
+//      CBrownianTree skeleton;
+//      inputProcessor.getClusters()[i]->points.generateSkeleton(&skeleton);
+//      skeleton.setBoundingPoints(&inputProcessor.getClusters()[i]->points);
+//      skeleton.createBrownian((int)(inputProcessor.getClusters()[i]->points.getCount() * 0.15f),
+//          inputProcessor.getClusters()[i]->points.getTopRight()[0] + 1,
+//          inputProcessor.getClusters()[i]->points.getTopRight()[1] + 1
+//      );
+//
+//      // Deposit mountains
+//      CParticleDeposition depositionFilter;
+//      depositionFilter.setParameters(0.02f, 2, 1);
+//      depositionFilter.setBoundingPoints(&skeleton);
+//      depositionFilter.setMode(RANDOM);
+//      depositionFilter.setVentCenter(skeleton.getMedianPoint());
+//      depositionFilter.setParticlesCount(skeleton.getCount() * 120);
+//      depositionFilter.apply(&heightmap);
+//
+//    }
+//  }
+//
+//  // Some peturbation postprocessing
+//  CPerturbation perturbationFilter;
+//  perturbationFilter.setMagnitude(4);
+//  perturbationFilter.apply(&heightmap);
+//
+//  printf("what am i doing?\n");
 
 //  for (int i = 0 ; i < inputProcessor.getClusters().size() ; i++) {
 //    // RIVERS
@@ -243,6 +243,7 @@ int main(int argc, char **argv) {
 //  //finalPerturbationFilter.apply(&heightmap);
 
   // Save everything
+  heightmap.loadFromPNG("oblivion.png");
   heightmap.saveAsPNG(outputPath);
   heightmap.saveColorMapAsPNG("color.png");
 

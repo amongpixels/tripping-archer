@@ -72,7 +72,7 @@ namespace archer
     for (unsigned int i = 0 ; i < this->values.size() ; i++) {
       for (unsigned int j = 0 ; j < this->values[i].size() ; j++) {
 
-        float normalized = (this->values[i][j] + this->maxHeight) * (0.5f * this->maxHeight);// / this->maxValue;
+        float normalized = (this->values[i][j] + this->maxHeight) * 0.5f;// / this->maxValue;
 
         int color [] = { normalized * 255, normalized * 255, normalized * 255 };
         img.draw_point(i, j, color);
@@ -209,7 +209,10 @@ namespace archer
     colors.addStop(0.8f, 57, 71, 83); // Mountains
     colors.addStop(1.0f, 79, 92, 100); // Top of mountains
 
-    //colors.saveAsPNG("gradient.png", 200, 20);
+    //helpers::printVector3f(colors.getColor(0.0f));
+    //helpers::printVector3f(colors.getColor(1.0f));
+
+    //colors.saveAsPNG("gradient.png", 512, 30);
 
     for (unsigned int x = 0 ; x < this->values.size() ; x++) {
       for (unsigned int y = 0 ; y < this->values[x].size() ; y++) {
@@ -220,7 +223,11 @@ namespace archer
 
         float heightValue = (this->values[x][y] + this->maxHeight) * 0.5f;
         color3f c = colors.getColor(heightValue);
-        //c.set(1.0f, 1.0f, 1.0f);
+
+//        if (c[0] == 0.0f) {
+//          printf("CHUJ %f\n", heightValue);
+//        }
+//        c.set(1.0f, 1.0f, 1.0f);
 
         int color [] = {
             lightIntensity * c[0] * 255,
@@ -337,7 +344,7 @@ namespace archer
 
     for (int x = 0 ; x < image.width() ; x++) {
       for (int y = 0 ; y < image.height() ; y++) {
-        this->setValue(x, y, (float)(*image.data(x, y, 0, 0)) / 255.0f);
+        this->setValue(x, y, ((float)(*image.data(x, y, 0, 0)) / 255.0f) * 2.0f - this->maxHeight);
       }
     }
 

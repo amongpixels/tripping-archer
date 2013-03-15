@@ -38,28 +38,34 @@ namespace archer
     assert(p >= 0.0f && p <= 1.0f);
 
     // Make sure that the stops range from 0.0 to 1.0
-    if ((*this->stops.begin()).first != 0.0f) {
-      (*this->stops.begin()).first = 0.0f;
+    if (this->stops.front().first != 0.0f) {
+      this->stops.front().first = 0.0f;
     }
 
-    if ((*this->stops.end()).first != 1.0f) {
-      (*this->stops.end()).first = 1.0f;
+    if (this->stops.back().first != 1.0f) {
+      this->stops.back().first = 1.0f;
     }
 
-    std::pair<float, color3f> * start;
-    std::pair<float, color3f> * end;
+    std::pair<float, color3f> * start = &this->stops.front();
+    std::pair<float, color3f> * end = &this->stops.back();
 
     // Find between which stops we are
     for (std::vector< std::pair<float, color3f> >::iterator i = this->stops.begin() ; i != this->stops.end() ; i++) {
-      if ((*i).first <= p) {
+
+      if (p == (*i).first) {
+        return (*i).second;
+      }
+      else if ((*i).first < p) {
         start = &(*i);
       }
-
-      if ((*i).first >= p) {
+      else if ((*i).first > p) {
         end = &(*i);
         break;
       }
+
     }
+
+    assert(start && end);
 
     return this->getLinearColor(p, (*start), (*end));
 
@@ -102,6 +108,7 @@ namespace archer
   }
   
   float CGradient::getLinearGradient(float start, float stop, float start_offset, float stop_offset, float offset) const {
+    //printf("start %f, stop %f, start offset %f, stop offset %f, offset %f\n", start, stop, start_offset, stop_offset, offset);
     return (start + ((offset - start_offset) / (stop_offset - start_offset) * (stop - start)));
   }
 
