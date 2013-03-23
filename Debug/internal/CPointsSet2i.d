@@ -101,7 +101,8 @@ internal/CPointsSet2i.d: ../internal/CPointsSet2i.cpp \
  /home/dragomir/git/include/cml/mathlib/projection.h \
  /home/dragomir/git/include/cml/mathlib/picking.h \
  ../internal/../external/CImg.h ../internal/CHeightmap.h \
- ../internal/helpers.h ../internal/CGradient.h ../internal/TPointsSet.h
+ ../internal/helpers.h ../internal/CGradient.h ../internal/CNoise.h \
+ ../internal/CImageBuffer.h ../internal/TPointsSet.h
 
 ../internal/CPointsSet2i.h:
 
@@ -314,5 +315,9 @@ internal/CPointsSet2i.d: ../internal/CPointsSet2i.cpp \
 ../internal/helpers.h:
 
 ../internal/CGradient.h:
+
+../internal/CNoise.h:
+
+../internal/CImageBuffer.h:
 
 ../internal/TPointsSet.h:

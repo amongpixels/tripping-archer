@@ -202,17 +202,21 @@ namespace archer
     //int color3 [] = { 197, 197, 197 };
 
     CGradient colors;
-    colors.addStop(0.0f, 40, 32, 26); // Deep rock
-    colors.addStop(0.2f, 89, 67, 46); // Shallow rock
-    colors.addStop(0.5f, 114, 119, 61); //Early grass
-    colors.addStop(0.6f, 57, 76, 72); // Mountain grass
-    colors.addStop(0.8f, 57, 71, 83); // Mountains
-    colors.addStop(1.0f, 79, 92, 100); // Top of mountains
+    colors.addStop(0.0f, 61, 40, 9); // Deep rock
+    colors.addStop(0.25f, 92, 64, 25); // Shallow rock
+    colors.addStop(0.41f, 163, 128, 57); //Shore
+    colors.addStop(0.58f, 95, 131, 65); // Grass
+    colors.addStop(0.74f, 121, 134, 111); // Mountain grass
+    colors.addStop(0.84f, 131, 134, 129); // Mountains
+    colors.addStop(1.0f, 181, 181, 181); // Top of mountains
+
+    //CSimplexNoise noise;
+    //noise.setBounds(0.0, 0.0, 6.0, 6.0);
 
     //helpers::printVector3f(colors.getColor(0.0f));
     //helpers::printVector3f(colors.getColor(1.0f));
 
-    //colors.saveAsPNG("gradient.png", 512, 30);
+    colors.saveAsPNG("gradient.png", 512, 30);
 
     for (unsigned int x = 0 ; x < this->values.size() ; x++) {
       for (unsigned int y = 0 ; y < this->values[x].size() ; y++) {

@@ -13,36 +13,43 @@
 #include <vector>
 
 #include "IHeightmapProcessor.h"
+#include "CPointsSet2i.h"
 
 using namespace std;
-using namespace archer;
 
-struct voronoiDistance {
-    int pointIndex;
-    float distance;
-};
-
-struct voronoiPoint {
-    vector2i position;
-    std::vector <voronoiDistance> distances;
-};
-
-bool compareDistances (voronoiDistance d1, voronoiDistance d2);
-
-class CVoronoi : IHeightmapProcessor
+namespace archer
 {
-  private:
+  struct voronoiDistance {
+      int pointIndex;
+      float distance;
+  };
 
-    int pointsCount;
-    std::vector <voronoiPoint> points;
+  struct voronoiPoint {
+      vector2i position;
+      //std::vector <voronoiDistance> distances;
+  };
 
-  public:
+  bool compareDistances (voronoiDistance d1, voronoiDistance d2);
 
-    CVoronoi();
+  class CVoronoi : IHeightmapProcessor
+  {
+    private:
 
-    void apply(CHeightmap * h);
+      int pointsCount;
+      std::vector <voronoiPoint> points;
 
-    virtual ~CVoronoi();
-};
+      CPointsSet2i * boundingPoints;
+
+    public:
+
+      CVoronoi();
+
+      void apply(CHeightmap * h);
+      void setBoundingPoints(CPointsSet2i * b);
+      void setPointsCount(int);
+
+      virtual ~CVoronoi();
+  };
+}
 
 #endif /* CVORONOI_H_ */

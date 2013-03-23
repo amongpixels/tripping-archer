@@ -102,7 +102,7 @@ internal/CInputProcessor.d: ../internal/CInputProcessor.cpp \
  /home/dragomir/git/include/cml/mathlib/picking.h \
  ../internal/../external/CImg.h ../internal/CPointsSet2i.h \
  ../internal/CHeightmap.h ../internal/helpers.h ../internal/CGradient.h \
- ../internal/TPointsSet.h
+ ../internal/CNoise.h ../internal/CImageBuffer.h ../internal/TPointsSet.h
 
 ../internal/CInputProcessor.h:
 
@@ -317,5 +317,9 @@ internal/CInputProcessor.d: ../internal/CInputProcessor.cpp \
 ../internal/helpers.h:
 
 ../internal/CGradient.h:
+
+../internal/CNoise.h:
+
+../internal/CImageBuffer.h:
 
 ../internal/TPointsSet.h:

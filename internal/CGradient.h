@@ -30,6 +30,9 @@ namespace archer
 
       std::vector < std::pair<float, color3f> > stops;
 
+      float minStop;
+      float maxStop;
+
       float getLinearGradient(float, float, float, float, float) const;
       color3f getLinearColor(float, const std::pair<float, color3f> &, const std::pair<float, color3f> &) const;
 

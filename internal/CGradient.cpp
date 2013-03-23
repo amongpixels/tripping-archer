@@ -16,17 +16,31 @@ namespace archer
 
   CGradient::CGradient() {
     // TODO Auto-generated constructor stub
-    
   }
   
   void CGradient::addStop(float p, color3f color) {
 
-    assert(p >= 0.0f && p <= 1.0f);
+    if (this->stops.empty()) {
+      this->minStop = p;
+      this->maxStop = p;
+    }
+
+    //assert(p >= 0.0f && p <= 1.0f);
 
     this->stops.push_back(std::pair<float, color3f>(p, color));
 
     // Make sure that the stops are ordered from smallest to the biggest
     std::sort(this->stops.begin(), this->stops.end(), sortStops);
+
+    // Keep track of boundary stops
+    if (p < this->minStop) {
+      this->minStop = p;
+    }
+
+    if (p > this->maxStop) {
+      this->maxStop = p;
+    }
+
   }
   
   void CGradient::addStop(float p, int r, int g, int b) {
@@ -35,16 +49,16 @@ namespace archer
 
   color3f CGradient::getColor(float p) {
 
-    assert(p >= 0.0f && p <= 1.0f);
+    assert(p >= this->minStop && p <= this->maxStop);
 
     // Make sure that the stops range from 0.0 to 1.0
-    if (this->stops.front().first != 0.0f) {
-      this->stops.front().first = 0.0f;
-    }
-
-    if (this->stops.back().first != 1.0f) {
-      this->stops.back().first = 1.0f;
-    }
+//    if (this->stops.front().first != 0.0f) {
+//      this->stops.front().first = 0.0f;
+//    }
+//
+//    if (this->stops.back().first != 1.0f) {
+//      this->stops.back().first = 1.0f;
+//    }
 
     std::pair<float, color3f> * start = &this->stops.front();
     std::pair<float, color3f> * end = &this->stops.back();
@@ -75,12 +89,12 @@ namespace archer
 
     color3f r;
 
-    if (p >= 0.0f || p <= 1.0f) {
+    if (p >= this->minStop || p <= this->maxStop) {
 
       //p = (p - c1.first) / (c2.first - c1.first);
 
       for (int i = 0 ; i < 3 ; i++) {
-        r[i] = this->getLinearGradient(c1.second[i], c2.second[i], c1.first, c2.first, p);
+        r[i] = this->getLinearGradient(c1.second[i], c2.second[i], c1.first - this->minStop, c2.first - this->minStop, p - this->minStop);
         //r[i] = min(c1[i], c2[i]) + abs(c1[i] - c2[i]) * (c1[i] > c2[i] ? 1.0f - p : p);
       }
     }

@@ -101,7 +101,9 @@ internal/CVoronoi.d: ../internal/CVoronoi.cpp ../internal/CVoronoi.h \
  /home/dragomir/git/include/cml/mathlib/projection.h \
  /home/dragomir/git/include/cml/mathlib/picking.h \
  ../internal/CHeightmap.h ../internal/../external/CImg.h \
- ../internal/helpers.h ../internal/CGradient.h
+ ../internal/helpers.h ../internal/CGradient.h ../internal/CNoise.h \
+ ../internal/CImageBuffer.h ../internal/CPointsSet2i.h \
+ ../internal/TPointsSet.h
 
 ../internal/CVoronoi.h:
 
@@ -316,3 +318,11 @@ internal/CVoronoi.d: ../internal/CVoronoi.cpp ../internal/CVoronoi.h \
 ../internal/helpers.h:
 
 ../internal/CGradient.h:
+
+../internal/CNoise.h:
+
+../internal/CImageBuffer.h:
+
+../internal/CPointsSet2i.h:
+
+../internal/TPointsSet.h:

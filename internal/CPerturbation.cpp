@@ -19,7 +19,7 @@ namespace archer
   
   void CPerturbation::apply(CHeightmap * h) {
 
-    CSimplexNoise noise;
+    CNoise noise;
     CHeightmap heightmapCopy = (*h);
 
     for (int x = 0 ; x < h->getWidth() ; x++) {
