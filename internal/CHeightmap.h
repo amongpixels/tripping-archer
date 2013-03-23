@@ -68,11 +68,14 @@ namespace archer
       void test();
 
       void normalize();
+      void flip();
 
       void saveAsPNG(char * path);
       void saveColorMapAsPNG(char * path);
 
       void loadFromPNG(char * path);
+
+      CHeightmap & operator = (float);
 
       CHeightmap & operator += (CHeightmap &);
       CHeightmap & operator -= (CHeightmap &);

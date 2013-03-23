@@ -187,7 +187,9 @@ namespace archer
 
     }
 
-    (*s) = (*this->skeleton);
+    if (s) {
+      (*s) = (*this->skeleton);
+    }
 
     printf(" done, created %d points.\n", this->skeleton->getCount());
 
@@ -200,49 +202,54 @@ namespace archer
     this->binaryMap.clear();
   }
 
-  void CPointsSet2i::createMask(CHeightmap* h, float blur) {
+  void CPointsSet2i::createMask(CHeightmap* h) {
+
+    if (this->points.size() == 0) {
+      return;
+    }
 
     printf("Creating a mask...\n");
 
     // Make sure that the points will fit on the heightmap (sanity check)
     assert(h->getWidth() >= this->topRight[0] && h->getWidth() >= this->topRight[1]);
 
-    CImg <unsigned char> mask (h->getWidth(), h->getHeight(), 1, 3, 0);
 
-//    CPointsSet2i skeleton;
-//    this->generateSkeleton(&skeleton);
-//
-//    std::vector <float> distances;
-//    float maxDistance = 0.0f;
-//    float heightmapSize = sqrt(h->getWidth() * h->getHeight());
-//
-//    CHeightmap riverSide (h->getWidth(), h->getHeight());
-//    CHeightmap river (h->getWidth(), h->getHeight());
-//
-//    // For every point calculate the distance to the skeleton
-//    for (std::vector<vector2i>::iterator p = this->points.begin() ; p != this->points.end() ; p++) {
-//
-//      std::vector <float> skeletonDistances;
-//
-//      // Calculate distances to every point in the skeleton
-//      for (int i = 0 ; i < skeleton.getCount() ; i++) {
-//        skeletonDistances.push_back( (skeleton.getPoints()[i] - (*p)).length() );
-//      }
-//
-//      std::sort(skeletonDistances.begin(), skeletonDistances.end());
-//
-//      distances.push_back(*skeletonDistances.begin());
-//
-//      if (*skeletonDistances.begin() > maxDistance) {
-//        maxDistance = *skeletonDistances.begin();
-//      }
-//
-//    }
-//
-//    for (unsigned int i = 0 ; i < this->points.size() ; i++) {
-//      float value = (1.0f - (distances[i] / maxDistance));
-//      h->setValue(this->points[i][0], this->points[i][1], value * value);
-//    }
+//    CImg <unsigned char> mask (h->getWidth(), h->getHeight(), 1, 3, 0);
+
+    CPointsSet2i skeleton;
+    this->generateSkeleton(&skeleton);
+
+    std::vector <float> distances;
+    float maxDistance = 0.0f;
+    //float heightmapSize = sqrt(h->getWidth() * h->getHeight());
+
+    //CHeightmap riverSide (h->getWidth(), h->getHeight());
+    //CHeightmap river (h->getWidth(), h->getHeight());
+
+    // For every point calculate the distance to the skeleton
+    for (std::vector<vector2i>::iterator p = this->points.begin() ; p != this->points.end() ; p++) {
+
+      std::vector <float> skeletonDistances;
+
+      // Calculate distances to every point in the skeleton
+      for (int i = 0 ; i < skeleton.getCount() ; i++) {
+        skeletonDistances.push_back( (skeleton.getPoints()[i] - (*p)).length() );
+      }
+
+      std::sort(skeletonDistances.begin(), skeletonDistances.end());
+
+      distances.push_back(skeletonDistances.front());
+
+      if (skeletonDistances.front() > maxDistance) {
+        maxDistance = skeletonDistances.front();
+      }
+
+    }
+
+    for (unsigned int i = 0 ; i < this->points.size() ; i++) {
+      float value = (1.0f - (distances[i] / (maxDistance))); // + h->getValue(this->points[i][0], this->points[i][1]);
+      h->setValue(this->points[i][0], this->points[i][1], value);
+    }
 //
 //    // Generate river skeleton
 //    CBrownianTree riverSkeleton;
@@ -264,20 +271,18 @@ namespace archer
 
 
 
-//    vector2i median = this->getMedianPoint();
+//    vector2i centroid = this->getCentroid();
 //
 //    std::vector<float> distances;
 //
 //    for (std::vector<vector2i>::iterator i = this->points.begin() ; i != this->points.end() ; i++) {
-//      distances.push_back(((*i) - median).length());
+//      distances.push_back(((*i) - centroid).length());
 //    }
 //
 //    // Select the biggest length
 //    std::vector<float> copyOfDistances = distances;
 //    std::sort(copyOfDistances.begin(), copyOfDistances.end());
-//    float maxDistance = (*copyOfDistances.end());
-//
-//    h->zero();
+//    float maxDistance = copyOfDistances.back();
 //
 //    for (int i = 0 ; i < this->points.size() ; i++) {
 //      h->setValue(this->points[i][0], this->points[i][1], 1.0f - (distances[i] / maxDistance));
@@ -360,6 +365,9 @@ namespace archer
   }
 
   vector2i& CPointsSet2i::getCentroid() {
+
+    assert(this->points.size() > 0);
+
     vector2i centroid (0, 0);
 
     for (std::vector<vector2i>::iterator i = this->points.begin() ; i < this->points.end() ; i++) {

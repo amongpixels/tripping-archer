@@ -80,20 +80,42 @@ int main(int argc, char **argv) {
 
       // Let's play with voronoi a bit
 
-      CVoronoi voronoiFilter;
-      CHeightmap testHeightmap (heightmap.getWidth(), heightmap.getHeight());
+//      CVoronoi voronoiFilter;
+//      CHeightmap testHeightmap (heightmap.getWidth(), heightmap.getHeight());
+//
+//      voronoiFilter.setBoundingPoints(&inputProcessor.getClusters()[i]->points);
+//      voronoiFilter.setPointsCount(ceil(inputProcessor.getClusters()[i]->points.getCount() * 0.0003f));
+//
+//      testHeightmap.setMaxHeight(2.0f);
+//      voronoiFilter.apply(&testHeightmap);
+//
+//      for (int x = 0 ; x < testHeightmap.getWidth() ; x++) {
+//        for (int y = 0 ; y < testHeightmap.getHeight() ; y++) {
+//
+//          float v = testHeightmap.getValue(x, y);
+//
+//          v -= 0.5f;
+//
+//          if (v < 0.0f) {
+//            v = 0.0f;
+//          }
+//
+//          testHeightmap.setValue(x, y, 1.0f + v);
+//
+//        }
+//      }
+//
+//      //testHeightmap *= 0.3f;
+//      heightmap *= 0.5f;
+//
+//      heightmap *= testHeightmap;
+//
+//      //testHeightmap.zero();
+//      //inputProcessor.getClusters()[i]->points.createMask(&testHeightmap);
+//
+//      testHeightmap.saveAsPNG("testowyvoronoi.png");
 
-      voronoiFilter.setBoundingPoints(&inputProcessor.getClusters()[i]->points);
-      voronoiFilter.setPointsCount(ceil(inputProcessor.getClusters()[i]->points.getCount() * 0.001f));
 
-      voronoiFilter.apply(&testHeightmap);
-
-      testHeightmap *= 0.3f;
-      heightmap *= 0.7f;
-
-      heightmap += testHeightmap;
-
-      testHeightmap.saveAsPNG("testowyvoronoi.png");
 
     }
   }
@@ -107,16 +129,13 @@ int main(int argc, char **argv) {
     // RIVERS
     if (inputProcessor.getClusters()[i]->channel == 1) {
 
-      //CHeightmap riverMask (256, 256);
-      //CHeightmap river (256, 256);
-
       CPointsSet2i * clusterPoints = &inputProcessor.getClusters()[i]->points;
 
       CPointsSet2i skeleton;
       clusterPoints->generateSkeleton(&skeleton);
 
       std::vector <float> distances;
-      float maxDistance = 0.0f;
+      float riverWidth = 0.0f;
       float heightmapSize = sqrt(heightmap.getWidth() * heightmap.getHeight());
 
       CHeightmap riverSide (heightmap.getWidth(), heightmap.getHeight());
@@ -129,27 +148,32 @@ int main(int argc, char **argv) {
 
         // Calculate distances to every point in the skeleton
         for (int i = 0 ; i < skeleton.getCount() ; i++) {
-          skeletonDistances.push_back( (skeleton.getPoints()[i] - (*p)).length() );
+          skeletonDistances.push_back( (skeleton.getPoints()[i] - (*p)).length_squared() );
         }
 
         std::sort(skeletonDistances.begin(), skeletonDistances.end());
 
-        distances.push_back(*skeletonDistances.begin());
+        distances.push_back(skeletonDistances.front());
 
-        if (*skeletonDistances.begin() > maxDistance) {
-          maxDistance = *skeletonDistances.begin();
+        if (skeletonDistances.front() > riverWidth) {
+          riverWidth = skeletonDistances.front();
         }
 
       }
 
-      for (unsigned int i = 0 ; i < clusterPoints->getPoints().size() ; i++) {
-        float value = (1.0f - (distances[i] / maxDistance));
-        //heightmap->setValue(this->points[i][0], this->points[i][1], value * value);
-      }
+      riverWidth = sqrt(riverWidth);
+
+
+
+//      for (unsigned int i = 0 ; i < clusterPoints->getPoints().size() ; i++) {
+//        float value = (1.0f - (distances[i] / maxDistance));
+//        //heightmap->setValue(this->points[i][0], this->points[i][1], value * value);
+//      }
 
       // Generate river skeleton
       CBrownianTree riverSkeleton;
       clusterPoints->generateSkeleton(&riverSkeleton);
+
       riverSkeleton.setBoundingPoints(clusterPoints);
       riverSkeleton.createBrownian((int)(
           clusterPoints->getCount() * 0.05f),
@@ -157,32 +181,40 @@ int main(int argc, char **argv) {
           clusterPoints->getTopRight()[1] + 1
       );
 
-      // Deposit some river lololol
       CParticleDeposition depositionFilter;
-      depositionFilter.setParameters(0.01f, 3, (int)(maxDistance * 0.15f));
-      depositionFilter.setBoundingPoints(&riverSkeleton);
+
+      // Generate river bank
+      depositionFilter.setParameters(0.01f, 3, (int)(riverWidth * 0.15f));
       depositionFilter.setMode(RANDOM);
+      depositionFilter.setBoundingPoints(&riverSkeleton);
       depositionFilter.setVentCenter(riverSkeleton.getMedianPoint());
       depositionFilter.setParticlesCount(riverSkeleton.getCount() * 200);
       depositionFilter.apply(&riverSide);
 
+      // Generate the river
+      depositionFilter.setParameters(0.02f, 3, 2);
+      depositionFilter.setMode(RANDOM);
+      depositionFilter.setBoundingPoints(&riverSkeleton);
+      depositionFilter.setParticlesCount(riverSkeleton.getCount() * 300);
+      depositionFilter.setVentCenter(riverSkeleton.getMedianPoint());
+      depositionFilter.apply(&riverSide);
+
+
       CPerturbation riverPerturbation;
-      riverPerturbation.setMagnitude(0.03f);
+      riverPerturbation.setMagnitude(3);
       riverPerturbation.apply(&riverSide);
 
-      CHeightmap cpy = riverSide;
-
-      for (int x = 0 ; x < riverSide.getWidth() ; x++) {
-        for (int y = 0 ; y < riverSide.getHeight() ; y++) {
-
-        }
-      }
-
-      heightmap -= riverSide;
-      //float k
-      //heightmap -= river;
+      riverSide.flip();
 
       riverSide.saveAsPNG("rivermask.png");
+
+      // slap some erosion on that bitch
+      CHydraulicErosion hydraulicErosion;
+      hydraulicErosion.apply(&riverSide);
+
+      heightmap += riverSide;
+
+      riverSide.saveAsPNG("rivermask-eroded.png");
 
 
     }

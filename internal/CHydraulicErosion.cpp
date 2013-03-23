@@ -17,10 +17,10 @@ namespace archer
   
   void CHydraulicErosion::apply(CHeightmap* h) {
 
-    float Kr = 0.05; // amount of rain per cell
-    float Ks = 0.05; // solubility of the soil
-    float Ke = 0.5; // evaporation rate
-    float Kc = 0.05; // sediment capacity
+    float Kr = 0.05f; // amount of rain per cell
+    float Ks = 0.1f; // solubility of the soil
+    float Ke = 0.5f; // evaporation rate
+    float Kc = 0.05f; // sediment capacity
 
     CHeightmap watermap (h->getWidth(), h->getHeight());
     CHeightmap sedimentmap (h->getWidth(), h->getHeight());
@@ -28,7 +28,7 @@ namespace archer
     watermap.zero();
     sedimentmap.zero();
 
-    for (int i = 0 ; i < 50 ; i++) {
+    for (int i = 0 ; i < 100 ; i++) {
 
       // Step 1 - create new water
       for (int x = 0 ; x < h->getWidth() ; x++) {
@@ -63,7 +63,8 @@ namespace archer
           for (int s = max(0, x - 1) ; s <= min(x + 1, h->getWidth() - 1) ; s++) {
             for (int t = max(0, y - 1) ; t <= min(y + 1, h->getHeight() - 1) ; t++) {
 
-              if (s != x || t != y) {
+              // use von-neuman neighbours for speedup
+              if (!(s != x && t != y)) {
 
                 float localHeight = h->getValue(s, t) + watermap.getValue(s, t);
 
@@ -81,15 +82,18 @@ namespace archer
           // now go through the points and distribute the water
           for (std::vector < tuple<vector2i, float> >::iterator n = neighbours.begin() ; n != neighbours.end() ; ++n) {
 
-            float deltaHeight = currentHeight - (currentHeight / (float)(neighbours.size()));
-            float waterToMove = min(currentWater, deltaHeight) * ( (currentHeight - (*n).get<1>()) / totalDifference);
+            vector2i examinedPoint = (*n).get<0>();
+            float examinedHeight = (*n).get<1>();
+
+            float deltaHeight = currentHeight - (totalHeight / (float)(neighbours.size()));
+            float waterToMove = min(currentWater, deltaHeight) * ( (currentHeight - examinedHeight) / totalDifference);
 
             float sedimentToMove = sedimentmap.getValue(x, y) * (waterToMove / watermap.getValue(x, y));
 
-            watermap.setValue((*n).get<0>()[0], (*n).get<0>()[1], watermap.getValue((*n).get<0>()[0], (*n).get<0>()[1]) + waterToMove);
+            watermap.setValue(examinedPoint[0], examinedPoint[1], watermap.getValue(examinedPoint[0], examinedPoint[1]) + waterToMove);
             watermap.setValue(x, y, watermap.getValue(x, y) - waterToMove);
 
-            sedimentmap.setValue((*n).get<0>()[0], (*n).get<0>()[1], sedimentmap.getValue((*n).get<0>()[0], (*n).get<0>()[1]) + sedimentToMove);
+            sedimentmap.setValue(examinedPoint[0], examinedPoint[1], sedimentmap.getValue(examinedPoint[0], examinedPoint[1]) + sedimentToMove);
             sedimentmap.setValue(x, y, sedimentmap.getValue(x, y) - sedimentToMove);
 
             //printf("moving sedimnet: %f, %f %f %f\n", sedimentToMove, currentHeight, waterToMove, watermap.getValue(x, y));

@@ -88,7 +88,7 @@ namespace archer
       void generateSkeleton(CPointsSet2i * skeleton = NULL);
       void shrink(CPointsSet2i * shrinked, int amount);
 
-      void createMask(CHeightmap * h, float blur = 0.0f);
+      void createMask(CHeightmap * h);
 
       vector2i & getCentroid();
 

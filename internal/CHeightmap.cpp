@@ -372,6 +372,24 @@ namespace archer
     heightmap *= h;
     return heightmap;
   }
+  
+  CHeightmap & CHeightmap::operator = (float f) {
+    for (unsigned int x = 0 ; x < this->values.size() ; x++) {
+      for (unsigned int y = 0 ; y < this->values[x].size() ; y++) {
+        this->setValue(x, y, f);
+      }
+    }
+
+    return *this;
+  }
+  
+  void CHeightmap::flip() {
+    for (unsigned int x = 0 ; x < this->values.size() ; x++) {
+      for (unsigned int y = 0 ; y < this->values[x].size() ; y++) {
+        this->setValue(x, y, -this->getValue(x, y));
+      }
+    }
+  }
 
   CHeightmap::CHeightmap(int w, int h) {
     this->init(w, h);
