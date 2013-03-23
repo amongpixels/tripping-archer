@@ -184,18 +184,18 @@ int main(int argc, char **argv) {
       CParticleDeposition depositionFilter;
 
       // Generate river bank
-      depositionFilter.setParameters(0.01f, 3, (int)(riverWidth * 0.15f));
+      depositionFilter.setParameters(0.01f, 2, ceil(riverWidth * 0.20f));
       depositionFilter.setMode(RANDOM);
       depositionFilter.setBoundingPoints(&riverSkeleton);
       depositionFilter.setVentCenter(riverSkeleton.getMedianPoint());
-      depositionFilter.setParticlesCount(riverSkeleton.getCount() * 200);
+      depositionFilter.setParticlesCount(riverSkeleton.getCount() * 300);
       depositionFilter.apply(&riverSide);
 
       // Generate the river
-      depositionFilter.setParameters(0.02f, 3, 2);
+      depositionFilter.setParameters(0.01f, 4, 2);
       depositionFilter.setMode(RANDOM);
       depositionFilter.setBoundingPoints(&riverSkeleton);
-      depositionFilter.setParticlesCount(riverSkeleton.getCount() * 300);
+      depositionFilter.setParticlesCount(riverSkeleton.getCount() * 200);
       depositionFilter.setVentCenter(riverSkeleton.getMedianPoint());
       depositionFilter.apply(&riverSide);
 
@@ -210,6 +210,7 @@ int main(int argc, char **argv) {
 
       // slap some erosion on that bitch
       CHydraulicErosion hydraulicErosion;
+      hydraulicErosion.setStrength(40);
       hydraulicErosion.apply(&riverSide);
 
       heightmap += riverSide;

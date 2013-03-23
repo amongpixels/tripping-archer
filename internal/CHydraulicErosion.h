@@ -19,8 +19,27 @@ namespace archer
   
   class CHydraulicErosion : public IHeightmapProcessor
   {
+    private:
+
+      int iterations;
+
+      float Kr; // amount of rain per cell
+      float Ks; // solubility of the soil
+      float Ke; // evaporation rate
+      float Kc; // sediment capacity
+
     public:
       CHydraulicErosion();
+
+      /**
+       * Amount of rain, soil's solubility, evaporation rate and sediment capacity
+       */
+      void setParameters(float r, float s, float e, float c);
+
+      /**
+       * Number of iterations
+       */
+      void setStrength(int i);
 
       void apply(CHeightmap * h);
 
@@ -28,4 +47,5 @@ namespace archer
   };
 
 } /* namespace archer */
+
 #endif /* CHYDRAULICEROSION_H_ */

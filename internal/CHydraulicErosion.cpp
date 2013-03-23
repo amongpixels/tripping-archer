@@ -11,16 +11,13 @@ namespace archer
 {
   
   CHydraulicErosion::CHydraulicErosion() {
-    // TODO Auto-generated constructor stub
-    
+    this->Kr = 0.05f;
+    this->Ks = 0.05f;
+    this->Ke = 0.5f;
+    this->Kc = 0.05f;
   }
   
   void CHydraulicErosion::apply(CHeightmap* h) {
-
-    float Kr = 0.05f; // amount of rain per cell
-    float Ks = 0.1f; // solubility of the soil
-    float Ke = 0.5f; // evaporation rate
-    float Kc = 0.05f; // sediment capacity
 
     CHeightmap watermap (h->getWidth(), h->getHeight());
     CHeightmap sedimentmap (h->getWidth(), h->getHeight());
@@ -28,12 +25,12 @@ namespace archer
     watermap.zero();
     sedimentmap.zero();
 
-    for (int i = 0 ; i < 100 ; i++) {
+    for (int i = 0 ; i < this->iterations ; i++) {
 
       // Step 1 - create new water
       for (int x = 0 ; x < h->getWidth() ; x++) {
         for (int y = 0 ; y < h->getHeight() ; y++) {
-          watermap.setValue(x, y, watermap.getValue(x, y) + Kr);
+          watermap.setValue(x, y, watermap.getValue(x, y) + this->Kr);
         }
       }
 
@@ -41,7 +38,7 @@ namespace archer
       for (int x = 0 ; x < h->getWidth() ; x++) {
         for (int y = 0 ; y < h->getHeight() ; y++) {
 
-          float dissolvedAmount = Ks * watermap.getValue(x, y);
+          float dissolvedAmount = this->Ks * watermap.getValue(x, y);
 
           h->setValue(x, y, h->getValue(x, y) - dissolvedAmount);
           sedimentmap.setValue(x, y, sedimentmap.getValue(x, y) + dissolvedAmount);
@@ -111,8 +108,8 @@ namespace archer
       for (int x = 0 ; x < h->getWidth() ; x++) {
         for (int y = 0 ; y < h->getHeight() ; y++) {
 
-          watermap.setValue(x, y, watermap.getValue(x, y) * (1.0f - Ke));
-          float maxSediment = Kc * watermap.getValue(x, y);
+          watermap.setValue(x, y, watermap.getValue(x, y) * (1.0f - this->Ke));
+          float maxSediment = this->Kc * watermap.getValue(x, y);
 
           float depositedSediment = max(0.0f, (sedimentmap.getValue(x, y) - maxSediment));
 
@@ -125,6 +122,17 @@ namespace archer
       }
 
     }
+  }
+
+  void CHydraulicErosion::setParameters(float r, float s, float e, float c) {
+    this->Kr = r;
+    this->Ks = s;
+    this->Ke = e;
+    this->Kc = c;
+  }
+
+  void CHydraulicErosion::setStrength(int i) {
+    this->iterations = i;
   }
 
   CHydraulicErosion::~CHydraulicErosion() {
