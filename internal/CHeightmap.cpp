@@ -196,6 +196,7 @@ namespace archer
     vector3f lightDirection (0.5f, 0.8f, 0.5f);
 
     CImg <unsigned char> colorMap (this->width, this->height, 1, 3, 0);
+    CImg <float> shadowMap (this->width, this->height, 1, 1, 0);
 
     //int color1 [] = { 188, 169, 91 };
     //int color2 [] = { 31, 195, 35 };
@@ -220,6 +221,8 @@ namespace archer
 
     colors.saveAsPNG("gradient.png", 512, 30);
 
+    //shadowMap.fill
+
     for (unsigned int x = 0 ; x < this->values.size() ; x++) {
       for (unsigned int y = 0 ; y < this->values[x].size() ; y++) {
 
@@ -240,6 +243,46 @@ namespace archer
 //        }
 //        c.set(1.0f, 1.0f, 1.0f);
 
+        // Fuck that, let's try to make some shadows :D
+        vector3f step = lightDirection;
+        //step.normalize();
+        //step *= -0.5f;
+        step.set(0.5f, 0.11f, 0.5f);
+        vector3f currentPoint (x, this->values[x][y] * this->heightScale, y);
+        bool inShadow = false;
+
+        while (floor(currentPoint[0]) > -1 && floor(currentPoint[0]) < this->width &&
+            floor(currentPoint[2]) > -1 && floor(currentPoint[2]) < this->height) {
+
+
+
+          if (this->values[floor(currentPoint[0])][floor(currentPoint[2])] * this->heightScale > currentPoint[1]) {
+
+            //float diff = this->values[floor(currentPoint[0])][floor(currentPoint[2])] - this->heightScale > currentPoint[1];
+
+
+
+            //lightIntensity = lightIntensity * 0.6f;
+
+//            printf("found the culrpint for %d / %d at %d iteration \n", x, y, iteration);
+//            helpers::printVector3f(currentPoint);
+//            printf("current height %f\n", this->values[floor(currentPoint[0])][floor(currentPoint[2])] * this->heightScale);
+//            printf("\n");
+            inShadow = true;
+            break;
+          }
+
+          currentPoint += step;
+
+        }
+
+        float shadow = 1.0f;
+        if (inShadow) {
+          shadow = 0.6f;
+        }
+
+        shadowMap.draw_point(x, y, &shadow);
+
         int color [] = {
             lightIntensity * c[0] * 255,
             lightIntensity * c[1] * 255,
@@ -250,6 +293,9 @@ namespace archer
 
       }
     }
+
+    shadowMap.blur(2.0f);
+    colorMap.mul(shadowMap);
 
     //colorMap.blur(1.0f);
     colorMap.save_png(path);

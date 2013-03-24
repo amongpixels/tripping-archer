@@ -48,7 +48,7 @@ int main(int argc, char **argv) {
 
   CHeightmap heightmap (inputProcessor.getInputWidth(), inputProcessor.getInputHeight());
 
-
+  /*
   // Create base terrain
   CSimplexNoise simplexFilter;
   simplexFilter.setOctaves(10);
@@ -290,9 +290,9 @@ int main(int argc, char **argv) {
   CPerturbation finalPerturbationFilter;
   finalPerturbationFilter.setMagnitude(0.03f);
   //finalPerturbationFilter.apply(&heightmap);
-
+  */
   // Save everything
-  //heightmap.loadFromPNG("output.png");
+  heightmap.loadFromPNG("output.png");
   heightmap.saveAsPNG(outputPath);
   heightmap.saveColorMapAsPNG("color.png");
 
