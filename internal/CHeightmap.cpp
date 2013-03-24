@@ -193,7 +193,7 @@ namespace archer
 
     this->calculateNormals();
 
-    vector3f lightDirection (0.5f, 0.8f, 0.3f);
+    vector3f lightDirection (0.5f, 0.8f, 0.5f);
 
     CImg <unsigned char> colorMap (this->width, this->height, 1, 3, 0);
 
@@ -202,15 +202,17 @@ namespace archer
     //int color3 [] = { 197, 197, 197 };
 
     CGradient colors;
-    colors.addStop(0.0f, 61, 40, 9); // Deep rock
-    colors.addStop(0.25f, 92, 64, 25); // Shallow rock
-    colors.addStop(0.41f, 163, 128, 57); //Shore
-    colors.addStop(0.58f, 95, 131, 65); // Grass
-    colors.addStop(0.74f, 121, 134, 111); // Mountain grass
-    colors.addStop(0.84f, 131, 134, 129); // Mountains
-    colors.addStop(1.0f, 181, 181, 181); // Top of mountains
+    colors.addStop(-1.0f, 68, 56, 17); // Deep rock
+    colors.addStop(-0.8f, 100, 85, 33); // Shallow rock
 
-    //CSimplexNoise noise;
+    colors.addStop(-0.1f, 150, 136, 91);
+    colors.addStop(0.1f, 95, 118, 27);
+
+    colors.addStop(0.25f, 110, 113, 56); // Mountain grass
+    colors.addStop(0.7f, 162, 152, 117); // Mountains
+    colors.addStop(1.0f, 201, 193, 146); // Top of mountains
+
+    CNoise noise;
     //noise.setBounds(0.0, 0.0, 6.0, 6.0);
 
     //helpers::printVector3f(colors.getColor(0.0f));
@@ -223,9 +225,14 @@ namespace archer
 
         //vector3f a.set((float) x, this->values[x][y], (float) y);
 
-        float lightIntensity = max(0.0f, min(1.0f, cml::dot(this->normals[x][y], lightDirection)));
+        float lightIntensity = max(0.0f, min(1.0f, (float)(cml::dot(this->normals[x][y], lightDirection) + noise.getNoise(x,y) * 0.05f)));
 
-        float heightValue = (this->values[x][y] + this->maxHeight) * 0.5f;
+        lightIntensity *= lightIntensity;
+
+        float heightValue = this->values[x][y]; //(this->values[x][y] + this->maxHeight) * 0.5f;
+
+        //heightValue = std::max(0.0f, std::min(1.0f, (float)(heightValue + noise.getNoise(x * 0.03, y * 0.03) * 0.02f)));
+
         color3f c = colors.getColor(heightValue);
 
 //        if (c[0] == 0.0f) {
