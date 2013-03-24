@@ -12,6 +12,7 @@
 #include <vector>
 //#include <boost/program_options.hpp>
 
+#include "internal/SSettings.h"
 #include "internal/CNoise.h"
 #include "internal/CSimplexNoise.h"
 #include "internal/CFault.h"
@@ -32,15 +33,28 @@ int main(int argc, char **argv) {
 
   char * inputPath;
   char * outputPath;
-  int terrainType;
 
-  if (argc != 4) {
-    printf("Not enough args.\n", argc);
-    return 0;
+  int flag;
+
+  while ((flag = getopt(argc, argv, "i:o:vs")) != -1) {
+    switch (flag) {
+      case 'i' : inputPath = optarg; break;
+      case 'o' : outputPath = optarg; break;
+      case 'v' : globalSettings.useVoronoi = true; break;
+      case 's' : globalSettings.renderShadows = true; break;
+      case '?' :
+        if (optopt == 'i' || optopt == 'o') {
+          printf("Option -%c requires an argument.\n", optopt);
+        }
+        else {
+          printf("Unknown option -%c.\n", optopt);
+        }
+        return EXIT_FAILURE;
+      default: abort();
+    }
   }
 
-  inputPath = argv[1];
-  outputPath = argv[2];
+  printf("Processing input %s...\n", inputPath);
 
   // Load clusters
   CInputProcessor inputProcessor;
@@ -48,7 +62,6 @@ int main(int argc, char **argv) {
 
   CHeightmap heightmap (inputProcessor.getInputWidth(), inputProcessor.getInputHeight());
 
-  /*
   // Create base terrain
   CSimplexNoise simplexFilter;
   simplexFilter.setOctaves(10);
@@ -57,27 +70,40 @@ int main(int argc, char **argv) {
   simplexFilter.apply(&heightmap);
   heightmap *= 0.5f;
 
-  for (int i = 0 ; i < inputProcessor.getClusters().size() ; i++) {
+  for (unsigned int i = 0 ; i < inputProcessor.getClusters().size() ; i++) {
     // MOUNTAINS
     if (inputProcessor.getClusters()[i]->channel == 0) {
 
-      // Generate mountain skeleton
-      CBrownianTree skeleton;
-      inputProcessor.getClusters()[i]->points.generateSkeleton(&skeleton);
-      skeleton.setBoundingPoints(&inputProcessor.getClusters()[i]->points);
-      skeleton.createBrownian((int)(inputProcessor.getClusters()[i]->points.getCount() * 0.15f),
-          inputProcessor.getClusters()[i]->points.getTopRight()[0] + 1,
-          inputProcessor.getClusters()[i]->points.getTopRight()[1] + 1
-      );
+      std::vector <CPointsSet2i> clusters;
 
-      // Deposit mountains
-      CParticleDeposition depositionFilter;
-      depositionFilter.setParameters(0.02f, 2, 1);
-      depositionFilter.setBoundingPoints(&skeleton);
-      depositionFilter.setMode(RANDOM);
-      depositionFilter.setVentCenter(skeleton.getMedianPoint());
-      depositionFilter.setParticlesCount(skeleton.getCount() * 120);
-      depositionFilter.apply(&heightmap);
+      if (globalSettings.useVoronoi) {
+        CVoronoi voronoiGenerator;
+        voronoiGenerator.setPointsCount(ceil(inputProcessor.getClusters()[i]->points.getCount() * 0.0005f));
+        voronoiGenerator.setBoundingPoints(&inputProcessor.getClusters()[i]->points);
+        voronoiGenerator.createClusters(&clusters);
+      }
+      else {
+        clusters.push_back(inputProcessor.getClusters()[i]->points);
+      }
+
+      // Now that we've got all clusters sorted out let's generate the mountains
+      for (std::vector<CPointsSet2i>::iterator c = clusters.begin() ; c != clusters.end() ; c++) {
+
+        // Generate mountain skeleton
+        CBrownianTree skeleton;
+        (*c).generateSkeleton(&skeleton);
+        skeleton.setBoundingPoints(&(*c));
+        skeleton.createBrownian((int)((*c).getCount() * 0.15f), (*c).getTopRight()[0] + 1, (*c).getTopRight()[1] + 1);
+
+        // Deposit mountains
+        CParticleDeposition depositionFilter;
+        depositionFilter.setParameters(0.02f, 2, 1);
+        depositionFilter.setBoundingPoints(&skeleton);
+        depositionFilter.setMode(RANDOM);
+        depositionFilter.setVentCenter(skeleton.getMedianPoint());
+        depositionFilter.setParticlesCount(skeleton.getCount() * 120);
+        depositionFilter.apply(&heightmap);
+      }
 
       // Let's play with voronoi a bit
 
@@ -290,9 +316,9 @@ int main(int argc, char **argv) {
   CPerturbation finalPerturbationFilter;
   finalPerturbationFilter.setMagnitude(0.03f);
   //finalPerturbationFilter.apply(&heightmap);
-  */
+
   // Save everything
-  heightmap.loadFromPNG("output.png");
+  //heightmap.loadFromPNG("output.png");
   heightmap.saveAsPNG(outputPath);
   heightmap.saveColorMapAsPNG("color.png");
 

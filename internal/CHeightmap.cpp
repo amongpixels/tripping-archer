@@ -189,7 +189,7 @@ namespace archer
 
   }
 
-  void CHeightmap::saveColorMapAsPNG(char* path) {
+  void CHeightmap::saveColorMapAsPNG(char* path, bool useShadows) {
 
     this->calculateNormals();
 
@@ -205,10 +205,8 @@ namespace archer
     CGradient colors;
     colors.addStop(-1.0f, 68, 56, 17); // Deep rock
     colors.addStop(-0.8f, 100, 85, 33); // Shallow rock
-
     colors.addStop(-0.1f, 150, 136, 91);
     colors.addStop(0.1f, 95, 118, 27);
-
     colors.addStop(0.25f, 110, 113, 56); // Mountain grass
     colors.addStop(0.7f, 162, 152, 117); // Mountains
     colors.addStop(1.0f, 201, 193, 146); // Top of mountains
@@ -238,50 +236,33 @@ namespace archer
 
         color3f c = colors.getColor(heightValue);
 
-//        if (c[0] == 0.0f) {
-//          printf("CHUJ %f\n", heightValue);
-//        }
-//        c.set(1.0f, 1.0f, 1.0f);
-
-        // Fuck that, let's try to make some shadows :D
+        // Some simple raytracing to calculate the shadows
         vector3f step = lightDirection;
-        //step.normalize();
-        //step *= -0.5f;
         step.set(0.5f, 0.11f, 0.5f);
         vector3f currentPoint (x, this->values[x][y] * this->heightScale, y);
-        bool inShadow = false;
 
-        while (floor(currentPoint[0]) > -1 && floor(currentPoint[0]) < this->width &&
-            floor(currentPoint[2]) > -1 && floor(currentPoint[2]) < this->height) {
+        if (useShadows) {
+          bool inShadow = false;
 
+          while (floor(currentPoint[0]) > -1 && floor(currentPoint[0]) < this->width &&
+              floor(currentPoint[2]) > -1 && floor(currentPoint[2]) < this->height) {
 
+            if (this->values[floor(currentPoint[0])][floor(currentPoint[2])] * this->heightScale > currentPoint[1]) {
+              inShadow = true;
+              break;
+            }
 
-          if (this->values[floor(currentPoint[0])][floor(currentPoint[2])] * this->heightScale > currentPoint[1]) {
+            currentPoint += step;
 
-            //float diff = this->values[floor(currentPoint[0])][floor(currentPoint[2])] - this->heightScale > currentPoint[1];
-
-
-
-            //lightIntensity = lightIntensity * 0.6f;
-
-//            printf("found the culrpint for %d / %d at %d iteration \n", x, y, iteration);
-//            helpers::printVector3f(currentPoint);
-//            printf("current height %f\n", this->values[floor(currentPoint[0])][floor(currentPoint[2])] * this->heightScale);
-//            printf("\n");
-            inShadow = true;
-            break;
           }
 
-          currentPoint += step;
+          float shadow = 1.0f;
+          if (inShadow) {
+            shadow = 0.6f;
+          }
 
+          shadowMap.draw_point(x, y, &shadow);
         }
-
-        float shadow = 1.0f;
-        if (inShadow) {
-          shadow = 0.6f;
-        }
-
-        shadowMap.draw_point(x, y, &shadow);
 
         int color [] = {
             lightIntensity * c[0] * 255,
@@ -294,10 +275,11 @@ namespace archer
       }
     }
 
-    shadowMap.blur(2.0f);
-    colorMap.mul(shadowMap);
+    if (useShadows) {
+      shadowMap.blur(2.0f);
+      colorMap.mul(shadowMap);
+    }
 
-    //colorMap.blur(1.0f);
     colorMap.save_png(path);
   }
 

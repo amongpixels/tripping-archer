@@ -172,6 +172,55 @@ namespace archer
   void CVoronoi::setPointsCount(int i) {
     this->pointsCount = i;
   }
+  
+  void CVoronoi::createClusters(std::vector<CPointsSet2i> * clusters) {
+
+    if (this->boundingPoints && this->boundingPoints->getCount() > 0) {
+
+      printf("Calculating Voronoi diagram for %d points... ", this->pointsCount);
+
+      srand(time(NULL));
+
+      this->points.resize(this->pointsCount);
+
+
+      for (int i = 0 ; i < this->pointsCount ; i++) {
+        this->points[i].position = this->boundingPoints->getPoints()[rand() % this->boundingPoints->getCount()];
+      }
+
+      clusters->resize(this->pointsCount);
+
+      for(std::vector<vector2i>::const_iterator i = this->boundingPoints->getPoints().begin() ; i != this->boundingPoints->getPoints().end() ; i++) {
+
+        // calculate distances to all the points
+        std::vector <voronoiDistance> distances;
+
+        for (int j = 0 ; j < this->pointsCount ; j++) {
+          voronoiDistance d;
+          d.pointIndex = j;
+
+          // oh god remember to convert vector to float coz otherwise distances are integers.....
+          vector2f v = this->points[j].position - (*i);
+
+          // use square length for speed up
+          d.distance = v.length_squared();
+
+          distances.push_back(d);
+        }
+
+        // sort the distances
+        std::sort(distances.begin(), distances.end(), compareDistances);
+
+        // cluster the point
+        (*clusters)[distances[0].pointIndex].addPoint(*i);
+
+      }
+
+      printf("done.\n");
+
+    }
+
+  }
 
   CVoronoi::~CVoronoi() {
     // TODO Auto-generated destructor stub

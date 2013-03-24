@@ -45,6 +45,7 @@ namespace archer
       CVoronoi();
 
       void apply(CHeightmap * h);
+      void createClusters(std::vector<CPointsSet2i> * clusters);
       void setBoundingPoints(CPointsSet2i * b);
       void setPointsCount(int);
 

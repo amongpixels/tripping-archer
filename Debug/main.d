@@ -1,6 +1,7 @@
-main.d: ../main.cpp ../internal/CNoise.h ../internal/CImageBuffer.h \
- ../internal/../external/CImg.h ../internal/CSimplexNoise.h \
- ../internal/IHeightmapProcessor.h /home/dragomir/git/include/cml/cml.h \
+main.d: ../main.cpp ../internal/SSettings.h ../internal/CNoise.h \
+ ../internal/CImageBuffer.h ../internal/../external/CImg.h \
+ ../internal/CSimplexNoise.h ../internal/IHeightmapProcessor.h \
+ /home/dragomir/git/include/cml/cml.h \
  /home/dragomir/git/include/cml/vector.h \
  /home/dragomir/git/include/cml/core/common.h \
  /home/dragomir/git/include/cml/defaults.h \
@@ -108,6 +109,8 @@ main.d: ../main.cpp ../internal/CNoise.h ../internal/CImageBuffer.h \
  ../internal/CInputProcessor.h ../internal/CBrownianTree.h \
  ../internal/CPerturbation.h ../internal/CSimplexNoise.h \
  ../internal/CThermalErosion.h ../internal/CHydraulicErosion.h
+
+../internal/SSettings.h:
 
 ../internal/CNoise.h:
 

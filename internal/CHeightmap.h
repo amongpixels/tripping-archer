@@ -71,7 +71,7 @@ namespace archer
       void flip();
 
       void saveAsPNG(char * path);
-      void saveColorMapAsPNG(char * path);
+      void saveColorMapAsPNG(char * path, bool useShadows = false);
 
       void loadFromPNG(char * path);
 
