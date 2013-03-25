@@ -39,6 +39,7 @@ namespace archer
     public:
 
       CGradient();
+      void reset();
       void addStop(float, color3f);
       void addStop(float, int, int, int);
       void saveAsPNG(char * , int, int);

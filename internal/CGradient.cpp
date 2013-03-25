@@ -125,6 +125,10 @@ namespace archer
     //printf("start %f, stop %f, start offset %f, stop offset %f, offset %f\n", start, stop, start_offset, stop_offset, offset);
     return (start + ((offset - start_offset) / (stop_offset - start_offset) * (stop - start)));
   }
+  
+  void CGradient::reset() {
+    this->stops.clear();
+  }
 
   CGradient::~CGradient() {
     // TODO Auto-generated destructor stub

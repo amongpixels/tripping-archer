@@ -23,6 +23,7 @@
 #include "internal/CPerturbation.h"
 #include "internal/CThermalErosion.h"
 #include "internal/CHydraulicErosion.h"
+#include "internal/CHeightmapRenderer.h"
 
 using namespace std;
 using namespace archer;
@@ -63,6 +64,7 @@ int main(int argc, char **argv) {
   CHeightmap heightmap (inputProcessor.getInputWidth(), inputProcessor.getInputHeight());
 
   /*
+
   // Create base terrain
   CSimplexNoise simplexFilter;
   simplexFilter.setOctaves(10);
@@ -350,9 +352,9 @@ int main(int argc, char **argv) {
 
     }
   }
-  */
 
-  heightmap.loadFromPNG("testout.png");
+
+
 
   // erode everything a bit
   CThermalErosion erosion;
@@ -361,7 +363,16 @@ int main(int argc, char **argv) {
   // Save everything
   //
   heightmap.saveAsPNG(outputPath);
-  heightmap.saveColorMapAsPNG("color.png", globalSettings.renderShadows);
+
+  */
+
+  heightmap.loadFromPNG("testout.png");
+  heightmap.saveAsPNG(outputPath);
+
+  CHeightmapRenderer renderer;
+  renderer.loadPreset("render.cfg");
+  renderer.renderToPNG(&heightmap, "color.png");
+  //heightmap.saveColorMapAsPNG("color.png", globalSettings.renderShadows);
 
   printf("Done.\n");
 

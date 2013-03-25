@@ -19,7 +19,8 @@ namespace archer
 
     float T = 0.007f;//4.0f / (float)(h->getWidth());
 
-    printf("TALUS: %f\n", T);
+    //printf("TALUS: %f\n", T);
+    printf("Calculating thermal erosion... ");
 
     for (int i = 0 ; i < 1 ; i++) {
 
@@ -65,6 +66,8 @@ namespace archer
         }
       }
     }
+
+    printf("done.\n");
   }
 
   CThermalErosion::~CThermalErosion() {

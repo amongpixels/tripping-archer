@@ -189,99 +189,99 @@ namespace archer
 
   }
 
-  void CHeightmap::saveColorMapAsPNG(char* path, bool useShadows) {
-
-    this->calculateNormals();
-
-    vector3f lightDirection (0.5f, 0.8f, 0.5f);
-
-    CImg <unsigned char> colorMap (this->width, this->height, 1, 3, 0);
-    CImg <float> shadowMap (this->width, this->height, 1, 1, 0);
-
-    //int color1 [] = { 188, 169, 91 };
-    //int color2 [] = { 31, 195, 35 };
-    //int color3 [] = { 197, 197, 197 };
-
-    CGradient colors;
-    colors.addStop(-1.0f, 68, 56, 17); // Deep rock
-    colors.addStop(-0.8f, 100, 85, 33); // Shallow rock
-    colors.addStop(-0.1f, 150, 136, 91);
-    colors.addStop(0.1f, 95, 118, 27);
-    colors.addStop(0.25f, 110, 113, 56); // Mountain grass
-    colors.addStop(0.7f, 162, 152, 117); // Mountains
-    colors.addStop(1.0f, 201, 193, 146); // Top of mountains
-
-    CNoise noise;
-    //noise.setBounds(0.0, 0.0, 6.0, 6.0);
-
-    //helpers::printVector3f(colors.getColor(0.0f));
-    //helpers::printVector3f(colors.getColor(1.0f));
-
-    colors.saveAsPNG("gradient.png", 512, 30);
-
-    //shadowMap.fill
-
-    for (unsigned int x = 0 ; x < this->values.size() ; x++) {
-      for (unsigned int y = 0 ; y < this->values[x].size() ; y++) {
-
-        //vector3f a.set((float) x, this->values[x][y], (float) y);
-
-        float lightIntensity = max(0.0f, min(1.0f, (float)(cml::dot(this->normals[x][y], lightDirection) + noise.getNoise(x,y) * 0.05f)));
-
-        lightIntensity *= lightIntensity;
-
-        float heightValue = this->values[x][y]; //(this->values[x][y] + this->maxHeight) * 0.5f;
-
-        //heightValue = std::max(0.0f, std::min(1.0f, (float)(heightValue + noise.getNoise(x * 0.03, y * 0.03) * 0.02f)));
-
-        color3f c = colors.getColor(heightValue);
-
-        // Some simple raytracing to calculate the shadows
-        vector3f step = lightDirection;
-        step.set(0.5f, 0.11f, 0.5f);
-        vector3f currentPoint (x, this->values[x][y] * this->heightScale, y);
-
-        if (useShadows) {
-          bool inShadow = false;
-
-          while (floor(currentPoint[0]) > -1 && floor(currentPoint[0]) < this->width &&
-              floor(currentPoint[2]) > -1 && floor(currentPoint[2]) < this->height) {
-
-            if (this->values[floor(currentPoint[0])][floor(currentPoint[2])] * this->heightScale > currentPoint[1]) {
-              inShadow = true;
-              break;
-            }
-
-            currentPoint += step;
-
-          }
-
-          float shadow = 1.0f;
-          if (inShadow) {
-            shadow = 0.6f;
-          }
-
-          shadowMap.draw_point(x, y, &shadow);
-        }
-
-        int color [] = {
-            lightIntensity * c[0] * 255,
-            lightIntensity * c[1] * 255,
-            lightIntensity * c[2] * 255
-        };
-
-        colorMap.draw_point(x, y, color);
-
-      }
-    }
-
-    if (useShadows) {
-      shadowMap.blur(2.0f);
-      colorMap.mul(shadowMap);
-    }
-
-    colorMap.save_png(path);
-  }
+//  void CHeightmap::saveColorMapAsPNG(char* path, bool useShadows) {
+//
+//    this->calculateNormals();
+//
+//    vector3f lightDirection (0.5f, 0.8f, 0.5f);
+//
+//    CImg <unsigned char> colorMap (this->width, this->height, 1, 3, 0);
+//    CImg <float> shadowMap (this->width, this->height, 1, 1, 0);
+//
+//    //int color1 [] = { 188, 169, 91 };
+//    //int color2 [] = { 31, 195, 35 };
+//    //int color3 [] = { 197, 197, 197 };
+//
+//    CGradient colors;
+//    colors.addStop(-1.0f, 68, 56, 17); // Deep rock
+//    colors.addStop(-0.8f, 100, 85, 33); // Shallow rock
+//    colors.addStop(-0.1f, 150, 136, 91);
+//    colors.addStop(0.1f, 95, 118, 27);
+//    colors.addStop(0.25f, 110, 113, 56); // Mountain grass
+//    colors.addStop(0.7f, 162, 152, 117); // Mountains
+//    colors.addStop(1.0f, 201, 193, 146); // Top of mountains
+//
+//    CNoise noise;
+//    //noise.setBounds(0.0, 0.0, 6.0, 6.0);
+//
+//    //helpers::printVector3f(colors.getColor(0.0f));
+//    //helpers::printVector3f(colors.getColor(1.0f));
+//
+//    colors.saveAsPNG("gradient.png", 512, 30);
+//
+//    //shadowMap.fill
+//
+//    for (unsigned int x = 0 ; x < this->values.size() ; x++) {
+//      for (unsigned int y = 0 ; y < this->values[x].size() ; y++) {
+//
+//        //vector3f a.set((float) x, this->values[x][y], (float) y);
+//
+//        float lightIntensity = max(0.0f, min(1.0f, (float)(cml::dot(this->normals[x][y], lightDirection) + noise.getNoise(x,y) * 0.05f)));
+//
+//        lightIntensity *= lightIntensity;
+//
+//        float heightValue = this->values[x][y]; //(this->values[x][y] + this->maxHeight) * 0.5f;
+//
+//        //heightValue = std::max(0.0f, std::min(1.0f, (float)(heightValue + noise.getNoise(x * 0.03, y * 0.03) * 0.02f)));
+//
+//        color3f c = colors.getColor(heightValue);
+//
+//        // Some simple raytracing to calculate the shadows
+//        vector3f step = lightDirection;
+//        step.set(0.5f, 0.11f, 0.5f);
+//        vector3f currentPoint (x, this->values[x][y] * this->heightScale, y);
+//
+//        if (useShadows) {
+//          bool inShadow = false;
+//
+//          while (floor(currentPoint[0]) > -1 && floor(currentPoint[0]) < this->width &&
+//              floor(currentPoint[2]) > -1 && floor(currentPoint[2]) < this->height) {
+//
+//            if (this->values[floor(currentPoint[0])][floor(currentPoint[2])] * this->heightScale > currentPoint[1]) {
+//              inShadow = true;
+//              break;
+//            }
+//
+//            currentPoint += step;
+//
+//          }
+//
+//          float shadow = 1.0f;
+//          if (inShadow) {
+//            shadow = 0.6f;
+//          }
+//
+//          shadowMap.draw_point(x, y, &shadow);
+//        }
+//
+//        int color [] = {
+//            lightIntensity * c[0] * 255,
+//            lightIntensity * c[1] * 255,
+//            lightIntensity * c[2] * 255
+//        };
+//
+//        colorMap.draw_point(x, y, color);
+//
+//      }
+//    }
+//
+//    if (useShadows) {
+//      shadowMap.blur(2.0f);
+//      colorMap.mul(shadowMap);
+//    }
+//
+//    colorMap.save_png(path);
+//  }
 
   CHeightmap & CHeightmap::operator += (CHeightmap & h) {
     assert(h.getWidth() == this->width);
@@ -369,6 +369,7 @@ namespace archer
 
     if (this->hasBeenModified) {
       this->calculateNormals();
+      this->hasBeenModified = false;
     }
 
     return this->normals[x][y];
@@ -426,8 +427,12 @@ namespace archer
     }
   }
   
-  void CHeightmap::loadRenderConfig(char* path) {
-
+  float CHeightmap::getHeightScale() {
+    return this->heightScale;
+  }
+  
+  float CHeightmap::getMaxHeight() {
+    return this->maxHeight;
   }
 
   CHeightmap::CHeightmap(int w, int h) {

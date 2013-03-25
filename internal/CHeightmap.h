@@ -31,6 +31,8 @@ namespace archer
    */
   class CHeightmap
   {
+      friend class CHeightmapRenderer;
+
     private:
 
       std::vector < std::vector<float> > values;
@@ -61,6 +63,8 @@ namespace archer
       vector3f getNormal(int x, int y);
       void setValue(int x, int y, float v);
       void setHeightScale(float h);
+      float getHeightScale();
+      float getMaxHeight();
       void setMaxHeight(float h);
       void zero();
 
@@ -71,10 +75,10 @@ namespace archer
       void flip();
 
       void saveAsPNG(char * path);
-      void saveColorMapAsPNG(char * path, bool useShadows = false);
+      //void saveColorMapAsPNG(char * path, bool useShadows = false);
 
       void loadFromPNG(char * path);
-      void loadRenderConfig(char * path);
+      //void loadRenderConfig(char * path);
 
       CHeightmap & operator = (float);
 

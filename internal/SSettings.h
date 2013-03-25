@@ -15,7 +15,7 @@ namespace archer
       bool renderShadows;
   };
 
-  static SSettings globalSettings = { true, false };
+  static SSettings globalSettings = { true, true };
 
 }
 

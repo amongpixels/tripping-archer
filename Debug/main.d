@@ -108,7 +108,8 @@ main.d: ../main.cpp ../internal/SSettings.h ../internal/CNoise.h \
  ../internal/TPointsSet.h ../internal/CVoronoi.h \
  ../internal/CInputProcessor.h ../internal/CBrownianTree.h \
  ../internal/CPerturbation.h ../internal/CSimplexNoise.h \
- ../internal/CThermalErosion.h ../internal/CHydraulicErosion.h
+ ../internal/CThermalErosion.h ../internal/CHydraulicErosion.h \
+ ../internal/CHeightmapRenderer.h
 
 ../internal/SSettings.h:
 
@@ -353,3 +354,5 @@ main.d: ../main.cpp ../internal/SSettings.h ../internal/CNoise.h \
 ../internal/CThermalErosion.h:
 
 ../internal/CHydraulicErosion.h:
+
+../internal/CHeightmapRenderer.h:

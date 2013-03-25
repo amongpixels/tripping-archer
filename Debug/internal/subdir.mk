@@ -8,6 +8,7 @@ CPP_SRCS += \
 ../internal/CFault.cpp \
 ../internal/CGradient.cpp \
 ../internal/CHeightmap.cpp \
+../internal/CHeightmapRenderer.cpp \
 ../internal/CHydraulicErosion.cpp \
 ../internal/CImageBuffer.cpp \
 ../internal/CInputProcessor.cpp \
@@ -25,6 +26,7 @@ OBJS += \
 ./internal/CFault.o \
 ./internal/CGradient.o \
 ./internal/CHeightmap.o \
+./internal/CHeightmapRenderer.o \
 ./internal/CHydraulicErosion.o \
 ./internal/CImageBuffer.o \
 ./internal/CInputProcessor.o \
@@ -42,6 +44,7 @@ CPP_DEPS += \
 ./internal/CFault.d \
 ./internal/CGradient.d \
 ./internal/CHeightmap.d \
+./internal/CHeightmapRenderer.d \
 ./internal/CHydraulicErosion.d \
 ./internal/CImageBuffer.d \
 ./internal/CInputProcessor.d \
