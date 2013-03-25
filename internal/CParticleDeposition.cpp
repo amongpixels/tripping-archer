@@ -198,6 +198,7 @@ namespace archer
 
     if (!positionFound) {
       h->setValue(particle[0], particle[1], h->getValue(particle[0], particle[1]) + this->particleHeight);
+      this->activityMask.addPoint(particle); // Keep track of which aprts of the heightmap were affected
     }
     else {
       this->deposit(h, particle);
@@ -227,6 +228,10 @@ namespace archer
     this->elevationThreshold = h * t;
     this->particleHeight = h;
     this->searchRadius = r;
+  }
+  
+  CPointsSet2i & CParticleDeposition::getActivityMask() {
+    return this->activityMask;
   }
 
   CParticleDeposition::~CParticleDeposition() {

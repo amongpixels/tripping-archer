@@ -35,6 +35,7 @@ namespace archer {
       std::vector <vector2f> streams;
 
       CPointsSet2i * boundingPoints;
+      CPointsSet2i activityMask;
 
       void deposit (CHeightmap * h, vector2i & particle);
 
@@ -49,6 +50,8 @@ namespace archer {
       void setVentCenter(const vector2i & c);
       void setParticlesCount(int i);
       void setParameters(float h, int t, int r);
+
+      CPointsSet2i & getActivityMask();
 
       virtual ~CParticleDeposition();
   };

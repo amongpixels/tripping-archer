@@ -70,8 +70,9 @@ int main(int argc, char **argv) {
   simplexFilter.apply(&heightmap);
   heightmap *= 0.5f;
 
+  // MOUNTAINS /////////////////////////////////////////////////////////////////
   for (unsigned int i = 0 ; i < inputProcessor.getClusters().size() ; i++) {
-    // MOUNTAINS
+
     if (inputProcessor.getClusters()[i]->channel == 0) {
 
       std::vector <CPointsSet2i> clusters;
@@ -103,6 +104,13 @@ int main(int argc, char **argv) {
         depositionFilter.setVentCenter(skeleton.getMedianPoint());
         depositionFilter.setParticlesCount(skeleton.getCount() * 120);
         depositionFilter.apply(&heightmap);
+
+        // Slight perturbation to get rid of regular lines
+//        CPerturbation perturbationFilter;
+//        perturbationFilter.setBoundingPoints(&depositionFilter.getActivityMask());
+//        perturbationFilter.setMagnitude(4);
+//        perturbationFilter.apply(&heightmap);
+
       }
 
       // Let's play with voronoi a bit
@@ -152,8 +160,9 @@ int main(int argc, char **argv) {
   perturbationFilter.setMagnitude(4);
   perturbationFilter.apply(&heightmap);
 
+  // RIVERS ////////////////////////////////////////////////////////////////////
   for (int i = 0 ; i < inputProcessor.getClusters().size() ; i++) {
-    // RIVERS
+
     if (inputProcessor.getClusters()[i]->channel == 1) {
 
       CPointsSet2i * clusterPoints = &inputProcessor.getClusters()[i]->points;
@@ -170,6 +179,28 @@ int main(int argc, char **argv) {
 
       // For every point calculate the distance to the skeleton
       for (std::vector<vector2i>::const_iterator p = clusterPoints->getPoints().begin() ; p != clusterPoints->getPoints().end() ; p++) {
+
+        bool doTest = true;
+
+        // Check only boundary points, inner points will most def not be the furthest to the skeleton
+        for (int x = (*p)[0] - 1 ; x < (*p)[0] + 2 ; x++) {
+          for (int y = (*p)[1] - 1 ; y < (*p)[1] + 2 ; y++) {
+            if (x != (*p)[0] || y != (*p)[1]) {
+              if (!clusterPoints->isPointInSet(vector2i(x, y))) {
+                doTest = false;
+                break;
+              }
+            }
+          }
+
+          if (!doTest) {
+            break;
+          }
+        }
+
+        if (!doTest) {
+          continue;
+        }
 
         std::vector <float> skeletonDistances;
 
@@ -188,7 +219,7 @@ int main(int argc, char **argv) {
 
       }
 
-      riverWidth = sqrt(riverWidth);
+      riverWidth = 2.0f * sqrt(riverWidth);
 
 
 
@@ -203,26 +234,30 @@ int main(int argc, char **argv) {
 
       riverSkeleton.setBoundingPoints(clusterPoints);
       riverSkeleton.createBrownian((int)(
-          clusterPoints->getCount() * 0.05f),
+          riverSkeleton.getCount() * 2),
           clusterPoints->getTopRight()[0] + 1,
           clusterPoints->getTopRight()[1] + 1
       );
 
       CParticleDeposition depositionFilter;
 
+      float searchRadius = (std::log(riverWidth * 0.1f - 1.0f) + 0.2f) * 2.5f;
+
+      printf("River width is %f and search radius is %f\n", riverWidth, searchRadius);
+
       // Generate river bank
-      depositionFilter.setParameters(0.01f, 2, ceil(riverWidth * 0.20f));
+      depositionFilter.setParameters(0.02f, 2, std::ceil(searchRadius));
       depositionFilter.setMode(RANDOM);
       depositionFilter.setBoundingPoints(&riverSkeleton);
       depositionFilter.setVentCenter(riverSkeleton.getMedianPoint());
-      depositionFilter.setParticlesCount(riverSkeleton.getCount() * 300);
+      depositionFilter.setParticlesCount(clusterPoints->getCount() * 10);
       depositionFilter.apply(&riverSide);
 
       // Generate the river
-      depositionFilter.setParameters(0.01f, 4, 2);
+      depositionFilter.setParameters(0.015f, 4, 2);
       depositionFilter.setMode(RANDOM);
       depositionFilter.setBoundingPoints(&riverSkeleton);
-      depositionFilter.setParticlesCount(riverSkeleton.getCount() * 200);
+      depositionFilter.setParticlesCount(clusterPoints->getCount() * 5);
       depositionFilter.setVentCenter(riverSkeleton.getMedianPoint());
       depositionFilter.apply(&riverSide);
 
@@ -237,7 +272,8 @@ int main(int argc, char **argv) {
 
       // slap some erosion on that bitch
       CHydraulicErosion hydraulicErosion;
-      hydraulicErosion.setStrength(40);
+      hydraulicErosion.setParameters(0.25f, 0.25f, 0.6f, 0.25f);
+      hydraulicErosion.setStrength(30);
       hydraulicErosion.apply(&riverSide);
 
       heightmap += riverSide;
@@ -248,8 +284,8 @@ int main(int argc, char **argv) {
     }
   }
 
+  // VOLCANOS //////////////////////////////////////////////////////////////////
   for (int i = 0 ; i < inputProcessor.getClusters().size() ; i++) {
-    // VOLCANOS
     if (inputProcessor.getClusters()[i]->channel == 2) {
 
       CPointsSet2i * clusterPoints = &inputProcessor.getClusters()[i]->points;
@@ -287,9 +323,6 @@ int main(int argc, char **argv) {
       depositionFilter.setParticlesCount(totalParticles);
       depositionFilter.apply(&heightmap);
 
-      // to calculate where the caldera should be
-      float avgHeight = particlesHeight * clusterPoints->getCount() * 0.01f;
-
       // create caldera
       float highestPoint = 0.0f;
       for (std::vector<vector2i>::const_iterator i = clusterPoints->getPoints().begin() ; i != clusterPoints->getPoints().end() ; i++) {
@@ -309,23 +342,22 @@ int main(int argc, char **argv) {
 
       heightmap.setMaxHeight(1.0f);
 
+//      CPerturbation volcanoPerturbation;
+//      volcanoPerturbation.setMagnitude(1);
+//      volcanoPerturbation.setBoundingPoints(&depositionFilter.getActivityMask());
+//      volcanoPerturbation.apply(&heightmap);
+
     }
   }
-
-  // Some peturbation postprocessing
-  CPerturbation finalPerturbationFilter;
-  finalPerturbationFilter.setMagnitude(0.03f);
-  //finalPerturbationFilter.apply(&heightmap);
 
   // Save everything
   //heightmap.loadFromPNG("output.png");
   heightmap.saveAsPNG(outputPath);
-  heightmap.saveColorMapAsPNG("color.png");
+  heightmap.saveColorMapAsPNG("color.png", globalSettings.renderShadows);
 
   printf("Done.\n");
 
   return 0;
-
 
 }
 

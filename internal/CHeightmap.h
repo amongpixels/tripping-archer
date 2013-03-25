@@ -74,6 +74,7 @@ namespace archer
       void saveColorMapAsPNG(char * path, bool useShadows = false);
 
       void loadFromPNG(char * path);
+      void loadRenderConfig(char * path);
 
       CHeightmap & operator = (float);
 

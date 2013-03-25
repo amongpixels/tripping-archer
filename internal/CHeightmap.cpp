@@ -425,6 +425,10 @@ namespace archer
       }
     }
   }
+  
+  void CHeightmap::loadRenderConfig(char* path) {
+
+  }
 
   CHeightmap::CHeightmap(int w, int h) {
     this->init(w, h);
