@@ -62,6 +62,7 @@ int main(int argc, char **argv) {
 
   CHeightmap heightmap (inputProcessor.getInputWidth(), inputProcessor.getInputHeight());
 
+  /*
   // Create base terrain
   CSimplexNoise simplexFilter;
   simplexFilter.setOctaves(10);
@@ -349,9 +350,16 @@ int main(int argc, char **argv) {
 
     }
   }
+  */
+
+  heightmap.loadFromPNG("testout.png");
+
+  // erode everything a bit
+  CThermalErosion erosion;
+  erosion.apply(&heightmap);
 
   // Save everything
-  //heightmap.loadFromPNG("output.png");
+  //
   heightmap.saveAsPNG(outputPath);
   heightmap.saveColorMapAsPNG("color.png", globalSettings.renderShadows);
 

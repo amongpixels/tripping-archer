@@ -17,7 +17,7 @@ namespace archer
   
   void CThermalErosion::apply(CHeightmap * h) {
 
-    float T = 4.0f / (float)(h->getWidth());
+    float T = 0.007f;//4.0f / (float)(h->getWidth());
 
     printf("TALUS: %f\n", T);
 
@@ -39,7 +39,7 @@ namespace archer
 
                 float d = h->getValue(x, y) - h->getValue(s, t);
 
-                if (d > 0 && T > d) {
+                if (d > T) {
                   vicninities.push_back( tuple<vector2i, float> (vector2i(s, t), d) );
 
                   dTotal += d;
