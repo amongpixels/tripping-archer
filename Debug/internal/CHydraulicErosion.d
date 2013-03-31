@@ -103,7 +103,8 @@ internal/CHydraulicErosion.d: ../internal/CHydraulicErosion.cpp \
  /home/dragomir/git/include/cml/mathlib/picking.h \
  ../internal/CHeightmap.h ../internal/../external/CImg.h \
  ../internal/helpers.h ../internal/CGradient.h ../internal/CNoise.h \
- ../internal/CImageBuffer.h
+ ../internal/CImageBuffer.h ../internal/CPointsSet2i.h \
+ ../internal/TPointsSet.h
 
 ../internal/CHydraulicErosion.h:
 
@@ -322,3 +323,7 @@ internal/CHydraulicErosion.d: ../internal/CHydraulicErosion.cpp \
 ../internal/CNoise.h:
 
 ../internal/CImageBuffer.h:
+
+../internal/CPointsSet2i.h:
+
+../internal/TPointsSet.h:

@@ -71,7 +71,7 @@ int main(int argc, char **argv) {
 
   printf("Processing input %s...\n", inputPath);
 
-  globalSettings.terrainType = 1;
+  globalSettings.terrainType = 3;
 
   // Load clusters
   CInputProcessor inputProcessor;
@@ -88,7 +88,10 @@ int main(int argc, char **argv) {
   float ratio = (float)(inputProcessor.getInputHeight()) / (float)(inputProcessor.getInputWidth());
 
   // Make sure that we always select random and proportional slice of 2d noise
-  float randomOffset = 1000.0f / (rand() % 1000);
+  float randomOffset = (rand() % 1000) / 100.0f;
+
+  printf("random offset %f\n", randomOffset);
+
   simplexFilter.setBounds(
       randomOffset, randomOffset, randomOffset + (float)(inputProcessor.getInputWidth()) / 512.0f, randomOffset + ((float)(inputProcessor.getInputHeight()) / 512.0f) * ratio);
   simplexFilter.setPersistence(0.5);
@@ -101,7 +104,7 @@ int main(int argc, char **argv) {
     heightmap *= 0.4f;
   }
   else {
-    heightmap *= 0.8f;
+    heightmap *= 0.6f;
   }
 
 //  CThermalErosion baseErosion;
@@ -120,7 +123,17 @@ int main(int argc, char **argv) {
 
       if (globalSettings.useVoronoi) {
         CVoronoi voronoiGenerator;
-        voronoiGenerator.setPointsCount(ceil(inputProcessor.getClusters()[i]->points.getCount() * 0.0005f));
+
+        int clustersCount = ceil(inputProcessor.getClusters()[i]->points.getCount() * 0.0005f);
+
+        if (globalSettings.terrainType == 1) {
+          clustersCount = ceil(inputProcessor.getClusters()[i]->points.getCount() * 0.0002f);
+        }
+        else if (globalSettings.terrainType == 2) {
+          clustersCount = ceil(inputProcessor.getClusters()[i]->points.getCount() * 0.0003f);
+        }
+
+        voronoiGenerator.setPointsCount(clustersCount);
         voronoiGenerator.setBoundingPoints(&inputProcessor.getClusters()[i]->points);
         voronoiGenerator.createClusters(&clusters);
       }
@@ -139,10 +152,10 @@ int main(int argc, char **argv) {
         int brownianParticlesCount = (int)((*c).getCount() * 0.15f);
 
         if (globalSettings.terrainType == 1) {
-
+          brownianParticlesCount = (int)((*c).getCount() * 0.12f);
         }
         else if (globalSettings.terrainType == 2) {
-
+          brownianParticlesCount = (int)((*c).getCount() * 0.14f);
         }
 
         skeleton.createBrownian(brownianParticlesCount, (*c).getTopRight()[0] + 1, (*c).getTopRight()[1] + 1);
@@ -153,10 +166,16 @@ int main(int argc, char **argv) {
         int heightDifference = 2;
 
         if (globalSettings.terrainType == 1) {
-
+          particlesCount = skeleton.getCount() * 100;
+          particleHeight = 0.015f;
+          searchRadius = 2;
+          heightDifference = 2;
         }
         else if (globalSettings.terrainType == 2) {
-
+          particlesCount = skeleton.getCount() * 110;
+          particleHeight = 0.015f;
+          searchRadius = 1;
+          heightDifference = 2;
         }
 
         // Deposit mountains
@@ -367,9 +386,9 @@ int main(int argc, char **argv) {
 //      }
 
       float clusterSize = sqrt(clusterPoints->getWidth() * clusterPoints->getHeight());
-      int particlesPerSquare = 20;
+      int particlesPerSquare = 18;
       int totalParticles = (clusterPoints->getCount() * particlesPerSquare);
-      float particlesHeight = 0.015f;
+      float particlesHeight = 0.013f;
       printf("Cluster size is %f\n", clusterSize);
       //boundingPoints.createBrownian(20, 256, 256);
       clusterPoints->shrink(&boundingPoints, (int)(clusterSize * 0.15f));
@@ -377,6 +396,7 @@ int main(int argc, char **argv) {
       //boundingPoints.saveAsPNG("shrinked.png", 256, 256);
 
       heightmap.setMaxHeight(2.0f);
+      heightmap.levelOut(boundingPoints);
 
       CParticleDeposition depositionFilter;
       depositionFilter.setParameters(particlesHeight, 2, 1);
@@ -394,7 +414,7 @@ int main(int argc, char **argv) {
         }
       }
 
-      float threshold = std::min(1.0f, highestPoint * 0.9f);
+      float threshold = std::min(1.0f, highestPoint * 0.75f);
 
       for (std::vector<vector2i>::const_iterator i = clusterPoints->getPoints().begin() ; i != clusterPoints->getPoints().end() ; i++) {
         float v = heightmap.getValue((*i)[0], (*i)[1]);
@@ -417,8 +437,8 @@ int main(int argc, char **argv) {
 
   // erode everything a bit
   CThermalErosion erosion;
-  erosion.setTalus(0.05f);
-  erosion.setStrength(20);
+  erosion.setTalus(0.045f);
+  erosion.setStrength(50);
   erosion.apply(&heightmap);
 
   // Save everything

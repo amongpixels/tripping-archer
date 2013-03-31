@@ -45,14 +45,19 @@ namespace archer
 
   void CHeightmap::setValue(int x, int y, float v) {
 
-    v = std::max(-this->maxHeight, std::min(this->maxHeight, v)); // Cap the value between -1.0f and 1.0f
-    this->values[x][y] = v;
+    if (x > -1 && x < this->width && y > -1 && y < this->height) {
 
-    if (v > this->maxValue) {
-      this->maxValue = v;
+      v = std::max(-this->maxHeight, std::min(this->maxHeight, v)); // Cap the value between -1.0f and 1.0f
+      this->values[x][y] = v;
+
+      if (v > this->maxValue) {
+        this->maxValue = v;
+      }
+
+      this->hasBeenModified = true;
+
     }
 
-    this->hasBeenModified = true;
   }
 
   void CHeightmap::setHeightScale(float f) {
@@ -433,6 +438,12 @@ namespace archer
   
   float CHeightmap::getMaxHeight() {
     return this->maxHeight;
+  }
+  
+  void CHeightmap::levelOut(const CPointsSet2i& p) {
+    for (int i = 0 ; i < p.getCount() ; i++) {
+      this->setValue(p.getPoints()[i][0], p.getPoints()[i][1], 0.0f);
+    }
   }
 
   CHeightmap::CHeightmap(int w, int h) {

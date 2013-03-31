@@ -102,7 +102,8 @@ internal/CFault.d: ../internal/CFault.cpp ../internal/CFault.h \
  /home/dragomir/git/include/cml/mathlib/picking.h \
  ../internal/CHeightmap.h ../internal/../external/CImg.h \
  ../internal/helpers.h ../internal/CGradient.h ../internal/CNoise.h \
- ../internal/CImageBuffer.h
+ ../internal/CImageBuffer.h ../internal/CPointsSet2i.h \
+ ../internal/TPointsSet.h
 
 ../internal/CFault.h:
 
@@ -319,3 +320,7 @@ internal/CFault.d: ../internal/CFault.cpp ../internal/CFault.h \
 ../internal/CNoise.h:
 
 ../internal/CImageBuffer.h:
+
+../internal/CPointsSet2i.h:
+
+../internal/TPointsSet.h:

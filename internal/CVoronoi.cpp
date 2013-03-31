@@ -104,7 +104,7 @@ namespace archer
     for (int i = 0 ; i < this->pointsCount ; i++) {
       vector2i c = clusters[i].getCentroid();
       //this->points[i].position.set(c[0], c[1]);
-      clusters[i].createMask(h);
+      //clusters[i].createMask(h);
     }
 
 

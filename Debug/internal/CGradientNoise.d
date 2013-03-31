@@ -103,7 +103,8 @@ internal/CGradientNoise.d: ../internal/CGradientNoise.cpp \
  /home/dragomir/git/include/cml/mathlib/picking.h \
  ../internal/CHeightmap.h ../internal/../external/CImg.h \
  ../internal/helpers.h ../internal/CGradient.h ../internal/CNoise.h \
- ../internal/CImageBuffer.h
+ ../internal/CImageBuffer.h ../internal/CPointsSet2i.h \
+ ../internal/TPointsSet.h
 
 ../internal/CGradientNoise.h:
 
@@ -322,3 +323,7 @@ internal/CGradientNoise.d: ../internal/CGradientNoise.cpp \
 ../internal/CNoise.h:
 
 ../internal/CImageBuffer.h:
+
+../internal/CPointsSet2i.h:
+
+../internal/TPointsSet.h:

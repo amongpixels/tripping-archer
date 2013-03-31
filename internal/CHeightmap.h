@@ -16,6 +16,7 @@
 #include "helpers.h"
 #include "CGradient.h"
 #include "CNoise.h"
+#include "CPointsSet2i.h"
 
 using namespace cimg_library;
 using namespace std;
@@ -67,6 +68,7 @@ namespace archer
       float getMaxHeight();
       void setMaxHeight(float h);
       void zero();
+      void levelOut(const CPointsSet2i & p);
 
       // This generates a simple test heightmap
       void test();

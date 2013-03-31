@@ -59,8 +59,8 @@ namespace archer {
       for (int x = 0 ; x < h->getWidth() ; x++) {
         for (int y = 0 ; y < h->getHeight() ; y++) {
 
-          double noiseX = ((double)(x) * xStep) * f;
-          double noiseY = ((double)(y) * yStep) * f;
+          double noiseX = ((double)(x) * xStep + x1) * f;
+          double noiseY = ((double)(y) * yStep + y1) * f;
 
           float noiseValue = noise.getNoise(noiseX, noiseY) * a;
 

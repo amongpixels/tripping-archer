@@ -103,12 +103,12 @@ main.d: ../main.cpp ../internal/SSettings.h ../internal/CNoise.h \
  /home/dragomir/git/include/cml/mathlib/projection.h \
  /home/dragomir/git/include/cml/mathlib/picking.h \
  ../internal/CHeightmap.h ../internal/helpers.h ../internal/CGradient.h \
- ../internal/CNoise.h ../internal/CFault.h \
- ../internal/CParticleDeposition.h ../internal/CPointsSet2i.h \
- ../internal/TPointsSet.h ../internal/CVoronoi.h \
- ../internal/CInputProcessor.h ../internal/CBrownianTree.h \
- ../internal/CPerturbation.h ../internal/CThermalErosion.h \
- ../internal/CHydraulicErosion.h ../internal/CHeightmapRenderer.h
+ ../internal/CNoise.h ../internal/CPointsSet2i.h ../internal/TPointsSet.h \
+ ../internal/CFault.h ../internal/CParticleDeposition.h \
+ ../internal/CVoronoi.h ../internal/CInputProcessor.h \
+ ../internal/CBrownianTree.h ../internal/CPerturbation.h \
+ ../internal/CThermalErosion.h ../internal/CHydraulicErosion.h \
+ ../internal/CHeightmapRenderer.h
 
 ../internal/SSettings.h:
 
@@ -332,13 +332,13 @@ main.d: ../main.cpp ../internal/SSettings.h ../internal/CNoise.h \
 
 ../internal/CNoise.h:
 
-../internal/CFault.h:
-
-../internal/CParticleDeposition.h:
-
 ../internal/CPointsSet2i.h:
 
 ../internal/TPointsSet.h:
+
+../internal/CFault.h:
+
+../internal/CParticleDeposition.h:
 
 ../internal/CVoronoi.h:
 

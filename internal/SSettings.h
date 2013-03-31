@@ -16,7 +16,7 @@ namespace archer
       unsigned char terrainType;
   };
 
-  static SSettings globalSettings = { true, false, 2 };
+  static SSettings globalSettings = { false, false, 3 };
 
 }
 

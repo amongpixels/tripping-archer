@@ -16,8 +16,8 @@ namespace archer
     
     this->colors.addStop(-1.0f, 51, 40, 20); // Deep rock
     this->colors.addStop(-0.8f, 100, 85, 33); // Shallow rock
-    this->colors.addStop(-0.25f, 150, 136, 91); // Early river bank
-    this->colors.addStop(0.0f, 95, 118, 27); // Grass around the river bank
+    this->colors.addStop(-0.40f, 150, 136, 91); // Early river bank
+    this->colors.addStop(-0.15f, 95, 118, 27); // Grass around the river bank
     //this->colors.addStop(0.1f, 110, 113, 56); // Mountain grass
     this->colors.addStop(0.3f, 162, 152, 117); // Mountains
     this->colors.addStop(1.0f, 201, 193, 146); // Top of mountains
@@ -66,18 +66,21 @@ namespace archer
           if (this->renderShadows) {
 
             // Some simple raytracing to calculate the shadows
-            vector3f step = lightDirection;
-            step.set(0.5f, 0.11f, 0.5f);
-            vector3f currentPoint (x, h->getValue(x, y) * h->getHeightScale(), y);
+            vector3f step = lightDirection * 0.5f;
+            float heightScale = h->getHeightScale() * 7.0f;
+            //step.set(0.5f, 0.11f, 0.5f);
+            vector3f currentPoint (x, h->getValue(x, y) * heightScale, y);
 
             bool inShadow = false;
+
+            //printf("Height scale is %f", heightScale);
 
             // Cast the ray and let it fly while within the boundaries
             while (floor(currentPoint[0]) > -1 && floor(currentPoint[0]) < h->getWidth() &&
                 floor(currentPoint[2]) > -1 && floor(currentPoint[2]) < h->getHeight() &&
-                currentPoint[1] < h->getMaxHeight() * h->getHeightScale()) {
+                currentPoint[1] < h->getMaxHeight() * heightScale) {
 
-              if (h->getValue(floor(currentPoint[0]), floor(currentPoint[2])) * h->getHeightScale() > currentPoint[1]) {
+              if (h->getValue(floor(currentPoint[0]), floor(currentPoint[2])) * heightScale > currentPoint[1]) {
                 inShadow = true;
                 break;
               }
