@@ -159,49 +159,56 @@ namespace archer
 
   }
 
-  void CParticleDeposition::deposit(CHeightmap * h, vector2i & particle) {
+  void CParticleDeposition::deposit(CHeightmap * h, vector2i & particle, int ite) {
 
     bool positionFound = false;
 
-    for (int r = 1 ; r <= this->searchRadius ; r++) {
+    // This tends to go into infinite loops when height difference is small. To stop that let's limit number of iterations
+    if (ite < 1000) {
 
-      // search the radius around the particle to see if it's in stable position or not
-      for (int x = particle[0] - r ; x <= particle[0] + r ; x++) {
-        for (int y = particle[1] - r ; y <= particle[1] + r ; y++) {
+      for (int r = 1 ; r <= this->searchRadius ; r++) {
 
-          // we are searching in a rectangle first but test proper radius now, also test if we are not out of bounds
-          if (
-              ( (x >= 0) && (x < h->getWidth()) && (y >= 0) && (y < h->getHeight()) ) &&
-              ( (x != particle[0]) || (y != particle[1]) ) &&
-              ( (x - particle[0]) * (x - particle[0]) + (y - particle[1]) * (y - particle[1]) <= r * r )
-          ) {
+        // search the radius around the particle to see if it's in stable position or not
+        for (int x = particle[0] - r ; x <= particle[0] + r ; x++) {
+          for (int y = particle[1] - r ; y <= particle[1] + r ; y++) {
 
-            float diff = h->getValue(particle[0], particle[1]) + this->particleHeight - h->getValue(x, y);
+            if ((x != particle[0]) || (y != particle[1])) {
+              // we are searching in a rectangle first but test proper radius now, also test if we are not out of bounds
+              if (
+                  ( (x >= 0) && (x < h->getWidth()) && (y >= 0) && (y < h->getHeight()) ) &&
+                  ( (x - particle[0]) * (x - particle[0]) + (y - particle[1]) * (y - particle[1]) <= r * r )
+              ) {
 
-            if (diff >= this->elevationThreshold) {
-              particle.set(x, y);
-              positionFound = true;
-              break;
+                float diff = h->getValue(particle[0], particle[1]) + this->particleHeight - h->getValue(x, y);
+
+                if (diff >= this->elevationThreshold) {
+                  particle.set(x, y);
+                  positionFound = true;
+
+                  break;
+                }
+
+              }
             }
+          }
 
+          if (positionFound) {
+            break;
           }
         }
-
         if (positionFound) {
           break;
         }
       }
-      if (positionFound) {
-        break;
-      }
+
     }
 
     if (!positionFound) {
       h->setValue(particle[0], particle[1], h->getValue(particle[0], particle[1]) + this->particleHeight);
-      this->activityMask.addPoint(particle); // Keep track of which aprts of the heightmap were affected
+      this->activityMask.addPoint(particle); // Keep track of which parts of the heightmap were affected
     }
     else {
-      this->deposit(h, particle);
+      this->deposit(h, particle, ite + 1);
     }
 
 

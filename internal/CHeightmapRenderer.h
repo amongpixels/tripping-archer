@@ -31,6 +31,8 @@ namespace archer
 
     public:
       CHeightmapRenderer();
+      void setRenderShadows(bool b);
+      void setRenderLight(bool b);
       void renderToPNG(CHeightmap * h, char * path);
       void loadPreset(char * path);
       virtual ~CHeightmapRenderer();

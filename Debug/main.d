@@ -1,6 +1,6 @@
 main.d: ../main.cpp ../internal/SSettings.h ../internal/CNoise.h \
  ../internal/CImageBuffer.h ../internal/../external/CImg.h \
- ../internal/CSimplexNoise.h ../internal/IHeightmapProcessor.h \
+ ../internal/CGradientNoise.h ../internal/IHeightmapProcessor.h \
  /home/dragomir/git/include/cml/cml.h \
  /home/dragomir/git/include/cml/vector.h \
  /home/dragomir/git/include/cml/core/common.h \
@@ -107,9 +107,8 @@ main.d: ../main.cpp ../internal/SSettings.h ../internal/CNoise.h \
  ../internal/CParticleDeposition.h ../internal/CPointsSet2i.h \
  ../internal/TPointsSet.h ../internal/CVoronoi.h \
  ../internal/CInputProcessor.h ../internal/CBrownianTree.h \
- ../internal/CPerturbation.h ../internal/CSimplexNoise.h \
- ../internal/CThermalErosion.h ../internal/CHydraulicErosion.h \
- ../internal/CHeightmapRenderer.h
+ ../internal/CPerturbation.h ../internal/CThermalErosion.h \
+ ../internal/CHydraulicErosion.h ../internal/CHeightmapRenderer.h
 
 ../internal/SSettings.h:
 
@@ -119,7 +118,7 @@ main.d: ../main.cpp ../internal/SSettings.h ../internal/CNoise.h \
 
 ../internal/../external/CImg.h:
 
-../internal/CSimplexNoise.h:
+../internal/CGradientNoise.h:
 
 ../internal/IHeightmapProcessor.h:
 
@@ -348,8 +347,6 @@ main.d: ../main.cpp ../internal/SSettings.h ../internal/CNoise.h \
 ../internal/CBrownianTree.h:
 
 ../internal/CPerturbation.h:
-
-../internal/CSimplexNoise.h:
 
 ../internal/CThermalErosion.h:
 

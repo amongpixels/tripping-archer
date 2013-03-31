@@ -10,11 +10,10 @@
 #include <cstring>
 #include <string>
 #include <vector>
-//#include <boost/program_options.hpp>
 
 #include "internal/SSettings.h"
 #include "internal/CNoise.h"
-#include "internal/CSimplexNoise.h"
+#include "internal/CGradientNoise.h"
 #include "internal/CFault.h"
 #include "internal/CParticleDeposition.h"
 #include "internal/CVoronoi.h"
@@ -28,23 +27,38 @@
 using namespace std;
 using namespace archer;
 
-//namespace po = boost::program_options;
-
 int main(int argc, char **argv) {
 
-  char * inputPath;
-  char * outputPath;
+  char * inputPath = "input.png";
+  char * outputPath = "output.png";
+  char * colorPath = NULL;
+  char * renderConfigPath = NULL;
 
   int flag;
 
-  while ((flag = getopt(argc, argv, "i:o:vs")) != -1) {
+  /**
+   * i - input path
+   * o - output path
+   * c - texture output path
+   * r - render config file path
+   * t - terrain type
+   * v - use voronoi
+   * s - render shadows
+   *
+   * Example call:
+   * ./tripping-archer -i input.png -o output.png -c color.png -r alps.cfg t 2 -v -s
+   */
+  while ((flag = getopt(argc, argv, "i:o:c:r:t:vs")) != -1) {
     switch (flag) {
       case 'i' : inputPath = optarg; break;
       case 'o' : outputPath = optarg; break;
+      case 'c' : colorPath = optarg; break;
+      case 'r' : renderConfigPath = optarg; break;
       case 'v' : globalSettings.useVoronoi = true; break;
       case 's' : globalSettings.renderShadows = true; break;
+      case 't' : globalSettings.terrainType = atoi(optarg); break;
       case '?' :
-        if (optopt == 'i' || optopt == 'o') {
+        if (optopt == 'i' || optopt == 'o' || optopt == 'r' || optopt == 't') {
           printf("Option -%c requires an argument.\n", optopt);
         }
         else {
@@ -57,21 +71,45 @@ int main(int argc, char **argv) {
 
   printf("Processing input %s...\n", inputPath);
 
+  globalSettings.terrainType = 1;
+
   // Load clusters
   CInputProcessor inputProcessor;
   inputProcessor.loadFromImage(inputPath);
 
   CHeightmap heightmap (inputProcessor.getInputWidth(), inputProcessor.getInputHeight());
 
-  /*
-
   // Create base terrain
-  CSimplexNoise simplexFilter;
+  CGradientNoise simplexFilter;
   simplexFilter.setOctaves(10);
-  simplexFilter.setBounds(0.0, 0.0, 1.0, 1.0);
+
+  srand (time(NULL));
+
+  float ratio = (float)(inputProcessor.getInputHeight()) / (float)(inputProcessor.getInputWidth());
+
+  // Make sure that we always select random and proportional slice of 2d noise
+  float randomOffset = 1000.0f / (rand() % 1000);
+  simplexFilter.setBounds(
+      randomOffset, randomOffset, randomOffset + (float)(inputProcessor.getInputWidth()) / 512.0f, randomOffset + ((float)(inputProcessor.getInputHeight()) / 512.0f) * ratio);
   simplexFilter.setPersistence(0.5);
   simplexFilter.apply(&heightmap);
-  heightmap *= 0.5f;
+
+  if (globalSettings.terrainType == 1) {
+    heightmap *= 0.2f;
+  }
+  else if (globalSettings.terrainType == 2) {
+    heightmap *= 0.4f;
+  }
+  else {
+    heightmap *= 0.8f;
+  }
+
+//  CThermalErosion baseErosion;
+//  //baseErosion.setParameters(0.07f, 0.07f, 0.7f, 0.07f);
+//  baseErosion.setTalus(0.1f);
+//  baseErosion.setStrength(10);
+//  baseErosion.apply(&heightmap);
+
 
   // MOUNTAINS /////////////////////////////////////////////////////////////////
   for (unsigned int i = 0 ; i < inputProcessor.getClusters().size() ; i++) {
@@ -97,15 +135,37 @@ int main(int argc, char **argv) {
         CBrownianTree skeleton;
         (*c).generateSkeleton(&skeleton);
         skeleton.setBoundingPoints(&(*c));
-        skeleton.createBrownian((int)((*c).getCount() * 0.15f), (*c).getTopRight()[0] + 1, (*c).getTopRight()[1] + 1);
+
+        int brownianParticlesCount = (int)((*c).getCount() * 0.15f);
+
+        if (globalSettings.terrainType == 1) {
+
+        }
+        else if (globalSettings.terrainType == 2) {
+
+        }
+
+        skeleton.createBrownian(brownianParticlesCount, (*c).getTopRight()[0] + 1, (*c).getTopRight()[1] + 1);
+
+        int particlesCount = skeleton.getCount() * 120;
+        float particleHeight = 0.02f;
+        int searchRadius = 1;
+        int heightDifference = 2;
+
+        if (globalSettings.terrainType == 1) {
+
+        }
+        else if (globalSettings.terrainType == 2) {
+
+        }
 
         // Deposit mountains
         CParticleDeposition depositionFilter;
-        depositionFilter.setParameters(0.02f, 2, 1);
+        depositionFilter.setParameters(particleHeight, heightDifference, searchRadius);
         depositionFilter.setBoundingPoints(&skeleton);
         depositionFilter.setMode(RANDOM);
         depositionFilter.setVentCenter(skeleton.getMedianPoint());
-        depositionFilter.setParticlesCount(skeleton.getCount() * 120);
+        depositionFilter.setParticlesCount(particlesCount);
         depositionFilter.apply(&heightmap);
 
         // Slight perturbation to get rid of regular lines
@@ -287,7 +347,7 @@ int main(int argc, char **argv) {
     }
   }
 
-  // VOLCANOS //////////////////////////////////////////////////////////////////
+  // VOLCANOES /////////////////////////////////////////////////////////////////
   for (int i = 0 ; i < inputProcessor.getClusters().size() ; i++) {
     if (inputProcessor.getClusters()[i]->channel == 2) {
 
@@ -309,7 +369,7 @@ int main(int argc, char **argv) {
       float clusterSize = sqrt(clusterPoints->getWidth() * clusterPoints->getHeight());
       int particlesPerSquare = 20;
       int totalParticles = (clusterPoints->getCount() * particlesPerSquare);
-      float particlesHeight = 0.02f;
+      float particlesHeight = 0.015f;
       printf("Cluster size is %f\n", clusterSize);
       //boundingPoints.createBrownian(20, 256, 256);
       clusterPoints->shrink(&boundingPoints, (int)(clusterSize * 0.15f));
@@ -334,7 +394,7 @@ int main(int argc, char **argv) {
         }
       }
 
-      float threshold = std::min(1.0f, highestPoint * 0.8f);
+      float threshold = std::min(1.0f, highestPoint * 0.9f);
 
       for (std::vector<vector2i>::const_iterator i = clusterPoints->getPoints().begin() ; i != clusterPoints->getPoints().end() ; i++) {
         float v = heightmap.getValue((*i)[0], (*i)[1]);
@@ -345,34 +405,37 @@ int main(int argc, char **argv) {
 
       heightmap.setMaxHeight(1.0f);
 
-//      CPerturbation volcanoPerturbation;
-//      volcanoPerturbation.setMagnitude(1);
-//      volcanoPerturbation.setBoundingPoints(&depositionFilter.getActivityMask());
-//      volcanoPerturbation.apply(&heightmap);
+      CPerturbation volcanoPerturbation;
+      volcanoPerturbation.setMagnitude(1);
+      volcanoPerturbation.setBoundingPoints(&depositionFilter.getActivityMask());
+      volcanoPerturbation.apply(&heightmap);
 
     }
   }
 
-
-
+  //heightmap.loadFromPNG("testout.png");
 
   // erode everything a bit
   CThermalErosion erosion;
+  erosion.setTalus(0.05f);
+  erosion.setStrength(20);
   erosion.apply(&heightmap);
 
   // Save everything
-  //
-  heightmap.saveAsPNG(outputPath);
 
-  */
-
-  heightmap.loadFromPNG("testout.png");
   heightmap.saveAsPNG(outputPath);
 
   CHeightmapRenderer renderer;
-  renderer.loadPreset("render.cfg");
-  renderer.renderToPNG(&heightmap, "color.png");
-  //heightmap.saveColorMapAsPNG("color.png", globalSettings.renderShadows);
+
+  renderer.setRenderShadows(globalSettings.renderShadows);
+
+  if (renderConfigPath) {
+    //renderer.loadPreset(renderConfigPath);
+  }
+
+  if (colorPath) {
+    renderer.renderToPNG(&heightmap, colorPath);
+  }
 
   printf("Done.\n");
 

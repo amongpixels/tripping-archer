@@ -19,8 +19,21 @@ namespace archer
   
   class CThermalErosion : public IHeightmapProcessor
   {
+    private:
+
+      float talus;
+      int iterations;
+
     public:
       CThermalErosion();
+
+      void setTalus(float f);
+
+      /**
+       * Number of iterations
+       */
+      void setStrength(int i);
+
 
       void apply(CHeightmap * h);
 

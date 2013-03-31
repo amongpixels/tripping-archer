@@ -9,9 +9,9 @@
 #define CPERTURBATION_H_
 
 #include "CHeightmap.h"
-#include "CSimplexNoise.h"
+#include "CNoise.h"
 #include "CPointsSet2i.h"
-//#include "IHeightmapProcessor.h"
+#include "IHeightmapProcessor.h"
 
 namespace archer
 {

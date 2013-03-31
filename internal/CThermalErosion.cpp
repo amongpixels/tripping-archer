@@ -11,18 +11,17 @@ namespace archer
 {
   
   CThermalErosion::CThermalErosion() {
-    // TODO Auto-generated constructor stub
-    
+    this->talus = 0.007f;
+    this->iterations = 10;
   }
   
   void CThermalErosion::apply(CHeightmap * h) {
 
-    float T = 0.007f;//4.0f / (float)(h->getWidth());
+    float T = this->talus;
 
-    //printf("TALUS: %f\n", T);
     printf("Calculating thermal erosion... ");
 
-    for (int i = 0 ; i < 1 ; i++) {
+    for (int i = 0 ; i < this->iterations ; i++) {
 
       for (int x = 0 ; x < h->getWidth() ; x++) {
         for (int y = 0 ; y < h->getHeight() ; y++) {
@@ -40,6 +39,7 @@ namespace archer
 
                 float d = h->getValue(x, y) - h->getValue(s, t);
 
+                // if the inclination is bigger than talus then break some of that material
                 if (d > T) {
                   vicninities.push_back( tuple<vector2i, float> (vector2i(s, t), d) );
 
@@ -68,6 +68,14 @@ namespace archer
     }
 
     printf("done.\n");
+  }
+  
+  void CThermalErosion::setTalus(float f) {
+    this->talus = f;
+  }
+  
+  void CThermalErosion::setStrength(int i) {
+    this->iterations = i;
   }
 
   CThermalErosion::~CThermalErosion() {

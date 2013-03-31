@@ -37,7 +37,7 @@ namespace archer {
       CPointsSet2i * boundingPoints;
       CPointsSet2i activityMask;
 
-      void deposit (CHeightmap * h, vector2i & particle);
+      void deposit (CHeightmap * h, vector2i & particle, int ite = 0);
 
     public:
 

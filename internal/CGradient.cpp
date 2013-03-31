@@ -109,7 +109,7 @@ namespace archer
 
     for (int x = 0 ; x < w ; x++) {
 
-      color3f color = this->getColor((float)(x) / (float)(w));
+      color3f color = this->getColor((float)(x) / (float)(w) * (std::abs(this->minStop) + std::abs(this->maxStop)) + this->minStop);
 
       char c [] = { 255 * color[0], 255 * color[1], 255 * color[2] };
 

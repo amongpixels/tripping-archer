@@ -13,9 +13,10 @@ namespace archer
   struct SSettings {
       bool useVoronoi;
       bool renderShadows;
+      unsigned char terrainType;
   };
 
-  static SSettings globalSettings = { true, true };
+  static SSettings globalSettings = { true, false, 2 };
 
 }
 

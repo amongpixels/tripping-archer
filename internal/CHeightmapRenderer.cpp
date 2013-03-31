@@ -14,22 +14,34 @@ namespace archer
 
     this->lightDirection.set(0.5f, 0.8f, 0.5f);
     
-    this->colors.addStop(-1.0f, 68, 56, 17); // Deep rock
+    this->colors.addStop(-1.0f, 51, 40, 20); // Deep rock
     this->colors.addStop(-0.8f, 100, 85, 33); // Shallow rock
-    this->colors.addStop(-0.1f, 150, 136, 91);
-    this->colors.addStop(0.1f, 95, 118, 27);
-    this->colors.addStop(0.25f, 110, 113, 56); // Mountain grass
-    this->colors.addStop(0.7f, 162, 152, 117); // Mountains
+    this->colors.addStop(-0.25f, 150, 136, 91); // Early river bank
+    this->colors.addStop(0.0f, 95, 118, 27); // Grass around the river bank
+    //this->colors.addStop(0.1f, 110, 113, 56); // Mountain grass
+    this->colors.addStop(0.3f, 162, 152, 117); // Mountains
     this->colors.addStop(1.0f, 201, 193, 146); // Top of mountains
 
+//    this->colors.addStop(-1.0f, 68, 56, 17); // Deep rock
+//    this->colors.addStop(-0.8f, 100, 85, 33); // Shallow rock
+//    this->colors.addStop(-0.1f, 150, 136, 91);
+//    this->colors.addStop(0.1f, 95, 118, 27);
+//    this->colors.addStop(0.25f, 110, 113, 56); // Mountain grass
+//    this->colors.addStop(0.7f, 162, 152, 117); // Mountains
+//    this->colors.addStop(1.0f, 201, 193, 146); // Top of mountains
+
+    this->colors.saveAsPNG("gradient.png", 512, 40);
+
     this->renderLight = true;
-    this->renderShadows = true;
+    this->renderShadows = false;
 
   }
   
   void CHeightmapRenderer::renderToPNG(CHeightmap * h, char * path) {
 
     printf("Rendering heightmap... ");
+
+    this->lightDirection = this->lightDirection.normalize();
 
     h->calculateNormals();
 
@@ -41,44 +53,48 @@ namespace archer
     for (int x = 0 ; x < h->getWidth() ; x++) {
       for (int y = 0 ; y < h->getHeight() ; y++) {
 
-        float lightIntensity = max(0.0f, min(1.0f, (float)(cml::dot(h->getNormal(x, y), this->lightDirection) + noise.getNoise(x,y) * 0.05f)));
-
-        lightIntensity *= lightIntensity;
-
         float heightValue = h->getValue(x, y);
+        float lightIntensity = 1.0f;
 
         color3f c = this->colors.getColor(heightValue);
 
-        if (this->renderShadows) {
+        if (this->renderLight) {
 
-          // Some simple raytracing to calculate the shadows
-          vector3f step = lightDirection;
-          step.set(0.5f, 0.11f, 0.5f);
-          vector3f currentPoint (x, h->getValue(x, y) * h->getHeightScale(), y);
+          lightIntensity = max(0.0f, min(1.0f, (float)(cml::dot(h->getNormal(x, y), this->lightDirection) + noise.getNoise(x,y) * 0.05f)));
+          lightIntensity *= lightIntensity;
 
-          bool inShadow = false;
+          if (this->renderShadows) {
 
-          // Cast the ray and let it fly while within the boundaries
-          while (floor(currentPoint[0]) > -1 && floor(currentPoint[0]) < h->getWidth() &&
-              floor(currentPoint[2]) > -1 && floor(currentPoint[2]) < h->getHeight() &&
-              currentPoint[1] < h->getMaxHeight() * h->getHeightScale()) {
+            // Some simple raytracing to calculate the shadows
+            vector3f step = lightDirection;
+            step.set(0.5f, 0.11f, 0.5f);
+            vector3f currentPoint (x, h->getValue(x, y) * h->getHeightScale(), y);
 
-            if (h->getValue(floor(currentPoint[0]), floor(currentPoint[2])) * h->getHeightScale() > currentPoint[1]) {
-              inShadow = true;
-              break;
+            bool inShadow = false;
+
+            // Cast the ray and let it fly while within the boundaries
+            while (floor(currentPoint[0]) > -1 && floor(currentPoint[0]) < h->getWidth() &&
+                floor(currentPoint[2]) > -1 && floor(currentPoint[2]) < h->getHeight() &&
+                currentPoint[1] < h->getMaxHeight() * h->getHeightScale()) {
+
+              if (h->getValue(floor(currentPoint[0]), floor(currentPoint[2])) * h->getHeightScale() > currentPoint[1]) {
+                inShadow = true;
+                break;
+              }
+
+              currentPoint += step;
+
             }
 
-            currentPoint += step;
+            float shadow = 1.0f;
+            if (inShadow) {
+              shadow = 0.6f;
+            }
 
+            shadowMap.draw_point(x, y, &shadow);
           }
-
-          float shadow = 1.0f;
-          if (inShadow) {
-            shadow = 0.6f;
-          }
-
-          shadowMap.draw_point(x, y, &shadow);
         }
+
 
         int color [] = {
             lightIntensity * c[0] * 255,
@@ -105,6 +121,8 @@ namespace archer
 
     FILE * cfg = fopen(path, "r");
 
+    assert(cfg);
+
     fscanf(cfg, "%f %f %f\n", &this->lightDirection[0], &this->lightDirection[1], &this->lightDirection[2]);
 
     this->colors.reset();
@@ -116,6 +134,14 @@ namespace archer
       this->colors.addStop(stop, r, g, b);
     }
 
+  }
+  
+  void CHeightmapRenderer::setRenderShadows(bool b) {
+    this->renderShadows = b;
+  }
+  
+  void CHeightmapRenderer::setRenderLight(bool b) {
+    this->renderLight = b;
   }
 
   CHeightmapRenderer::~CHeightmapRenderer() {
