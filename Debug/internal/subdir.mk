@@ -6,8 +6,8 @@
 CPP_SRCS += \
 ../internal/CBrownianTree.cpp \
 ../internal/CFault.cpp \
+../internal/CFractalNoise.cpp \
 ../internal/CGradient.cpp \
-../internal/CGradientNoise.cpp \
 ../internal/CHeightmap.cpp \
 ../internal/CHeightmapRenderer.cpp \
 ../internal/CHydraulicErosion.cpp \
@@ -24,8 +24,8 @@ CPP_SRCS += \
 OBJS += \
 ./internal/CBrownianTree.o \
 ./internal/CFault.o \
+./internal/CFractalNoise.o \
 ./internal/CGradient.o \
-./internal/CGradientNoise.o \
 ./internal/CHeightmap.o \
 ./internal/CHeightmapRenderer.o \
 ./internal/CHydraulicErosion.o \
@@ -42,8 +42,8 @@ OBJS += \
 CPP_DEPS += \
 ./internal/CBrownianTree.d \
 ./internal/CFault.d \
+./internal/CFractalNoise.d \
 ./internal/CGradient.d \
-./internal/CGradientNoise.d \
 ./internal/CHeightmap.d \
 ./internal/CHeightmapRenderer.d \
 ./internal/CHydraulicErosion.d \

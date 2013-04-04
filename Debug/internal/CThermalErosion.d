@@ -103,8 +103,7 @@ internal/CThermalErosion.d: ../internal/CThermalErosion.cpp \
  /home/dragomir/git/include/cml/mathlib/picking.h \
  ../internal/CHeightmap.h ../internal/../external/CImg.h \
  ../internal/helpers.h ../internal/CGradient.h ../internal/CNoise.h \
- ../internal/CImageBuffer.h ../internal/CPointsSet2i.h \
- ../internal/TPointsSet.h
+ ../internal/CImageBuffer.h
 
 ../internal/CThermalErosion.h:
 
@@ -323,7 +322,3 @@ internal/CThermalErosion.d: ../internal/CThermalErosion.cpp \
 ../internal/CNoise.h:
 
 ../internal/CImageBuffer.h:
-
-../internal/CPointsSet2i.h:
-
-../internal/TPointsSet.h:

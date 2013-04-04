@@ -202,54 +202,54 @@ namespace archer
     this->binaryMap.clear();
   }
 
-//  void CPointsSet2i::createMask(CHeightmap* h) {
-//
-//    if (this->points.size() == 0) {
-//      return;
-//    }
-//
-//    printf("Creating a mask...\n");
-//
-//    // Make sure that the points will fit on the heightmap (sanity check)
-//    assert(h->getWidth() >= this->topRight[0] && h->getWidth() >= this->topRight[1]);
-//
-//
-////    CImg <unsigned char> mask (h->getWidth(), h->getHeight(), 1, 3, 0);
-//
-//    CPointsSet2i skeleton;
-//    this->generateSkeleton(&skeleton);
-//
-//    std::vector <float> distances;
-//    float maxDistance = 0.0f;
-//    //float heightmapSize = sqrt(h->getWidth() * h->getHeight());
-//
-//    //CHeightmap riverSide (h->getWidth(), h->getHeight());
-//    //CHeightmap river (h->getWidth(), h->getHeight());
-//
-//    // For every point calculate the distance to the skeleton
-//    for (std::vector<vector2i>::iterator p = this->points.begin() ; p != this->points.end() ; p++) {
-//
-//      std::vector <float> skeletonDistances;
-//
-//      // Calculate distances to every point in the skeleton
-//      for (int i = 0 ; i < skeleton.getCount() ; i++) {
-//        skeletonDistances.push_back( (skeleton.getPoints()[i] - (*p)).length() );
-//      }
-//
-//      std::sort(skeletonDistances.begin(), skeletonDistances.end());
-//
-//      distances.push_back(skeletonDistances.front());
-//
-//      if (skeletonDistances.front() > maxDistance) {
-//        maxDistance = skeletonDistances.front();
-//      }
-//
-//    }
-//
-//    for (unsigned int i = 0 ; i < this->points.size() ; i++) {
-//      float value = (1.0f - (distances[i] / (maxDistance))); // + h->getValue(this->points[i][0], this->points[i][1]);
-//      h->setValue(this->points[i][0], this->points[i][1], value);
-//    }
+  void CPointsSet2i::createMask(CHeightmap* h) {
+
+    if (this->points.size() == 0) {
+      return;
+    }
+
+    printf("Creating a mask...\n");
+
+    // Make sure that the points will fit on the heightmap (sanity check)
+    assert(h->getWidth() >= this->topRight[0] && h->getWidth() >= this->topRight[1]);
+
+
+//    CImg <unsigned char> mask (h->getWidth(), h->getHeight(), 1, 3, 0);
+
+    CPointsSet2i skeleton;
+    this->generateSkeleton(&skeleton);
+
+    std::vector <float> distances;
+    float maxDistance = 0.0f;
+    //float heightmapSize = sqrt(h->getWidth() * h->getHeight());
+
+    //CHeightmap riverSide (h->getWidth(), h->getHeight());
+    //CHeightmap river (h->getWidth(), h->getHeight());
+
+    // For every point calculate the distance to the skeleton
+    for (std::vector<vector2i>::iterator p = this->points.begin() ; p != this->points.end() ; p++) {
+
+      std::vector <float> skeletonDistances;
+
+      // Calculate distances to every point in the skeleton
+      for (int i = 0 ; i < skeleton.getCount() ; i++) {
+        skeletonDistances.push_back( (skeleton.getPoints()[i] - (*p)).length() );
+      }
+
+      std::sort(skeletonDistances.begin(), skeletonDistances.end());
+
+      distances.push_back(skeletonDistances.front());
+
+      if (skeletonDistances.front() > maxDistance) {
+        maxDistance = skeletonDistances.front();
+      }
+
+    }
+
+    for (unsigned int i = 0 ; i < this->points.size() ; i++) {
+      float value = -(1.0f - (distances[i] / (maxDistance))); // + h->getValue(this->points[i][0], this->points[i][1]);
+      h->setValue(this->points[i][0], this->points[i][1], value);
+    }
 //
 //    // Generate river skeleton
 //    CBrownianTree riverSkeleton;
@@ -288,7 +288,7 @@ namespace archer
 //      h->setValue(this->points[i][0], this->points[i][1], 1.0f - (distances[i] / maxDistance));
 //    }
 //
-//  }
+  }
 
   bool CPointsSet2i::isPointInSet(const vector2i & v) {
     if (this->binaryMap.size() > 0) {

@@ -14,7 +14,7 @@
 #include <vector>
 
 #include "../external/CImg.h"
-//#include "CHeightmap.h"
+#include "CHeightmap.h"
 #include "TPointsSet.h"
 #include "helpers.h"
 //#include "CBrownianTree.h"
@@ -91,7 +91,7 @@ namespace archer
       void generateSkeleton(CPointsSet2i * skeleton = NULL);
       void shrink(CPointsSet2i * shrinked, int amount);
 
-      //void createMask(CHeightmap * h);
+      void createMask(CHeightmap * h);
 
       vector2i & getCentroid();
 

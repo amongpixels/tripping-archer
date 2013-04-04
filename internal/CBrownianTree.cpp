@@ -46,8 +46,18 @@ namespace archer
 
     // choose a random seed
     if (this->binaryMap.size() == 0) {
-      //grid[rand() % w][rand() % h] = 1;
-      grid[(int)(w * 0.5)][(int)(h * 0.5)] = 1;
+
+      if (this->boundingPoints && this->boundingPoints->getCount() > 0) {
+        // if bounding points were set then chose a random point from that bounding box set
+        vector2i p = this->boundingPoints->getPoints()[rand() % this->boundingPoints->getCount()];
+        assert(p[0] > -1 && p[0] < w && p[1] > -1 && p[1] < h);
+        grid[p[0]][p[1]] = 1;
+      }
+      else {
+        //grid[(int)(w * 0.5)][(int)(h * 0.5)] = 1;
+        grid[rand() % w][rand() % h] = 1;
+      }
+
     }
 
     for (unsigned int i = 0 ; i < ite ; i++) {

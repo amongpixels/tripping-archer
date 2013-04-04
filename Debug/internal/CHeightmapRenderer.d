@@ -102,8 +102,7 @@ internal/CHeightmapRenderer.d: ../internal/CHeightmapRenderer.cpp \
  /home/dragomir/git/include/cml/mathlib/picking.h \
  ../internal/CHeightmap.h ../internal/../external/CImg.h \
  ../internal/helpers.h ../internal/CGradient.h ../internal/CNoise.h \
- ../internal/CImageBuffer.h ../internal/CPointsSet2i.h \
- ../internal/TPointsSet.h
+ ../internal/CImageBuffer.h
 
 ../internal/CHeightmapRenderer.h:
 
@@ -320,7 +319,3 @@ internal/CHeightmapRenderer.d: ../internal/CHeightmapRenderer.cpp \
 ../internal/CNoise.h:
 
 ../internal/CImageBuffer.h:
-
-../internal/CPointsSet2i.h:
-
-../internal/TPointsSet.h:

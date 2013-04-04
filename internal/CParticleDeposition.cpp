@@ -204,8 +204,10 @@ namespace archer
     }
 
     if (!positionFound) {
-      h->setValue(particle[0], particle[1], h->getValue(particle[0], particle[1]) + this->particleHeight);
-      this->activityMask.addPoint(particle); // Keep track of which parts of the heightmap were affected
+      if (particle[0] >= 0 && particle[0] < h->getWidth() && particle[1] >= 0 && particle[1] < h->getHeight()) {
+        h->setValue(particle[0], particle[1], h->getValue(particle[0], particle[1]) + this->particleHeight);
+        this->activityMask.addPoint(particle); // Keep track of which parts of the heightmap were affected
+      }
     }
     else {
       this->deposit(h, particle, ite + 1);

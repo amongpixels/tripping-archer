@@ -30,7 +30,7 @@ namespace archer
 //    this->colors.addStop(0.7f, 162, 152, 117); // Mountains
 //    this->colors.addStop(1.0f, 201, 193, 146); // Top of mountains
 
-    this->colors.saveAsPNG("gradient.png", 512, 40);
+    //this->colors.saveAsPNG("gradient.png", 512, 40);
 
     this->renderLight = true;
     this->renderShadows = false;

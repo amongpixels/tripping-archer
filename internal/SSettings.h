@@ -13,10 +13,11 @@ namespace archer
   struct SSettings {
       bool useVoronoi;
       bool renderShadows;
+      bool useErosion;
       unsigned char terrainType;
   };
 
-  static SSettings globalSettings = { false, false, 3 };
+  static SSettings globalSettings = { false, false, false, 3 };
 
 }
 

@@ -190,7 +190,7 @@ namespace archer
       }
     }
 
-    normalsImg.save_png("normalne.png");
+    //normalsImg.save_png("normalne.png");
 
   }
 
@@ -440,11 +440,11 @@ namespace archer
     return this->maxHeight;
   }
   
-  void CHeightmap::levelOut(const CPointsSet2i& p) {
-    for (int i = 0 ; i < p.getCount() ; i++) {
-      this->setValue(p.getPoints()[i][0], p.getPoints()[i][1], 0.0f);
-    }
-  }
+//  void CHeightmap::levelOut(const CPointsSet2i& p) {
+//    for (int i = 0 ; i < p.getCount() ; i++) {
+//      this->setValue(p.getPoints()[i][0], p.getPoints()[i][1], 0.0f);
+//    }
+//  }
 
   CHeightmap::CHeightmap(int w, int h) {
     this->init(w, h);
