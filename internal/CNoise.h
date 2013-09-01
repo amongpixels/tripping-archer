@@ -3,6 +3,7 @@
  *
  *  Created on: Jan 18, 2013
  *      Author: dragomir
+ *  Adapted from: http://webstaff.itn.liu.se/~stegu/simplexnoise/SimplexNoise.java
  */
 
 #ifndef CNOISE_H_
