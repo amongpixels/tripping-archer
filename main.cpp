@@ -11,18 +11,17 @@
 #include <string>
 #include <vector>
 
-#include "internal/SSettings.h"
-#include "internal/CNoise.h"
-#include "internal/CFractalNoise.h"
-#include "internal/CFault.h"
-#include "internal/CParticleDeposition.h"
-#include "internal/CVoronoi.h"
-#include "internal/CInputProcessor.h"
-#include "internal/CBrownianTree.h"
-#include "internal/CPerturbation.h"
-#include "internal/CThermalErosion.h"
-#include "internal/CHydraulicErosion.h"
-#include "internal/CHeightmapRenderer.h"
+#include "src/SSettings.h"
+#include "src/CNoise.h"
+#include "src/CFractalNoise.h"
+#include "src/CParticleDeposition.h"
+#include "src/CVoronoi.h"
+#include "src/CInputProcessor.h"
+#include "src/CBrownianTree.h"
+#include "src/CPerturbation.h"
+#include "src/CThermalErosion.h"
+#include "src/CHydraulicErosion.h"
+#include "src/CHeightmapRenderer.h"
 
 using namespace std;
 using namespace archer;
@@ -36,7 +35,7 @@ int main(int argc, char **argv) {
 
   int flag;
 
-  /**
+  /*
    * i - input path
    * o - output path
    * c - texture output path
@@ -184,52 +183,7 @@ int main(int argc, char **argv) {
         depositionFilter.setParticlesCount(particlesCount);
         depositionFilter.apply(&heightmap);
 
-        // Slight perturbation to get rid of regular lines
-//        CPerturbation perturbationFilter;
-//        perturbationFilter.setBoundingPoints(&depositionFilter.getActivityMask());
-//        perturbationFilter.setMagnitude(4);
-//        perturbationFilter.apply(&heightmap);
-
       }
-
-      // Let's play with voronoi a bit
-
-//      CVoronoi voronoiFilter;
-//      CHeightmap testHeightmap (heightmap.getWidth(), heightmap.getHeight());
-//
-//      voronoiFilter.setBoundingPoints(&inputProcessor.getClusters()[i]->points);
-//      voronoiFilter.setPointsCount(ceil(inputProcessor.getClusters()[i]->points.getCount() * 0.0003f));
-//
-//      testHeightmap.setMaxHeight(2.0f);
-//      voronoiFilter.apply(&testHeightmap);
-//
-//      for (int x = 0 ; x < testHeightmap.getWidth() ; x++) {
-//        for (int y = 0 ; y < testHeightmap.getHeight() ; y++) {
-//
-//          float v = testHeightmap.getValue(x, y);
-//
-//          v -= 0.5f;
-//
-//          if (v < 0.0f) {
-//            v = 0.0f;
-//          }
-//
-//          testHeightmap.setValue(x, y, 1.0f + v);
-//
-//        }
-//      }
-//
-//      //testHeightmap *= 0.3f;
-//      heightmap *= 0.5f;
-//
-//      heightmap *= testHeightmap;
-//
-//      //testHeightmap.zero();
-//      //inputProcessor.getClusters()[i]->points.createMask(&testHeightmap);
-//
-//      testHeightmap.saveAsPNG("testowyvoronoi.png");
-
-
 
     }
   }
