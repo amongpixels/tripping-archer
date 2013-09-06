@@ -99,7 +99,7 @@ namespace archer
 
       void createMask(CHeightmap * h);
 
-      vector2i & getCentroid();
+      vector2i getCentroid();
 
       CPointsSet2i & operator += (const CPointsSet2i & p);
       const CPointsSet2i operator + (const CPointsSet2i & );

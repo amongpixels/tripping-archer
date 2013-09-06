@@ -364,7 +364,7 @@ namespace archer
     return p1.second < p2.second;
   }
 
-  vector2i& CPointsSet2i::getCentroid() {
+  vector2i CPointsSet2i::getCentroid() {
 
     assert(this->points.size() > 0);
 
