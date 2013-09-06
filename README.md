@@ -1,7 +1,7 @@
 tripping-archer
 ===============
 
-Tripping archer is a tool for procedural terrain design and generation. It has been my university Honours Project and I decided to release it on BSD license to the world, maybe someone will find it useful.
+Tripping archer is a tool for procedural terrain design and generation. It has been my university final project and I decided to release it on BSD license to the world, maybe someone will find it useful.
 
 ![Input file, generated texture and 3D render of the terrain.](http://amongpixels.com/moon/teaser.png)
 
@@ -33,11 +33,14 @@ Example call:
 
 *Important* - the input file has to be an image with black background where mountains are marked with red (i.e. #ff0000), rivers with green (#00ff00) and volcanoes with blue (#0000ff). If you are using tools like Photoshop to draw a sketch don't use anti-aliased brushes.
 
-## Compilation
-CMake file is provided so to get the project ready for compilation on any platform it should be as easy as:
+## Texture configuration
 
-    cmake .
-    
+You can example ones in `bin/files`. The first line is light direction vector. Next lines are stops for the gradient used to colour the heightmap. First value is always position of a stop (ranging from -1.0 to 1.0 i.e. from deep ocean floor to high mountains) followed by 3 RGB values in range 0 to 255.
+
+## Compilation
+
+Project uses cmake. You can also use the scripts provided for build which also run a simple test. They all are in `build` folder (bat for Windows and sh for Linux, mingw32-make required on Windows).
+
 ## Extending the system
 
 As said before, feel free to experiment with the source. The whole system is organized into heightmap processors which represent one particular action to be performed on the heightmap. These include:
@@ -63,14 +66,22 @@ What particular bits do should be clear from the source code and comments. Ayway
 
 ## More samples
 
-![Some mountains generated with Voronoi cells.](http://amongpixels.com/tripping-archer/base-color.png)
+Mountains generated with Voronoi cells.:
+![Mountains generated with Voronoi cells.](http://amongpixels.com/tripping-archer/base-color.png)
+
+Same mountains with thermal erosion (a lot of it):
 ![Same mountains with thermal erosion (a lot of it).](http://amongpixels.com/tripping-archer/erosion2-color.png)
+
+Different colour scheme:
 ![Different colour scheme.](http://amongpixels.com/tripping-archer/color.png)
 
 ## Stuff
 
-Post issues and problems if found. There's probably loads of them as the thing hasn't been properly polished. Let me know if you find it useful.
+* Post issues and problems if found. There's probably loads of them as the thing hasn't been properly polished. Let me know if you find it useful.
 
-If someone wants to add a Mac OS build I'd be obliged.
+* If someone wants to add a Mac OS build I'd be obliged.
+
+* CImg makes use of external libraries (such is [Graphicmagick](http://www.graphicsmagick.org/)) to process pngs, jpgs etc. By default it only supports bmp files so if you want any other formats and are getting errors about unrecognized formats ("Failed to recognize format of file.") then install Graphicmagick.
+
 ![The end.](http://amongpixels.com/tripping-archer/the-end.png)
 
