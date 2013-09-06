@@ -55,7 +55,7 @@ namespace archer
           float totalHeight = 0.0f;
           float totalDifference = 0.0f;
 
-          std::vector < tuple<vector2i, float> > neighbours;
+          std::vector < std::pair<vector2i, float> > neighbours;
 
           for (int s = max(0, x - 1) ; s <= min(x + 1, h->getWidth() - 1) ; s++) {
             for (int t = max(0, y - 1) ; t <= min(y + 1, h->getHeight() - 1) ; t++) {
@@ -67,7 +67,7 @@ namespace archer
 
                 if (currentHeight > localHeight) {
                   // add that point to the list of points where the water will flow along with the height of that point + water height
-                  neighbours.push_back(tuple<vector2i, float>(vector2i(s, t), localHeight));
+                  neighbours.push_back(std::make_pair(vector2i(s, t), localHeight));
                   totalHeight += localHeight;
                   totalDifference += (currentHeight - localHeight);
                 }
@@ -77,10 +77,10 @@ namespace archer
           }
 
           // now go through the points and distribute the water
-          for (std::vector < tuple<vector2i, float> >::iterator n = neighbours.begin() ; n != neighbours.end() ; ++n) {
+          for (std::vector < std::pair<vector2i, float> >::iterator n = neighbours.begin() ; n != neighbours.end() ; ++n) {
 
-            vector2i examinedPoint = (*n).get<0>();
-            float examinedHeight = (*n).get<1>();
+            vector2i examinedPoint = (*n).first;
+            float examinedHeight = (*n).second;
 
             float deltaHeight = currentHeight - (totalHeight / (float)(neighbours.size()));
             float waterToMove = min(currentWater, deltaHeight) * ( (currentHeight - examinedHeight) / totalDifference);

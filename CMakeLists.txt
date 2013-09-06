@@ -4,4 +4,4 @@ project(tripping-archer)
 
 file(GLOB src src/*.cpp)
 include_directories(include/)
-add_executable(main main.cpp ${src})
+add_executable(tripping-archer main.cpp ${src})

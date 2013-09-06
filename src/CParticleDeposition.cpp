@@ -28,58 +28,8 @@ namespace archer
 
     srand ( time(NULL) );
 
-    // If we stuck all the available particles one on another we will not get over the limit
-    //this->particleHeight = 100.0f / this->particlesCount;
-    //this->elevationTreshold = this->particleHeight;
-
-    // initialize the streams
-    /*for (int i = 0 ; i < this->streamsCount ; i++) {
-
-    vector2f stream (cos((rand() % 360) * cml::constantsf::deg_per_rad()), sin((rand() % 360) * cml::constantsf::deg_per_rad()));
-    stream *= (rand() % 5 + 20);
-
-    helpers::printVector2f(stream);
-
-    this->streams.push_back(stream);
-
-  }
-
-  //printf("streamy zainicjalizowane\n");
-
-  for (int o = 0 ; o < 40 ; o++) {
-
-    for (std::vector<vector2f>::iterator i = this->streams.begin() ; i < this->streams.end() ; i++) {
-
-      int length = (int)(*i).length();
-
-      //printf("asdasd %d\n", length);
-
-      vector2f direction = normalize(*i);
-
-      // go along the stream
-      for (int l = 0 ; l < length ; l++) {
-
-        //printf("iteracja %d\n", l);
-        vector2i dropPoint = this->ventCenter + (direction * l);
-
-        //helpers::printVector2i(dropPoint);
-
-        this->deposit(h, dropPoint);
-
-      }
-
-    }
-  }*/
-
-    //printf("let me get this straight, vent center: ");
-    //helpers::printVector2i(this->ventCenter);
-    //printf("number of particles %d and number of boundingPoints %d\n\n", this->particlesCount, this->boundingPoints->getCount());
-    //printf("particle size %f, treshold %f\n", this->particleHeight, this->elevationThreshold);
-
     printf("Performing particle deposition with %d particles... ", this->particlesCount);
-    //return;
 
-    //int particlesCount = 100000;
     vector2i particle;
 
     srand ( time(NULL) );

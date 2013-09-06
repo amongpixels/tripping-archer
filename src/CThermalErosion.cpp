@@ -26,7 +26,7 @@ namespace archer
       for (int x = 0 ; x < h->getWidth() ; x++) {
         for (int y = 0 ; y < h->getHeight() ; y++) {
 
-          std::vector< tuple<vector2i, float> > vicninities;
+          std::vector< std::pair<vector2i, float> > vicninities;
           float dMax = 0.0f;
           float dTotal = 0.0f;
 
@@ -41,7 +41,7 @@ namespace archer
 
                 // if the inclination is bigger than talus then break some of that material
                 if (d > T) {
-                  vicninities.push_back( tuple<vector2i, float> (vector2i(s, t), d) );
+                  vicninities.push_back( std::make_pair(vector2i(s, t), d) );
 
                   dTotal += d;
 
@@ -57,10 +57,10 @@ namespace archer
           //printf("dmax is %f and dtotal is %f\n", dMax, dTotal);
 
           // distribute a portion of material over neighbouring cells
-          for (std::vector< tuple<vector2i, float> >::iterator i = vicninities.begin() ; i < vicninities.end() ; i++) {
-            float value = 0.5f * (dMax - T) * ((*i).get<1>() / dTotal);
+          for (std::vector< std::pair<vector2i, float> >::iterator i = vicninities.begin() ; i < vicninities.end() ; i++) {
+            float value = 0.5f * (dMax - T) * ((*i).second / dTotal);
             h->setValue(x, y, h->getValue(x, y) - value);
-            h->setValue((*i).get<0>()[0], (*i).get<0>()[1], h->getValue((*i).get<0>()[0], (*i).get<0>()[1]) + value);
+            h->setValue((*i).first[0], (*i).first[1], h->getValue((*i).first[0], (*i).first[1]) + value);
           }
 
         }

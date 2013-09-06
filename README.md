@@ -23,9 +23,9 @@ Tripping archer is a command line utility. Windows and Linux binaries are in `bi
 * `-c [path]` - texture output path (optional)
 * `-r [path]` - render configuration file path (optional)
 * `-t [type]` - terrain type, from 1 (gentle hills) to 3 (high mountains) (optional, default 3)
-* `-v` - use Voronoi diagrams to partition the mountains (optional, default off)
-* `-s` - render shadows (optional, default on)
-* `-e` - enable thermal erosion (optional, default off)
+* `-v` - use Voronoi diagrams to partition the mountains (default off)
+* `-s` - render shadows (default off)
+* `-e` - enable thermal erosion (default off)
 
 Example call:
 
@@ -71,5 +71,6 @@ What particular bits do should be clear from the source code and comments. Ayway
 
 Post issues and problems if found. There's probably loads of them as the thing hasn't been properly polished. Let me know if you find it useful.
 
+If someone wants to add a Mac OS build I'd be obliged.
 ![The end.](http://amongpixels.com/tripping-archer/the-end.png)
 

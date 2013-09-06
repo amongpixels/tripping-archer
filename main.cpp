@@ -10,6 +10,7 @@
 #include <cstring>
 #include <string>
 #include <vector>
+#include <wingetopt/wingetopt.h>
 
 #include "src/SSettings.h"
 #include "src/CNoise.h"
@@ -28,8 +29,10 @@ using namespace archer;
 
 int main(int argc, char **argv) {
 
-  char * inputPath = "input.png";
-  char * outputPath = "output.png";
+//  cimg_usage("tripping-archer is a tool for procedural landscape design and generation.");
+
+  char * inputPath = "input.bmp";
+  char * outputPath = "output.bmp";
   char * colorPath = NULL;
   char * renderConfigPath = NULL;
 
@@ -69,6 +72,16 @@ int main(int argc, char **argv) {
       default: abort();
     }
   }
+
+//  char * inputPath = cimg_option("-i", "input.bmp", "Input sketch");
+//  char * outputPath = cimg_option("-o", "output.bmp", "Output heightmap");
+//  char * colorPath = cimg_option("-c", NULL, "Output texture");
+//  char * renderConfigPath = cimg_option("-r", NULL, "Path to render config file");
+//
+//  globalSettings.useVoronoi = cimg_option("-v", false, "Use Voronoi diagrams to partition mountains");
+//  globalSettings.renderShadows = cimg_option("-s", false, "Render shadows");
+//  globalSettings.useErosion = cimg_option("-e", false, "Calculate thermal erosion");
+//  globalSettings.terrainType = cimg_option("-t", 3, "Terrain type");
 
   printf("Processing input %s...\n", inputPath);
 
@@ -340,7 +353,9 @@ int main(int argc, char **argv) {
       int particlesPerSquare = 30;
       int totalParticles = (clusterPoints->getCount() * particlesPerSquare);
       float particlesHeight = 0.01f;
-      printf("Cluster size is %f\n", clusterSize);
+      printf("Vent center\n");
+      helpers::printVector2i(ventCenter);
+      printf("Cluster size is chuj %f\n", clusterSize);
       //boundingPoints.createBrownian(20, 256, 256);
       clusterPoints->shrink(&boundingPoints, (int)(clusterSize * 0.15f));
 
@@ -396,7 +411,7 @@ int main(int argc, char **argv) {
   // Save everything
 
   //heightmap.loadFromPNG("output.png");
-  heightmap.saveAsPNG(outputPath);
+  heightmap.saveAs(outputPath);
 
   CHeightmapRenderer renderer;
 
@@ -407,7 +422,7 @@ int main(int argc, char **argv) {
   }
 
   if (colorPath) {
-    renderer.renderToPNG(&heightmap, colorPath);
+    renderer.renderToFile(&heightmap, colorPath);
   }
 
   printf("Done.\n");

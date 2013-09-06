@@ -68,7 +68,7 @@ namespace archer
     this->maxHeight = f;
   }
 
-  void CHeightmap::saveAsPNG(char * path) {
+  void CHeightmap::saveAs(char * path) {
 
     CImg <unsigned char> img (this->width, this->height, 1, 3, 0);
 
@@ -85,7 +85,7 @@ namespace archer
       }
     }
 
-    img.save_png(path);
+    img.save(path);
 
   }
 
@@ -381,7 +381,7 @@ namespace archer
 
   }
   
-  void CHeightmap::loadFromPNG(char* path) {
+  void CHeightmap::loadFromFile(char* path) {
 
     CImg <unsigned char> image = CImg<unsigned char>(path);
 

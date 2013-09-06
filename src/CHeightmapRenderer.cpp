@@ -37,7 +37,7 @@ namespace archer
 
   }
   
-  void CHeightmapRenderer::renderToPNG(CHeightmap * h, char * path) {
+  void CHeightmapRenderer::renderToFile(CHeightmap * h, char * path) {
 
     printf("Rendering heightmap... ");
 
@@ -115,7 +115,7 @@ namespace archer
       colorMap.mul(shadowMap);
     }
 
-    colorMap.save_png(path);
+    colorMap.save(path);
 
     printf("done.\n");
   }

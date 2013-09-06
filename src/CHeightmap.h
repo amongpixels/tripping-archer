@@ -76,10 +76,10 @@ namespace archer
       void normalize();
       void flip();
 
-      void saveAsPNG(char * path);
+      void saveAs(char * path);
       //void saveColorMapAsPNG(char * path, bool useShadows = false);
 
-      void loadFromPNG(char * path);
+      void loadFromFile(char * path);
       //void loadRenderConfig(char * path);
 
       CHeightmap & operator = (float);

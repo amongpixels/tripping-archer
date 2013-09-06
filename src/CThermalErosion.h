@@ -9,11 +9,9 @@
 #ifndef CTHERMALEROSION_H_
 #define CTHERMALEROSION_H_
 
-#include <boost/tuple/tuple.hpp>
+#include <utility>
 
 #include "IHeightmapProcessor.h"
-
-using namespace boost::tuples;
 
 namespace archer
 {
