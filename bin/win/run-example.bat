@@ -1,1 +1,1 @@
-tripping-archer.exe -i ../common/input.bmp -o heightmap.bmp -c texture.bmp -s
+tripping-archer.exe -i ../files/input.bmp -o heightmap.bmp -c texture.bmp -s

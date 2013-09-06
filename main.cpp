@@ -353,9 +353,7 @@ int main(int argc, char **argv) {
       int particlesPerSquare = 30;
       int totalParticles = (clusterPoints->getCount() * particlesPerSquare);
       float particlesHeight = 0.01f;
-      printf("Vent center\n");
-      helpers::printVector2i(ventCenter);
-      printf("Cluster size is chuj %f\n", clusterSize);
+      printf("Cluster size is %f\n", clusterSize);
       //boundingPoints.createBrownian(20, 256, 256);
       clusterPoints->shrink(&boundingPoints, (int)(clusterSize * 0.15f));
 
