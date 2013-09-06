@@ -66,13 +66,16 @@ What particular bits do should be clear from the source code and comments. Ayway
 
 ## More samples
 
-Mountains generated with Voronoi cells.:
+Mountains generated with Voronoi cells:
+
 ![Mountains generated with Voronoi cells.](http://amongpixels.com/tripping-archer/base-color.png)
 
 Same mountains with thermal erosion (a lot of it):
+
 ![Same mountains with thermal erosion (a lot of it).](http://amongpixels.com/tripping-archer/erosion2-color.png)
 
 Different colour scheme:
+
 ![Different colour scheme.](http://amongpixels.com/tripping-archer/color.png)
 
 ## Stuff
