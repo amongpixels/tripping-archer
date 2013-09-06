@@ -86,5 +86,7 @@ Different colour scheme:
 
 * CImg makes use of external libraries (such is [Graphicmagick](http://www.graphicsmagick.org/)) to process pngs, jpgs etc. By default it only supports bmp files so if you want any other formats and are getting errors about unrecognized formats ("Failed to recognize format of file.") then install Graphicmagick.
 
+* Excellent resources I came across while building this were especially this: [http://oddlabs.com/blog/?p=94](http://oddlabs.com/blog/?p=94) and also a book called "Texture & Modeling - A Procedural Approach".
+
 ![The end.](http://amongpixels.com/tripping-archer/the-end.png)
 
