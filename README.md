@@ -7,7 +7,7 @@ Tripping archer is a tool for procedural terrain design and generation. It has b
 
 It's quite different from other heightmap sculpting editors as it needs a 2D top down sketch of the terrain (left) which it then processes and turns into a heightmap (middle), also generating a simple texture for it (right).
 
-[http://amongpixels.com/tripping-archer/screenshot.png](3D preview of the heightmap with a texture).
+[3D preview of the heightmap with a texture](http://amongpixels.com/tripping-archer/screenshot.png).
 
 Here's a little video showing what it does: [http://www.youtube.com/watch?v=Yd1liEaik-A](http://www.youtube.com/watch?v=Yd1liEaik-A)
 
