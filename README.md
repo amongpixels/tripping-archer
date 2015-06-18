@@ -3,11 +3,11 @@ tripping-archer
 
 Tripping archer is a tool for procedural terrain design and generation. It has been my university final project and I decided to release it on BSD license to the world, maybe someone will find it useful.
 
-![Input file, generated texture and 3D render of the terrain.](http://amongpixels.com/tripping-archer/teaser.png)
+![Input file, generated texture and 3D render of the terrain.](https://dl.dropboxusercontent.com/u/37998138/tripping-archer/intro.png)
 
 It's quite different from other heightmap sculpting editors as it needs a 2D top down sketch of the terrain (left) which it then processes and turns into a heightmap (middle), also generating a simple texture for it (right).
 
-[3D preview of textured heightmap](http://amongpixels.com/tripping-archer/screenshot.png).
+[3D preview of textured heightmap](https://dl.dropboxusercontent.com/u/37998138/tripping-archer/3d.png).
 
 Here's a little video showing what it does: [http://www.youtube.com/watch?v=Yd1liEaik-A](http://www.youtube.com/watch?v=Yd1liEaik-A)
 
@@ -72,15 +72,15 @@ What particular bits do should be clear from the source code and comments. Ayway
 
 Mountains generated with Voronoi cells:
 
-![Mountains generated with Voronoi cells.](http://amongpixels.com/tripping-archer/base-color.png)
+![Mountains generated with Voronoi cells.](https://dl.dropboxusercontent.com/u/37998138/tripping-archer/base-color.png)
 
 Same mountains with thermal erosion (a lot of it):
 
-![Same mountains with thermal erosion (a lot of it).](http://amongpixels.com/tripping-archer/erosion2-color.png)
+![Same mountains with thermal erosion (a lot of it).](https://dl.dropboxusercontent.com/u/37998138/tripping-archer/erosion2-color.png)
 
 Different colour scheme:
 
-![Different colour scheme.](http://amongpixels.com/tripping-archer/color.png)
+![Different colour scheme.](https://dl.dropboxusercontent.com/u/37998138/tripping-archer/color.png)
 
 ## Stuff
 
@@ -92,5 +92,5 @@ Different colour scheme:
 
 * Excellent resources I came across while building this were especially this: [http://oddlabs.com/blog/?p=94](http://oddlabs.com/blog/?p=94) and also a book called "Texture & Modeling - A Procedural Approach".
 
-![The end.](http://amongpixels.com/tripping-archer/the-end.png)
+![The end.](https://dl.dropboxusercontent.com/u/37998138/tripping-archer/the-end.png)
 
